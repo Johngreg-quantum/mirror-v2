@@ -1,16 +1,18 @@
 import os
 import re
+import time
 import sqlite3
 import difflib
 import tempfile
+from collections import defaultdict, deque
 from datetime import datetime, timedelta, timezone
 from typing import Optional
 
-from fastapi import FastAPI, File, UploadFile, Form, HTTPException, Depends
+from fastapi import FastAPI, File, UploadFile, Form, HTTPException, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, JSONResponse
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 import openai
 from jose import JWTError, jwt
 from passlib.context import CryptContext
@@ -20,14 +22,92 @@ load_dotenv()
 
 app = FastAPI(title="MIRROR — Movie Scene Language Learning")
 
+# ---------------------------------------------------------------------------
+# CORS — only the production domain and local dev origins are allowed.
+# The frontend is served from the same domain as the API, so these origins
+# matter only for external/cross-origin callers.
+# ---------------------------------------------------------------------------
+_ALLOWED_ORIGINS = [
+    "https://mirror-app-z8wr.onrender.com",
+    "http://localhost:8000",
+    "http://127.0.0.1:8000",
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_ALLOWED_ORIGINS,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST", "OPTIONS"],
+    allow_headers=["Authorization", "Content-Type"],
 )
 
+# ---------------------------------------------------------------------------
+# Rate limiting
+# ---------------------------------------------------------------------------
+_RATE_WINDOW        = 3600          # sliding window — 1 hour in seconds
+_IP_LIMIT           = 100           # max API requests per IP per window
+_SUBMIT_LIMIT       = 10            # max recording submissions per user per window
+_MAX_AUDIO_BYTES    = 10 * 1024 * 1024   # 10 MB upload cap
+_ALLOWED_AUDIO_EXT  = {".webm", ".mp4", ".ogg", ".mp3", ".wav", ".m4a"}
+
+# Sliding-window buckets keyed by IP address (in-memory; resets on restart,
+# which is acceptable for a single-instance deployment).
+_ip_hits: dict[str, deque] = defaultdict(deque)
+
+
+def _client_ip(request: Request) -> str:
+    """Return the real client IP, honouring Render's X-Forwarded-For header."""
+    fwd = request.headers.get("X-Forwarded-For", "")
+    if fwd:
+        return fwd.split(",")[0].strip()
+    return request.client.host if request.client else "unknown"
+
+
+@app.middleware("http")
+async def ip_rate_limit(request: Request, call_next):
+    """Reject requests from IPs that exceed _IP_LIMIT API calls per hour.
+    OPTIONS (CORS preflight) and the HTML root are exempt."""
+    if request.method != "OPTIONS" and request.url.path.startswith("/api/"):
+        ip  = _client_ip(request)
+        now = time.monotonic()
+        dq  = _ip_hits[ip]
+        while dq and dq[0] < now - _RATE_WINDOW:
+            dq.popleft()
+        if len(dq) >= _IP_LIMIT:
+            return JSONResponse(
+                {"detail": "Too many requests — please try again later"},
+                status_code=429,
+                headers={"Retry-After": "3600"},
+            )
+        dq.append(now)
+    return await call_next(request)
+
+
+def _check_submit_rate(user_id: int, conn) -> None:
+    """Raise 429 when this user has already submitted _SUBMIT_LIMIT recordings
+    in the past hour.  Uses the scores table so the check survives restarts."""
+    cur = conn.cursor()
+    if USE_PG:
+        cur.execute(
+            "SELECT COUNT(*) FROM scores "
+            "WHERE user_id = %s AND created_at > NOW() - INTERVAL '1 hour'",
+            (user_id,),
+        )
+    else:
+        cur.execute(
+            "SELECT COUNT(*) FROM scores "
+            "WHERE user_id = ? AND created_at > datetime('now', '-1 hour')",
+            (user_id,),
+        )
+    count = cur.fetchone()[0]
+    if count >= _SUBMIT_LIMIT:
+        raise HTTPException(
+            429,
+            f"Submission limit reached — max {_SUBMIT_LIMIT} recordings per hour",
+        )
+
+
+# ---------------------------------------------------------------------------
 DB_PATH   = "mirror.db"
 SECRET    = os.getenv("JWT_SECRET", "change-me-to-a-long-random-string-in-production")
 ALGORITHM = "HS256"
@@ -250,13 +330,13 @@ async def startup():
 # ---------------------------------------------------------------------------
 
 class RegisterRequest(BaseModel):
-    username: str
-    email:    str
-    password: str
+    username: str = Field(..., min_length=2, max_length=30)
+    email:    str = Field(..., max_length=255)
+    password: str = Field(..., min_length=6, max_length=128)
 
 class LoginRequest(BaseModel):
-    email:    str
-    password: str
+    email:    str = Field(..., max_length=255)
+    password: str = Field(..., max_length=128)
 
 
 def hash_pw(password: str) -> str:
@@ -318,12 +398,12 @@ async def register(req: RegisterRequest):
     username = req.username.strip()
     email    = req.email.lower().strip()
 
-    if len(username) < 2:
-        raise HTTPException(400, "Username must be at least 2 characters")
+    if not re.match(r'^[A-Za-z0-9][A-Za-z0-9._-]{0,28}[A-Za-z0-9]$|^[A-Za-z0-9]{2}$', username):
+        raise HTTPException(400, "Username may only contain letters, numbers, dots, hyphens and underscores")
+    if not re.match(r'^[^@\s]{1,64}@[^@\s]{1,255}\.[^@\s]{1,63}$', email):
+        raise HTTPException(400, "Invalid email address")
     if len(req.password) < 6:
         raise HTTPException(400, "Password must be at least 6 characters")
-    if "@" not in email:
-        raise HTTPException(400, "Invalid email address")
 
     conn = get_conn()
     cur  = conn.cursor()
@@ -482,15 +562,30 @@ async def submit_recording(
     if scene_id not in SCENES:
         raise HTTPException(400, "Invalid scene_id")
 
+    # Per-user submission rate limit (uses DB so it survives restarts)
+    conn_rl = get_conn()
+    try:
+        _check_submit_rate(user["id"], conn_rl)
+    finally:
+        conn_rl.close()
+
     scene          = SCENES[scene_id]
     expected_quote = scene["quote"]
 
+    # Validate and read audio
+    audio_bytes = await audio.read()
+    if not audio_bytes:
+        raise HTTPException(400, "Empty audio file")
+    if len(audio_bytes) > _MAX_AUDIO_BYTES:
+        raise HTTPException(413, "Audio file too large — maximum 10 MB")
+
     suffix = ".webm"
     if audio.filename and "." in audio.filename:
-        suffix = "." + audio.filename.rsplit(".", 1)[-1]
+        ext = "." + audio.filename.rsplit(".", 1)[-1].lower()
+        suffix = ext if ext in _ALLOWED_AUDIO_EXT else ".webm"
 
     with tempfile.NamedTemporaryFile(suffix=suffix, delete=False) as tmp:
-        tmp.write(await audio.read())
+        tmp.write(audio_bytes)
         tmp_path = tmp.name
 
     try:
