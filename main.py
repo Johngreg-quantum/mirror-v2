@@ -3,9 +3,10 @@ import re
 import time
 import sqlite3
 import difflib
+import hashlib
 import tempfile
 from collections import defaultdict, deque
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta, timezone, date
 from typing import Optional
 
 from fastapi import FastAPI, File, UploadFile, Form, HTTPException, Depends, Request
@@ -291,6 +292,18 @@ SCENE_TRANSLATIONS = {
 
 
 # ---------------------------------------------------------------------------
+# Daily challenge — deterministic scene selection from UTC date
+# ---------------------------------------------------------------------------
+
+def get_daily_scene_id() -> str:
+    """Return today's challenge scene.  MD5 of the UTC date string gives a
+    stable, evenly-distributed index — same result for every server instance."""
+    date_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    h = int(hashlib.md5(date_str.encode()).hexdigest(), 16)
+    return list(SCENES.keys())[h % len(SCENES)]
+
+
+# ---------------------------------------------------------------------------
 # Database initialisation
 # ---------------------------------------------------------------------------
 
@@ -353,17 +366,25 @@ def init_db():
                 cur.execute(f"ALTER TABLE scores ADD COLUMN {col} {dfn}")
             except sqlite3.OperationalError:
                 pass  # column already exists
-        # Non-destructive migration for users.points
-        try:
-            cur.execute("ALTER TABLE users ADD COLUMN points INTEGER DEFAULT 0")
-        except sqlite3.OperationalError:
-            pass  # column already exists
+        # Non-destructive migration for users.points / streak / last_daily
+        for col, dfn in [
+            ("points",     "INTEGER DEFAULT 0"),
+            ("streak",     "INTEGER DEFAULT 0"),
+            ("last_daily", "TEXT"),
+        ]:
+            try:
+                cur.execute(f"ALTER TABLE users ADD COLUMN {col} {dfn}")
+            except sqlite3.OperationalError:
+                pass  # column already exists
 
     if USE_PG:
-        # Non-destructive migration for users.points (PostgreSQL)
-        cur.execute("""
-            ALTER TABLE users ADD COLUMN IF NOT EXISTS points INTEGER DEFAULT 0
-        """)
+        # Non-destructive migrations for PostgreSQL
+        for col, dfn in [
+            ("points",     "INTEGER DEFAULT 0"),
+            ("streak",     "INTEGER DEFAULT 0"),
+            ("last_daily", "TEXT"),
+        ]:
+            cur.execute(f"ALTER TABLE users ADD COLUMN IF NOT EXISTS {col} {dfn}")
 
     conn.commit()
     conn.close()
@@ -619,6 +640,24 @@ async def get_history(user: dict = Depends(current_user)):
     }
 
 
+@app.get("/api/daily")
+async def get_daily():
+    """Return today's challenge scene (same for every user, resets at UTC midnight)."""
+    sid   = get_daily_scene_id()
+    today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    # Seconds until next UTC midnight
+    now     = datetime.now(timezone.utc)
+    midnight = datetime(now.year, now.month, now.day, tzinfo=timezone.utc) + timedelta(days=1)
+    secs_left = int((midnight - now).total_seconds())
+    return {
+        "scene_id":       sid,
+        "scene":          SCENES[sid],
+        "date":           today,
+        "bonus_multiplier": 2,
+        "secs_until_reset": secs_left,
+    }
+
+
 @app.post("/api/submit")
 async def submit_recording(
     scene_id: str = Form(...),
@@ -686,12 +725,44 @@ async def submit_recording(
         (scene_id, scene["movie"], expected_quote, transcription, score, user["username"], user["id"]),
     )
 
-    # Award points
-    pts_earned = calc_points(score, is_first_attempt)
+    # Daily challenge detection
+    daily_scene_id     = get_daily_scene_id()
+    is_daily           = scene_id == daily_scene_id
+    today_str          = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    yesterday_str      = (datetime.now(timezone.utc) - timedelta(days=1)).strftime("%Y-%m-%d")
+
+    # Fetch user streak and last_daily before updating
+    cur.execute(f"SELECT streak, last_daily FROM users WHERE id = {PH}", (user["id"],))
+    u_row          = cur.fetchone()
+    current_streak = int(u_row[0] or 0) if u_row else 0
+    last_daily     = u_row[1] if u_row else None
+    daily_already_done = (last_daily == today_str)
+
+    # Award points (2× if it's the daily and not yet done today)
+    base_pts   = calc_points(score, is_first_attempt)
+    daily_bonus = 0
+    if is_daily and not daily_already_done:
+        daily_bonus = base_pts          # extra pts from doubling
+        pts_earned  = base_pts * 2
+    else:
+        pts_earned  = base_pts
+
     if pts_earned > 0:
         cur.execute(
             f"UPDATE users SET points = points + {PH} WHERE id = {PH}",
             (pts_earned, user["id"]),
+        )
+
+    # Update streak if this completes today's daily for the first time
+    new_streak = current_streak
+    if is_daily and not daily_already_done:
+        if last_daily == yesterday_str:
+            new_streak = current_streak + 1
+        else:
+            new_streak = 1
+        cur.execute(
+            f"UPDATE users SET streak = {PH}, last_daily = {PH} WHERE id = {PH}",
+            (new_streak, today_str, user["id"]),
         )
 
     # Fetch updated total points
@@ -724,6 +795,10 @@ async def submit_recording(
         "is_first_attempt":     is_first_attempt,
         "translation_unlocked": translation_unlocked,
         "translation":          SCENE_TRANSLATIONS.get(scene_id) if translation_unlocked else None,
+        "is_daily":             is_daily,
+        "daily_bonus":          daily_bonus,
+        "daily_already_done":   daily_already_done,
+        "streak":               new_streak,
     }
 
 
@@ -736,7 +811,7 @@ async def get_leaderboard():
     for sid in SCENES:
         cur.execute(
             f"SELECT s.id, s.scene_id, s.movie, s.quote, s.transcription, s.sync_score, "
-            f"s.username, s.created_at, COALESCE(u.points, 0) "
+            f"s.username, s.created_at, COALESCE(u.points, 0), COALESCE(u.streak, 0) "
             f"FROM scores s LEFT JOIN users u ON s.user_id = u.id "
             f"WHERE s.scene_id = {PH} ORDER BY s.sync_score DESC LIMIT 10",
             (sid,),
@@ -744,14 +819,16 @@ async def get_leaderboard():
         rows = cur.fetchall()
         result[sid] = []
         for r in rows:
-            pts = int(r[8]) if r[8] is not None else 0
-            div = get_division(pts)
+            pts    = int(r[8]) if r[8] is not None else 0
+            streak = int(r[9]) if r[9] is not None else 0
+            div    = get_division(pts)
             result[sid].append({
                 "id": r[0], "scene_id": r[1], "movie": r[2], "quote": r[3],
                 "transcription": r[4], "sync_score": r[5], "username": r[6] or "",
                 "created_at": r[7].isoformat() if hasattr(r[7], "isoformat") else r[7],
                 "user_points": pts,
                 "division": div,
+                "streak": streak,
             })
     conn.close()
     return result
@@ -763,9 +840,13 @@ async def get_profile(user: dict = Depends(current_user)):
     conn = get_conn()
     cur  = conn.cursor()
 
-    cur.execute(f"SELECT points FROM users WHERE id = {PH}", (user["id"],))
+    cur.execute(f"SELECT points, streak, last_daily FROM users WHERE id = {PH}", (user["id"],))
     row = cur.fetchone()
-    total_points = int(row[0]) if row and row[0] else 0
+    total_points   = int(row[0]) if row and row[0] else 0
+    streak         = int(row[1]) if row and row[1] else 0
+    last_daily     = row[2] if row else None
+    today_str      = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    daily_done_today = (last_daily == today_str)
 
     # Per-scene stats: attempt count + best score
     cur.execute(
@@ -789,11 +870,14 @@ async def get_profile(user: dict = Depends(current_user)):
     pts_to_next   = (next_div["min"] - total_points) if next_div else 0
 
     return {
-        "username":             user["username"],
-        "total_points":         total_points,
-        "division":             division,
-        "next_division":        next_div,
-        "points_to_next":       pts_to_next,
-        "scene_stats":          scene_stats,
+        "username":              user["username"],
+        "total_points":          total_points,
+        "division":              division,
+        "next_division":         next_div,
+        "points_to_next":        pts_to_next,
+        "scene_stats":           scene_stats,
         "translations_unlocked": translations_unlocked,
+        "streak":                streak,
+        "daily_done_today":      daily_done_today,
+        "daily_scene_id":        get_daily_scene_id(),
     }

@@ -1377,6 +1377,53 @@ header {
 .div-card-next { font-size: 11px; color: var(--muted); text-align: right; }
 .div-card-next strong { display: block; font-size: 15px; color: var(--text); font-weight: 600; }
 
+/* ─── DAILY CHALLENGE ─── */
+.daily-bar {
+  display: none; align-items: center; justify-content: space-between; gap: 12px;
+  margin-bottom: 18px; padding: 13px 18px; border-radius: 12px;
+  background: linear-gradient(135deg, rgba(201,168,76,.12), rgba(201,168,76,.05));
+  border: 1px solid rgba(201,168,76,.35);
+}
+.daily-bar.on { display: flex; }
+.daily-bar-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
+.daily-bar-badge {
+  flex-shrink: 0; font-family: 'Bebas Neue', cursive; font-size: 11px;
+  letter-spacing: .14em; color: #000; background: var(--gold);
+  padding: 3px 9px; border-radius: 5px;
+}
+.daily-bar-scene { font-size: 13px; font-weight: 500; color: var(--text); truncate: ellipsis; }
+.daily-bar-right { flex-shrink: 0; text-align: right; }
+.daily-bar-timer-lbl { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
+.daily-countdown {
+  font-family: 'Bebas Neue', cursive; font-size: 20px; letter-spacing: .1em;
+  color: var(--gold); line-height: 1;
+}
+/* Gold crown badge on scene card */
+.daily-card-badge {
+  position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
+  font-family: 'Bebas Neue', cursive; font-size: 9px; letter-spacing: .16em;
+  color: #000; background: var(--gold); padding: 3px 8px; border-radius: 4px;
+  white-space: nowrap; z-index: 2;
+}
+.scene-card.daily { border-color: rgba(201,168,76,.55); }
+.scene-card.daily::before { opacity: .08; }
+/* 2× pill in recording modal */
+.daily-modal-badge {
+  display: none; align-items: center; gap: 6px;
+  padding: 5px 12px; border-radius: 6px;
+  background: rgba(201,168,76,.15); border: 1px solid rgba(201,168,76,.4);
+  font-family: 'Bebas Neue', cursive; font-size: 13px; letter-spacing: .1em;
+  color: var(--gold);
+}
+.daily-modal-badge.on { display: flex; }
+/* Streak badge */
+.streak-badge {
+  display: inline-flex; align-items: center; gap: 3px;
+  font-size: 11px; font-weight: 700; color: #fb923c;
+  background: rgba(251,146,60,.12); border: 1px solid rgba(251,146,60,.3);
+  padding: 2px 8px; border-radius: 100px;
+}
+
 /* ─── TRY AGAIN ─── */
 .btn-try-again {
   display: flex; align-items: center; justify-content: center; gap: 7px;
@@ -1711,6 +1758,17 @@ header {
       <div class="level-details" id="levelDetails"></div>
     </div>
 
+    <div class="daily-bar" id="dailyBar">
+      <div class="daily-bar-left">
+        <span class="daily-bar-badge">&#9733; Daily Challenge</span>
+        <span class="daily-bar-scene" id="dailyBarScene"></span>
+      </div>
+      <div class="daily-bar-right">
+        <div class="daily-bar-timer-lbl">Resets in</div>
+        <div class="daily-countdown" id="dailyCountdown">00:00:00</div>
+      </div>
+    </div>
+
     <p class="section-label">Choose a scene</p>
     <div class="scenes-grid" id="scenesGrid"></div>
 
@@ -1732,7 +1790,12 @@ header {
         <div class="modal-year"  id="mYear"></div>
         <div class="modal-title" id="mTitle"></div>
       </div>
-      <button class="btn-close" id="btnClose" aria-label="Close">&times;</button>
+      <div style="display:flex;align-items:center;gap:10px">
+        <div class="daily-modal-badge" id="dailyModalBadge">
+          &#9733; Daily &nbsp;&bull;&nbsp; 2&times; pts
+        </div>
+        <button class="btn-close" id="btnClose" aria-label="Close">&times;</button>
+      </div>
     </div>
 
     <div class="video-wrap">
@@ -2044,6 +2107,9 @@ let userProgress = {
   next_level: { level: 2, required_score: 60, best_score: 0 },
 };
 
+let dailyChallenge    = null;
+let countdownInterval = null;
+
 let mediaRecorder = null;
 let audioChunks   = [];
 let audioBlob     = null;
@@ -2066,7 +2132,7 @@ const WAVE_BARS    = 48;
     if (ok) {
       showApp();
       await loadProgress();
-      await Promise.all([loadScenes(), loadScores()]);
+      await Promise.all([loadScenes(), loadScores(), loadDaily()]);
       return;
     }
   }
@@ -2196,7 +2262,7 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
     localStorage.setItem('mirror_token', authToken);
     showApp();
     await loadProgress();
-    await Promise.all([loadScenes(), loadScores()]);
+    await Promise.all([loadScenes(), loadScores(), loadDaily()]);
   } catch (err) {
     errEl.textContent = err.message;
   } finally {
@@ -2245,7 +2311,7 @@ document.getElementById('registerForm').addEventListener('submit', async e => {
     showApp();
     maybeShowOnboarding();
     await loadProgress();
-    await Promise.all([loadScenes(), loadScores()]);
+    await Promise.all([loadScenes(), loadScores(), loadDaily()]);
   } catch (err) {
     errEl.textContent = err.message;
   } finally {
@@ -2287,12 +2353,14 @@ function renderCards() {
 }
 
 function makeCard(id, s) {
-  const locked = !userProgress.unlocked_scenes.includes(id);
-  const color  = locked ? 'var(--muted)' : (CARD_COLORS[id] || '#c9a84c');
-  const el     = document.createElement('div');
-  el.className = 'scene-card' + (locked ? ' locked' : '');
+  const locked  = !userProgress.unlocked_scenes.includes(id);
+  const isDaily = dailyChallenge && dailyChallenge.scene_id === id;
+  const color   = locked ? 'var(--muted)' : (CARD_COLORS[id] || '#c9a84c');
+  const el      = document.createElement('div');
+  el.className  = 'scene-card' + (locked ? ' locked' : '') + (isDaily ? ' daily' : '');
   el.style.setProperty('--c', color);
   el.innerHTML = `
+    ${isDaily ? '<div class="daily-card-badge">&#9733; Daily Challenge &nbsp;&bull;&nbsp; 2&times; pts</div>' : ''}
     ${locked ? `
     <div class="lock-overlay">
       <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
@@ -2301,7 +2369,7 @@ function makeCard(id, s) {
       </svg>
       <span>Level ${LEVEL_MAP[id]} Required</span>
     </div>` : ''}
-    <div class="card-top">
+    <div class="card-top" ${isDaily ? 'style="margin-top:18px"' : ''}>
       <span class="movie-year">${s.year}</span>
       <div style="display:flex;gap:6px;align-items:center">
         ${s.mature ? '<span class="badge mature">18+</span>' : ''}
@@ -2332,6 +2400,40 @@ async function loadProgress() {
     if (r.ok) userProgress = await r.json();
   } catch { /* keep defaults so offline dev still works */ }
   renderLevelBar();
+}
+
+async function loadDaily() {
+  try {
+    const r    = await fetch(`${API}/api/daily`);
+    if (!r.ok) return;
+    dailyChallenge = await r.json();
+    // Update the daily bar
+    const bar = document.getElementById('dailyBar');
+    bar.classList.add('on');
+    document.getElementById('dailyBarScene').textContent =
+      (scenes[dailyChallenge.scene_id] || {}).movie || dailyChallenge.scene_id;
+    startDailyCountdown(dailyChallenge.secs_until_reset);
+    // Re-render cards so the badge appears
+    if (Object.keys(scenes).length) renderCards();
+  } catch { /* silent — daily bar just stays hidden */ }
+}
+
+function startDailyCountdown(initialSecs) {
+  if (countdownInterval) clearInterval(countdownInterval);
+  let secs = initialSecs;
+  function tick() {
+    if (secs < 0) secs = 0;
+    const h  = Math.floor(secs / 3600);
+    const m  = Math.floor((secs % 3600) / 60);
+    const s  = secs % 60;
+    const el = document.getElementById('dailyCountdown');
+    if (el) el.textContent =
+      `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    if (secs === 0) { clearInterval(countdownInterval); loadDaily(); return; }
+    secs--;
+  }
+  tick();
+  countdownInterval = setInterval(tick, 1000);
 }
 
 function renderLevelBar() {
@@ -2407,6 +2509,14 @@ function openModal(id, s) {
     ph.style.display    = 'flex';
   }
 
+  // Show 2× badge if this is today's daily challenge
+  const badge = document.getElementById('dailyModalBadge');
+  if (dailyChallenge && id === dailyChallenge.scene_id) {
+    badge.classList.add('on');
+  } else {
+    badge.classList.remove('on');
+  }
+
   resetRec();
   document.getElementById('overlay').classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -2453,7 +2563,10 @@ function resetRec() {
   document.getElementById('pbCompare').classList.remove('on');
   document.getElementById('phonSection').style.display = 'none';
   document.getElementById('perfectBadge').classList.remove('on');
-  document.getElementById('ptsEarned').classList.remove('on');
+  const ptsPanel = document.getElementById('ptsEarned');
+  ptsPanel.classList.remove('on');
+  const ex = ptsPanel.querySelector('.pts-extra');
+  if (ex) ex.innerHTML = '';
   document.getElementById('transReveal').classList.remove('on');
   document.getElementById('analyzeLabel').textContent = 'Analyze';
   document.getElementById('spinner').classList.remove('on');
@@ -2626,9 +2739,23 @@ function showPointsEarned(data) {
     document.getElementById('perfectBadge').classList.add('on');
   }
   if (data.points_earned > 0 || data.total_points !== undefined) {
-    document.getElementById('ptsAmount').textContent  = data.points_earned || 0;
+    document.getElementById('ptsAmount').textContent   = data.points_earned || 0;
     document.getElementById('ptsTotalVal').textContent = data.total_points  || 0;
-    document.getElementById('ptsEarned').classList.add('on');
+    // Annotate daily bonus and streak inside the pts panel
+    const ptsPanel = document.getElementById('ptsEarned');
+    let extra = '';
+    if (data.is_daily && data.daily_bonus > 0) {
+      extra += `<div style="font-size:11px;color:var(--gold);margin-top:4px">&#9733; Daily 2&times; bonus +${data.daily_bonus}pts</div>`;
+    }
+    if (data.is_daily && data.streak > 0 && !data.daily_already_done) {
+      extra += `<div style="font-size:11px;color:#fb923c;margin-top:2px">&#128293; ${data.streak}-day streak!</div>`;
+    }
+    if (extra) {
+      let extraEl = ptsPanel.querySelector('.pts-extra');
+      if (!extraEl) { extraEl = document.createElement('div'); extraEl.className = 'pts-extra'; ptsPanel.appendChild(extraEl); }
+      extraEl.innerHTML = extra;
+    }
+    ptsPanel.classList.add('on');
     if (data.division) updateDivDot(data.total_points || 0);
   }
   if (data.translation_unlocked && data.translation) {
@@ -2699,8 +2826,11 @@ function buildPanelHTML(rows) {
     const badge = s.username
       ? `<span class="div-badge" style="background:${div.color}18;color:${div.color}">${div.name}</span>`
       : '';
+    const streak = s.streak > 0
+      ? ` <span class="streak-badge">&#128293;${s.streak}</span>`
+      : '';
     const name  = s.username
-      ? `<strong>${s.username}</strong> ${badge}`
+      ? `<strong>${s.username}</strong> ${badge}${streak}`
       : `<span style="color:var(--muted)">\u2014</span>`;
     const pts = s.user_points
       ? `<span style="color:var(--muted);font-size:11px">${s.user_points}pts</span>`
@@ -3077,7 +3207,10 @@ function renderDivCard(prof) {
   const nameEl = document.getElementById('divCardName');
   nameEl.textContent  = d.name;
   nameEl.style.color  = d.color;
-  document.getElementById('divCardPts').textContent = `${prof.total_points} total points`;
+  const streakTxt = prof.streak > 0
+    ? ` &nbsp;&#128293; ${prof.streak}-day streak`
+    : '';
+  document.getElementById('divCardPts').innerHTML = `${prof.total_points} total points${streakTxt}`;
   const nextEl = document.getElementById('divCardNext');
   if (prof.next_division) {
     nextEl.innerHTML = `<strong>${prof.points_to_next}</strong>pts to ${prof.next_division.name}`;
