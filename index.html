@@ -1378,27 +1378,143 @@ header {
 .div-card-next strong { display: block; font-size: 15px; color: var(--text); font-weight: 600; }
 
 /* ─── DAILY CHALLENGE ─── */
-.daily-bar {
-  display: none; align-items: center; justify-content: space-between; gap: 12px;
-  margin-bottom: 18px; padding: 13px 18px; border-radius: 12px;
-  background: linear-gradient(135deg, rgba(201,168,76,.12), rgba(201,168,76,.05));
+@keyframes shimmer-sweep {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+@keyframes fire-flicker {
+  0%,100% { transform: scale(1.0) skewX(0deg);  filter: brightness(1); }
+  20%      { transform: scale(1.12) skewX(-3deg); filter: brightness(1.2); }
+  40%      { transform: scale(0.96) skewX(1deg);  filter: brightness(0.9); }
+  65%      { transform: scale(1.06) skewX(2deg);  filter: brightness(1.1); }
+  80%      { transform: scale(1.0) skewX(-1deg);  filter: brightness(1.05); }
+}
+@keyframes dot-pulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(251,146,60,.7); transform: scale(1); }
+  50%      { box-shadow: 0 0 0 5px rgba(251,146,60,0); transform: scale(1.2); }
+}
+@keyframes complete-in {
+  from { opacity: 0; transform: scale(.94); }
+  to   { opacity: 1; transform: scale(1); }
+}
+
+/* Daily section wrapper — two-column on desktop, stacked on mobile */
+.daily-section {
+  display: none; grid-template-columns: 1fr 240px; gap: 14px; margin-bottom: 24px;
+}
+.daily-section.on { display: grid; }
+@media (max-width: 700px) {
+  .daily-section { grid-template-columns: 1fr; }
+}
+
+/* ── DC Card ── */
+.dc-card {
+  position: relative; overflow: hidden; border-radius: 14px;
+  background: linear-gradient(160deg, rgba(201,168,76,.09) 0%, var(--surface) 55%);
   border: 1px solid rgba(201,168,76,.35);
+  padding: 20px 22px 18px;
 }
-.daily-bar.on { display: flex; }
-.daily-bar-left { display: flex; align-items: center; gap: 10px; min-width: 0; }
-.daily-bar-badge {
-  flex-shrink: 0; font-family: 'Bebas Neue', cursive; font-size: 11px;
-  letter-spacing: .14em; color: #000; background: var(--gold);
-  padding: 3px 9px; border-radius: 5px;
+/* animated shimmer line across the top */
+.dc-card::before {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px; z-index: 1;
+  background: linear-gradient(90deg,
+    transparent 0%, rgba(201,168,76,.3) 20%, #c9a84c 40%, #fff8dc 50%, #c9a84c 60%,
+    rgba(201,168,76,.3) 80%, transparent 100%);
+  background-size: 200% 100%;
+  animation: shimmer-sweep 2.8s linear infinite;
 }
-.daily-bar-scene { font-size: 13px; font-weight: 500; color: var(--text); truncate: ellipsis; }
-.daily-bar-right { flex-shrink: 0; text-align: right; }
-.daily-bar-timer-lbl { font-size: 9px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); }
-.daily-countdown {
-  font-family: 'Bebas Neue', cursive; font-size: 20px; letter-spacing: .1em;
+/* radial gold glow */
+.dc-glow {
+  position: absolute; top: -40px; left: 50%; transform: translateX(-50%);
+  width: 340px; height: 180px;
+  background: radial-gradient(ellipse, rgba(201,168,76,.14) 0%, transparent 70%);
+  pointer-events: none;
+}
+.dc-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; gap: 8px; }
+.dc-badge-daily {
+  font-family: 'Bebas Neue', cursive; font-size: 11px; letter-spacing: .16em;
+  color: #000; background: var(--gold); padding: 4px 10px; border-radius: 5px;
+  white-space: nowrap;
+}
+.dc-badge-2x {
+  font-family: 'Bebas Neue', cursive; font-size: 11px; letter-spacing: .14em;
+  color: #000; background: #fb923c; padding: 4px 10px; border-radius: 5px;
+  white-space: nowrap;
+}
+.dc-movie {
+  font-family: 'Bebas Neue', cursive; font-size: clamp(24px, 5vw, 34px);
+  letter-spacing: .06em; color: var(--text); line-height: 1; margin-bottom: 6px;
+}
+.dc-quote {
+  font-family: 'Cormorant Garamond', serif; font-size: 15px; font-style: italic;
+  color: rgba(245,240,232,.75); line-height: 1.5; margin-bottom: 10px;
+}
+.dc-meta { display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+.dc-actor { font-size: 12px; color: var(--muted); }
+.dc-footer {
+  display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  flex-wrap: wrap;
+}
+.dc-timer { display: flex; flex-direction: column; gap: 1px; }
+.dc-timer-lbl { font-size: 9px; letter-spacing: .2em; text-transform: uppercase; color: var(--muted); }
+.dc-countdown {
+  font-family: 'Bebas Neue', cursive; font-size: 22px; letter-spacing: .12em;
   color: var(--gold); line-height: 1;
 }
-/* Gold crown badge on scene card */
+.dc-open-btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 9px 18px; border-radius: 8px;
+  background: rgba(201,168,76,.15); border: 1px solid rgba(201,168,76,.4);
+  color: var(--gold); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+  cursor: none; transition: background .2s, border-color .2s;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+.dc-open-btn:hover { background: rgba(201,168,76,.25); border-color: var(--gold); }
+/* Completion overlay */
+.dc-complete-overlay {
+  position: absolute; inset: 0; border-radius: 14px;
+  background: rgba(6,214,160,.12); border: 1px solid rgba(6,214,160,.4);
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 6px; backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+  animation: complete-in .4s cubic-bezier(0.34,1.56,0.64,1) both;
+}
+.dc-complete-check {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: rgba(6,214,160,.2); border: 2px solid #06d6a0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; color: #06d6a0; font-weight: 700;
+}
+.dc-complete-title { font-family: 'Bebas Neue', cursive; font-size: 20px; letter-spacing: .1em; color: #06d6a0; }
+.dc-complete-pts { font-size: 13px; color: rgba(245,240,232,.7); }
+
+/* ── Streak Card ── */
+.streak-card {
+  border-radius: 14px; background: var(--surface);
+  border: 1px solid var(--border); padding: 20px 18px;
+  display: flex; flex-direction: column; gap: 14px;
+}
+.streak-top { display: flex; align-items: center; gap: 12px; }
+.streak-fire-emoji { font-size: 36px; display: block; animation: fire-flicker .85s ease-in-out infinite; }
+.streak-number {
+  font-family: 'Bebas Neue', cursive; font-size: 52px; line-height: 1;
+  color: #fb923c; letter-spacing: -.02em;
+}
+.streak-unit { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
+/* 7-day dot row */
+.streak-dots-wrap { display: flex; flex-direction: column; gap: 6px; }
+.streak-dot-row { display: flex; justify-content: space-between; gap: 4px; }
+.streak-dot-col { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
+.streak-dot {
+  width: 26px; height: 26px; border-radius: 50%; border: 2px solid var(--border);
+  background: var(--surface-2); display: flex; align-items: center; justify-content: center;
+  font-size: 11px; transition: all .2s;
+}
+.streak-dot.done  { background: rgba(251,146,60,.2); border-color: #fb923c; color: #fb923c; }
+.streak-dot.today { background: rgba(251,146,60,.25); border-color: #fb923c; animation: dot-pulse .9s ease-in-out infinite; }
+.streak-dot-lbl   { font-size: 9px; color: var(--muted); }
+.streak-msg { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+/* Badge kept on scene card + leaderboard row */
 .daily-card-badge {
   position: absolute; top: 12px; left: 50%; transform: translateX(-50%);
   font-family: 'Bebas Neue', cursive; font-size: 9px; letter-spacing: .16em;
@@ -1416,7 +1532,7 @@ header {
   color: var(--gold);
 }
 .daily-modal-badge.on { display: flex; }
-/* Streak badge */
+/* Streak badge in leaderboard */
 .streak-badge {
   display: inline-flex; align-items: center; gap: 3px;
   font-size: 11px; font-weight: 700; color: #fb923c;
@@ -1758,15 +1874,51 @@ header {
       <div class="level-details" id="levelDetails"></div>
     </div>
 
-    <div class="daily-bar" id="dailyBar">
-      <div class="daily-bar-left">
-        <span class="daily-bar-badge">&#9733; Daily Challenge</span>
-        <span class="daily-bar-scene" id="dailyBarScene"></span>
+    <div class="daily-section" id="dailySection">
+
+      <!-- ── Daily Challenge Card ── -->
+      <div class="dc-card" id="dcCard">
+        <div class="dc-glow"></div>
+        <div class="dc-header">
+          <span class="dc-badge-daily">&#9733; Daily Challenge</span>
+          <span class="dc-badge-2x">2&times; Points</span>
+        </div>
+        <div class="dc-movie" id="dcMovie">—</div>
+        <div class="dc-quote" id="dcQuote"></div>
+        <div class="dc-meta">
+          <span class="dc-actor" id="dcActor"></span>
+          <span class="badge" id="dcLevel"></span>
+        </div>
+        <div class="dc-footer">
+          <div class="dc-timer">
+            <span class="dc-timer-lbl">New challenge in</span>
+            <span class="dc-countdown" id="dcCountdown">00:00:00</span>
+          </div>
+          <button class="dc-open-btn" id="dcOpenBtn">Open Scene &#8594;</button>
+        </div>
+        <!-- shown after user completes today's challenge -->
+        <div class="dc-complete-overlay" id="dcCompleteOverlay" style="display:none">
+          <div class="dc-complete-check">&#10003;</div>
+          <div class="dc-complete-title">Challenge Complete!</div>
+          <div class="dc-complete-pts" id="dcCompletePts"></div>
+        </div>
       </div>
-      <div class="daily-bar-right">
-        <div class="daily-bar-timer-lbl">Resets in</div>
-        <div class="daily-countdown" id="dailyCountdown">00:00:00</div>
+
+      <!-- ── Streak Card ── -->
+      <div class="streak-card" id="streakCard">
+        <div class="streak-top">
+          <span class="streak-fire-emoji">&#128293;</span>
+          <div>
+            <div class="streak-number" id="streakNumber">0</div>
+            <div class="streak-unit">Day Streak</div>
+          </div>
+        </div>
+        <div class="streak-dots-wrap">
+          <div class="streak-dot-row" id="streakDotRow"></div>
+        </div>
+        <div class="streak-msg" id="streakMsg">Complete today&rsquo;s challenge to start your streak!</div>
       </div>
+
     </div>
 
     <p class="section-label">Choose a scene</p>
@@ -2132,7 +2284,7 @@ const WAVE_BARS    = 48;
     if (ok) {
       showApp();
       await loadProgress();
-      await Promise.all([loadScenes(), loadScores(), loadDaily()]);
+      await Promise.all([loadScenes(), loadScores(), loadDaily(), loadStreakCard()]);
       return;
     }
   }
@@ -2262,7 +2414,7 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
     localStorage.setItem('mirror_token', authToken);
     showApp();
     await loadProgress();
-    await Promise.all([loadScenes(), loadScores(), loadDaily()]);
+    await Promise.all([loadScenes(), loadScores(), loadDaily(), loadStreakCard()]);
   } catch (err) {
     errEl.textContent = err.message;
   } finally {
@@ -2311,7 +2463,7 @@ document.getElementById('registerForm').addEventListener('submit', async e => {
     showApp();
     maybeShowOnboarding();
     await loadProgress();
-    await Promise.all([loadScenes(), loadScores(), loadDaily()]);
+    await Promise.all([loadScenes(), loadScores(), loadDaily(), loadStreakCard()]);
   } catch (err) {
     errEl.textContent = err.message;
   } finally {
@@ -2404,18 +2556,24 @@ async function loadProgress() {
 
 async function loadDaily() {
   try {
-    const r    = await fetch(`${API}/api/daily`);
+    const r = await fetch(`${API}/api/daily`);
     if (!r.ok) return;
     dailyChallenge = await r.json();
-    // Update the daily bar
-    const bar = document.getElementById('dailyBar');
-    bar.classList.add('on');
-    document.getElementById('dailyBarScene').textContent =
-      (scenes[dailyChallenge.scene_id] || {}).movie || dailyChallenge.scene_id;
+    renderDailyCard(dailyChallenge);
     startDailyCountdown(dailyChallenge.secs_until_reset);
-    // Re-render cards so the badge appears
     if (Object.keys(scenes).length) renderCards();
-  } catch { /* silent — daily bar just stays hidden */ }
+  } catch { /* silent — section stays hidden */ }
+}
+
+function renderDailyCard(daily) {
+  const s = daily.scene || scenes[daily.scene_id] || {};
+  document.getElementById('dcMovie').textContent = s.movie || daily.scene_id;
+  document.getElementById('dcQuote').textContent = s.quote ? `\u201c${s.quote}\u201d` : '';
+  document.getElementById('dcActor').textContent = s.actor || '';
+  const lvlEl = document.getElementById('dcLevel');
+  lvlEl.textContent = s.difficulty || '';
+  lvlEl.className   = `badge ${(s.difficulty || '').toLowerCase()}`;
+  document.getElementById('dailySection').classList.add('on');
 }
 
 function startDailyCountdown(initialSecs) {
@@ -2426,14 +2584,80 @@ function startDailyCountdown(initialSecs) {
     const h  = Math.floor(secs / 3600);
     const m  = Math.floor((secs % 3600) / 60);
     const s  = secs % 60;
-    const el = document.getElementById('dailyCountdown');
+    const el = document.getElementById('dcCountdown');
     if (el) el.textContent =
       `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-    if (secs === 0) { clearInterval(countdownInterval); loadDaily(); return; }
+    if (secs === 0) { clearInterval(countdownInterval); loadDaily(); loadStreakCard(); return; }
     secs--;
   }
   tick();
   countdownInterval = setInterval(tick, 1000);
+}
+
+async function loadStreakCard() {
+  try {
+    const r = await fetch(`${API}/api/profile`, { headers: { Authorization: `Bearer ${authToken}` } });
+    if (!r.ok) return;
+    const prof = await r.json();
+    renderStreakCard(prof.streak || 0, prof.daily_done_today || false);
+    if (prof.daily_done_today) showDailyComplete('Completed today!');
+  } catch {}
+}
+
+function renderStreakCard(streak, doneToday) {
+  document.getElementById('streakNumber').textContent = streak;
+
+  // Build 7-day dot indicators (index 0 = today, 6 = 6 days ago)
+  const days = ['Su','Mo','Tu','We','Th','Fr','Sa'];
+  const now  = new Date();
+  const dotRow = document.getElementById('streakDotRow');
+  dotRow.innerHTML = '';
+
+  for (let i = 6; i >= 0; i--) {  // left = oldest, right = today
+    const d = new Date(now);
+    d.setDate(d.getDate() - i);
+    const dayLbl = days[d.getDay()];
+
+    // Is this day "completed"?
+    let completed = false;
+    if (doneToday)  completed = i < streak;
+    else            completed = i >= 1 && i <= streak;
+    const isToday = i === 0;
+
+    const dot = document.createElement('div');
+    dot.className = 'streak-dot-col';
+    const dotInner = document.createElement('div');
+    dotInner.className = 'streak-dot' + (isToday ? ' today' : completed ? ' done' : '');
+    dotInner.textContent = completed ? '\u2714' : (isToday ? '\u2605' : '');
+    const dotLbl = document.createElement('div');
+    dotLbl.className = 'streak-dot-lbl';
+    dotLbl.textContent = dayLbl;
+    dot.appendChild(dotInner);
+    dot.appendChild(dotLbl);
+    dotRow.appendChild(dot);
+  }
+
+  // Milestone message
+  document.getElementById('streakMsg').textContent = streakMessage(streak, doneToday);
+}
+
+function streakMessage(streak, doneToday) {
+  if (streak === 0 && !doneToday) return 'Complete today\u2019s challenge to start your streak!';
+  if (!doneToday && streak > 0)   return `${streak}-day streak \u2014 complete today to keep it going \u2192`;
+  if (streak === 1)  return 'Day 1 done! Come back tomorrow to build your streak.';
+  if (streak < 3)    return `${4 - streak} more day${streak === 3 ? '' : 's'} to your 3-day milestone!`;
+  if (streak < 7)    return `${7 - streak} more day${streak === 6 ? '' : 's'} to your 1-week milestone \uD83D\uDD25`;
+  if (streak === 7)  return 'One full week! Incredible consistency \uD83C\uDF1F';
+  if (streak < 14)   return `${14 - streak} days to your 2-week milestone!`;
+  if (streak < 30)   return `${30 - streak} days to your 1-month milestone!`;
+  return `\uD83C\uDFC6 Legendary ${streak}-day streak! You\u2019re unstoppable.`;
+}
+
+function showDailyComplete(ptsText) {
+  const overlay = document.getElementById('dcCompleteOverlay');
+  if (!overlay) return;
+  document.getElementById('dcCompletePts').textContent = ptsText;
+  overlay.style.display = '';
 }
 
 function renderLevelBar() {
@@ -2761,6 +2985,11 @@ function showPointsEarned(data) {
   if (data.translation_unlocked && data.translation) {
     document.getElementById('transText').textContent = data.translation;
     document.getElementById('transReveal').classList.add('on');
+  }
+  // Show completion overlay on DC card if daily just completed
+  if (data.is_daily && !data.daily_already_done) {
+    showDailyComplete(`+${data.points_earned} pts earned today!`);
+    renderStreakCard(data.streak || 0, true);
   }
 }
 
@@ -3291,6 +3520,12 @@ function computeImprovedIds(history) {
 // ══════════════════════════════════════════════
 // PLAYBACK COMPARE — Hear the Actor / Hear Yourself
 // ══════════════════════════════════════════════
+document.getElementById('dcOpenBtn').addEventListener('click', () => {
+  if (!dailyChallenge) return;
+  const s = dailyChallenge.scene || scenes[dailyChallenge.scene_id];
+  if (s) openModal(dailyChallenge.scene_id, s);
+});
+
 document.getElementById('btnHearActor').addEventListener('click', hearActor);
 document.getElementById('btnHearSelf').addEventListener('click',  hearSelf);
 
