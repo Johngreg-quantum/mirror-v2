@@ -884,15 +884,41 @@ header {
   color: var(--muted); margin-bottom: 10px;
 }
 .phon-words { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+/* Flip card outer — perspective container, min-width keeps layout stable */
 .phon-word {
+  position: relative;
+  display: inline-block;
+  perspective: 500px;
+  min-width: 44px;
+}
+/* Rotating inner — both faces ride on this */
+.phon-inner {
+  position: relative;
+  display: block;
+  transform-style: preserve-3d;
+  transition: transform 0.25s ease;
+}
+.phon-word.flipped .phon-inner { transform: rotateY(180deg); }
+/* Shared face styles */
+.phon-face {
+  display: block;
+  padding: 5px 11px; border-radius: 7px; border: 1px solid transparent;
   font-family: 'Cormorant Garamond', serif;
   font-size: 17px; font-style: italic; line-height: 1;
-  padding: 5px 11px; border-radius: 7px;
-  border: 1px solid transparent;
+  text-align: center; white-space: nowrap;
+  backface-visibility: hidden; -webkit-backface-visibility: hidden;
 }
-.phon-word.good  { color: #06d6a0; background: rgba(6,214,160,.1);  border-color: rgba(6,214,160,.28); }
-.phon-word.close { color: #ffd166; background: rgba(255,209,102,.1); border-color: rgba(255,209,102,.28); }
-.phon-word.miss  { color: #e63946; background: rgba(230,57,70,.1);   border-color: rgba(230,57,70,.28); }
+/* Back face — absolutely overlaid, pre-rotated 180deg */
+.phon-back {
+  position: absolute; inset: 0;
+  transform: rotateY(180deg);
+  color: var(--gold); background: rgba(201,168,76,.12); border-color: rgba(201,168,76,.35);
+  font-style: normal; display: flex; align-items: center; justify-content: center; gap: 3px;
+}
+/* Color coding stays on the front face only */
+.phon-word.good  .phon-front { color: #06d6a0; background: rgba(6,214,160,.1);  border-color: rgba(6,214,160,.28); }
+.phon-word.close .phon-front { color: #ffd166; background: rgba(255,209,102,.1); border-color: rgba(255,209,102,.28); }
+.phon-word.miss  .phon-front { color: #e63946; background: rgba(230,57,70,.1);   border-color: rgba(230,57,70,.28); }
 .phon-legend { display: flex; gap: 14px; }
 .phon-legend-item { display: flex; align-items: center; gap: 5px; font-size: 10px; color: var(--muted); }
 .phon-legend-dot { width: 7px; height: 7px; border-radius: 50%; }
@@ -2864,6 +2890,71 @@ function stopWaveform() {
 // ══════════════════════════════════════════════
 // PHONEME BREAKDOWN
 // ══════════════════════════════════════════════
+// Spanish mini-dictionary — key is lowercase normalised English word
+const ES_DICT = {
+  // Articles / determiners
+  a:'un', an:'un', the:'el',
+  // Pronouns
+  i:'yo', you:'tú', he:'él', she:'ella', we:'nosotros', they:'ellos', it:'eso',
+  me:'mí', him:'él', her:'ella', us:'nos', them:'ellos',
+  my:'mi', your:'tu', his:'su', our:'nuestro', their:'su',
+  // To be
+  is:'es', are:'son', was:'era', be:'ser', been:'sido',
+  im:'soy',  // "I'm" normalised
+  // Common verbs
+  have:'tener', has:'tiene', had:'había',
+  do:'hacer', does:'hace', did:'hizo', done:'hecho',
+  will:'voy', would:'sería', can:'puedo', could:'podría', shall:'debo',
+  get:'conseguir', got:'conseguí', go:'ir', going:'ir',
+  know:'saber', knew:'sabía',
+  see:'ver', saw:'vi', seen:'visto',
+  find:'encontrar', found:'encontré',
+  kill:'matar', killed:'maté',
+  stop:'parar', talk:'hablar', talking:'hablando',
+  fly:'volar', flying:'volando',
+  need:'necesitar', needs:'necesita',
+  smash:'aplastar',
+  back:'volver',
+  come:'venir',
+  take:'tomar',
+  give:'dar',
+  want:'querer',
+  think:'pensar',
+  look:'mirar',
+  tell:'decir',
+  say:'decir',
+  make:'hacer',
+  // Nouns
+  box:'caja', road:'camino', roads:'caminos',
+  people:'gente', person:'persona',
+  duvet:'edredón',
+  scene:'escena', movie:'película', time:'tiempo',
+  man:'hombre', woman:'mujer', world:'mundo',
+  life:'vida', day:'día', night:'noche',
+  // Adjectives & adverbs
+  dead:'muerto', okay:'bien', ok:'bien',
+  never:'nunca', always:'siempre', now:'ahora',
+  here:'aquí', there:'allí', where:'dónde',
+  not:'no', no:'no', yes:'sí',
+  // Scene-specific words
+  amateur:'aficionada', kung:'kung', fu:'fu',
+  hulk:'hulk', jack:'jack', slick:'listo',
+  // Contractions (normalised — apostrophes stripped)
+  dont:"no", doesnt:"no", wont:"no", cant:"no puedo",
+  were:'íbamos', youre:'eres', ill:'voy a',
+  whats:'qué es', gonna:'va a',
+  // Conjunctions / prepositions
+  and:'y', in:'en', on:'en', at:'en', of:'de',
+  for:'para', to:'a', with:'con', from:'de', about:'sobre',
+  but:'pero', or:'o', that:'eso', this:'esto', what:'qué',
+};
+
+function esTranslate(word) {
+  // Strip punctuation, lowercase
+  const key = word.toLowerCase().replace(/[^a-z']/g, '').replace(/'/g, '');
+  return ES_DICT[key] || 'traducir…';
+}
+
 function renderPhonemeBreakdown(expected, transcribed) {
   const section = document.getElementById('phonSection');
   const wordsEl = document.getElementById('phonWords');
@@ -2872,7 +2963,12 @@ function renderPhonemeBreakdown(expected, transcribed) {
   if (!tokens.length) { section.style.display = 'none'; return; }
 
   wordsEl.innerHTML = tokens.map(({ word, status }) =>
-    `<span class="phon-word ${status}">${word}</span>`
+    `<span class="phon-word ${status}">
+       <span class="phon-inner">
+         <span class="phon-face phon-front">${word}</span>
+         <span class="phon-face phon-back">&#127466;&#127480; ${esTranslate(word)}</span>
+       </span>
+     </span>`
   ).join('');
   section.style.display = '';
 }
@@ -3075,6 +3171,12 @@ function computeImprovedIds(history) {
 // ══════════════════════════════════════════════
 document.getElementById('btnHearActor').addEventListener('click', hearActor);
 document.getElementById('btnHearSelf').addEventListener('click',  hearSelf);
+
+// Flip word cards on tap/click
+document.getElementById('phonWords').addEventListener('click', e => {
+  const card = e.target.closest('.phon-word');
+  if (card) card.classList.toggle('flipped');
+});
 document.getElementById('btnTryAgain').addEventListener('click', () => {
   resetRec();
   document.getElementById('modal').scrollTo({ top: 0, behavior: 'smooth' });
