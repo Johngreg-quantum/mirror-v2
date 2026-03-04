@@ -7,6 +7,8 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400;1,600&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet" />
+  <!-- YouTube IFrame API — loaded early so it's ready when user opens a scene -->
+  <script src="https://www.youtube.com/iframe_api"></script>
   <style>
 /* ═══════════════════════════════════════════════
    RESET + DESIGN TOKENS
@@ -788,7 +790,22 @@ header {
   margin: 20px 28px; border-radius: 10px; overflow: hidden;
   aspect-ratio: 16/9; background: #000; position: relative;
 }
+/* YT IFrame API creates an <iframe> inside #videoFrame div */
+#videoFrame { width: 100%; height: 100%; }
 .video-wrap iframe { width: 100%; height: 100%; border: none; }
+/* Replay Line button — appears below the video after auto-pause */
+.replay-line-wrap {
+  margin: -8px 28px 10px; display: flex; justify-content: center;
+}
+.btn-replay-line {
+  display: inline-flex; align-items: center; gap: 7px;
+  padding: 9px 20px; border-radius: 8px;
+  background: rgba(201,168,76,.12); border: 1px solid rgba(201,168,76,.4);
+  color: var(--gold); font-family: 'DM Sans', sans-serif; font-size: 13px; font-weight: 600;
+  cursor: none; transition: background .2s, border-color .2s;
+  touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+}
+.btn-replay-line:hover { background: rgba(201,168,76,.22); border-color: var(--gold); }
 .video-placeholder {
   position: absolute; inset: 0;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -1951,15 +1968,19 @@ header {
     </div>
 
     <div class="video-wrap">
-      <iframe id="videoFrame"
-        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-        allowfullscreen></iframe>
+      <!-- YT IFrame API renders the player iframe inside this div -->
+      <div id="videoFrame"></div>
       <div class="video-placeholder" id="videoPlaceholder" style="display:none">
         <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
           <rect x="2" y="4" width="20" height="16" rx="3"/><path d="M10 9l5 3-5 3V9z"/>
         </svg>
         <span>No clip available for this scene</span>
       </div>
+    </div>
+    <div class="replay-line-wrap" id="replayLineWrap" style="display:none">
+      <button class="btn-replay-line" id="btnReplayLine">
+        &#8635; Replay Line
+      </button>
     </div>
 
     <div class="target-quote">
@@ -2202,6 +2223,21 @@ const YOUTUBE_IDS = {
   terminator:         'Lj5bciUc1G0?start=76',
 };
 
+const SCENE_TIMES = {
+  fight_club:         { start: 1,   end: 35  },
+  back_to_the_future: { start: 14,  end: 22  },
+  forrest_gump:       { start: 0,   end: 8   },
+  the_matrix:         { start: 0,   end: 6   },
+  seven:              { start: 0,   end: 8   },
+  heat:               { start: 1,   end: 45  },
+  avengers:           { start: 38,  end: 42  },
+  taken:              { start: 211, end: 249 },
+  titanic:            { start: 121, end: 145 },
+  basic_instinct:     { start: 57,  end: 102 },
+  sixth_sense:        { start: 232, end: 242 },
+  terminator:         { start: 76,  end: 80  },
+};
+
 const CARD_COLORS = {
   fight_club:         '#e63946',
   back_to_the_future: '#4895ef',
@@ -2261,6 +2297,12 @@ let userProgress = {
 
 let dailyChallenge    = null;
 let countdownInterval = null;
+
+let ytPlayer      = null;
+let ytApiReady    = false;
+let ytEndInterval = null;
+
+window.onYouTubeIframeAPIReady = function() { ytApiReady = true; };
 
 let mediaRecorder = null;
 let audioChunks   = [];
@@ -2720,17 +2762,30 @@ function openModal(id, s) {
   document.querySelector('.target-quote').style.borderLeftColor = color;
   document.getElementById('btnAnalyze').style.background = color;
 
-  const ytId = YOUTUBE_IDS[id];
-  const frame = document.getElementById('videoFrame');
-  const ph    = document.getElementById('videoPlaceholder');
-  if (ytId) {
-    frame.src = `https://www.youtube.com/embed/${ytId}`;
-    frame.style.display = '';
-    ph.style.display    = 'none';
+  const ytRaw    = YOUTUBE_IDS[id];
+  const frameDiv = document.getElementById('videoFrame');
+  const ph       = document.getElementById('videoPlaceholder');
+  stopEndCheck();
+  hideReplayLine();
+  if (ytRaw) {
+    const videoId  = ytRaw.split('?')[0];
+    const times    = SCENE_TIMES[id];
+    const startSec = times ? times.start : 0;
+    frameDiv.style.display = '';
+    ph.style.display = 'none';
+    if (ytApiReady) {
+      initYTPlayer(videoId, startSec);
+    } else {
+      const waitId = setInterval(() => {
+        if (!ytApiReady) return;
+        clearInterval(waitId);
+        initYTPlayer(videoId, startSec);
+      }, 100);
+    }
   } else {
-    frame.src           = '';
-    frame.style.display = 'none';
-    ph.style.display    = 'flex';
+    if (ytPlayer) ytPlayer.stopVideo();
+    frameDiv.style.display = 'none';
+    ph.style.display = 'flex';
   }
 
   // Show 2× badge if this is today's daily challenge
@@ -2750,7 +2805,9 @@ function closeModal() {
   document.getElementById('overlay').classList.remove('open');
   document.body.style.overflow = '';
   stopRecordingCleanup();
-  document.getElementById('videoFrame').src = '';
+  stopEndCheck();
+  hideReplayLine();
+  if (ytPlayer) ytPlayer.stopVideo();
   activeScene = null;
 }
 
@@ -3542,13 +3599,18 @@ document.getElementById('btnTryAgain').addEventListener('click', () => {
 function hearActor() {
   const ytRaw = YOUTUBE_IDS[activeScene];
   if (!ytRaw) return;
-  const videoId    = ytRaw.split('?')[0];
-  const startMatch = ytRaw.match(/start=(\d+)/);
-  const start      = startMatch ? parseInt(startMatch[1]) : 0;
-  const frame      = document.getElementById('videoFrame');
-  frame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&start=${start}`;
-  frame.style.display = '';
-  document.getElementById('videoPlaceholder').style.display = 'none';
+  const videoId  = ytRaw.split('?')[0];
+  const times    = SCENE_TIMES[activeScene];
+  const startSec = times ? times.start : 0;
+  hideReplayLine();
+  if (ytPlayer) {
+    ytPlayer.seekTo(startSec, true);
+    ytPlayer.playVideo();
+  } else {
+    document.getElementById('videoFrame').style.display = '';
+    document.getElementById('videoPlaceholder').style.display = 'none';
+    initYTPlayer(videoId, startSec);
+  }
   document.getElementById('modal').scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -3557,6 +3619,62 @@ function hearSelf() {
   const audio = new Audio(URL.createObjectURL(audioBlob));
   audio.play();
 }
+
+// ══════════════════════════════════════════════
+// YOUTUBE PLAYER
+// ══════════════════════════════════════════════
+function initYTPlayer(videoId, startSec) {
+  if (ytPlayer) {
+    ytPlayer.loadVideoById({ videoId, startSeconds: startSec });
+    return;
+  }
+  ytPlayer = new YT.Player('videoFrame', {
+    videoId,
+    playerVars: { autoplay: 1, start: startSec, rel: 0, modestbranding: 1 },
+    events: { onStateChange: onYTStateChange },
+  });
+}
+
+function onYTStateChange(e) {
+  if (e.data === YT.PlayerState.PLAYING) {
+    startEndCheck();
+  } else {
+    stopEndCheck();
+  }
+}
+
+function startEndCheck() {
+  stopEndCheck();
+  const times = SCENE_TIMES[activeScene];
+  if (!times || !ytPlayer) return;
+  ytEndInterval = setInterval(() => {
+    if (!ytPlayer) return stopEndCheck();
+    if (ytPlayer.getCurrentTime() >= times.end - 1) {
+      ytPlayer.pauseVideo();
+      stopEndCheck();
+      showReplayLine();
+    }
+  }, 250);
+}
+
+function stopEndCheck() {
+  if (ytEndInterval) { clearInterval(ytEndInterval); ytEndInterval = null; }
+}
+
+function showReplayLine() {
+  document.getElementById('replayLineWrap').style.display = 'flex';
+}
+
+function hideReplayLine() {
+  document.getElementById('replayLineWrap').style.display = 'none';
+}
+
+document.getElementById('btnReplayLine').addEventListener('click', () => {
+  const times = SCENE_TIMES[activeScene];
+  const startSec = times ? times.start : 0;
+  hideReplayLine();
+  if (ytPlayer) { ytPlayer.seekTo(startSec, true); ytPlayer.playVideo(); }
+});
 </script>
 </body>
 </html>
