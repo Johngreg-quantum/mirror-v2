@@ -181,63 +181,63 @@ bearer  = HTTPBearer(auto_error=False)
 SCENES = {
     "fight_club": {
         "movie": "Fight Club",
-        "quote": "You know what a duvet is?",
-        "year": 1999, "difficulty": "Intermediate", "actor": "Brad Pitt",
+        "quote": "You know what a duvet is? It's a blanket. Just a blanket.",
+        "year": 1999, "difficulty": "Beginner", "actor": "Brad Pitt",
     },
     "back_to_the_future": {
         "movie": "Back to the Future",
-        "quote": "Roads Where we're going, we don't need roads.",
-        "year": 1985, "difficulty": "Advanced", "actor": "Christopher Lloyd",
+        "quote": "Roads! Where we're going we don't need roads!",
+        "year": 1985, "difficulty": "Beginner", "actor": "Christopher Lloyd",
     },
     "forrest_gump": {
         "movie": "Forrest Gump",
-        "quote": "You never know what you're gonna get.",
-        "year": 1994, "difficulty": "Advanced", "actor": "Tom Hanks",
+        "quote": "My mom always said life was like a box of chocolates. You never know what you're gonna get.",
+        "year": 1994, "difficulty": "Beginner", "actor": "Tom Hanks",
     },
     "the_matrix": {
         "movie": "The Matrix",
-        "quote": "I know kung fu.",
+        "quote": "I know kung fu. Show me.",
         "year": 1999, "difficulty": "Beginner", "actor": "Keanu Reeves",
     },
     "seven": {
         "movie": "Se7en",
-        "quote": "What's in the box?",
+        "quote": "Put the gun down. I saw you with the box. What was in the box?",
         "year": 1995, "difficulty": "Beginner", "actor": "Brad Pitt",
     },
     "heat": {
         "movie": "Heat",
-        "quote": "Stop talking okay Slick",
-        "year": 1995, "difficulty": "Advanced", "actor": "Al Pacino",
+        "quote": "You guys always work together? All the time. Real tight crew, huh? Stop talking, okay Slick.",
+        "year": 1995, "difficulty": "Intermediate", "actor": "Al Pacino",
     },
     "avengers": {
-        "movie": "Avengers",
-        "quote": "Hulk... Smash",
-        "year": 2012, "difficulty": "Beginner", "actor": "Mark Ruffalo",
+        "movie": "The Avengers",
+        "quote": "Anything gets more than three blocks out, you turn it back or you turn it to ash. Better clench up, Legolas.",
+        "year": 2012, "difficulty": "Intermediate", "actor": "Robert Downey Jr.",
     },
     "taken": {
         "movie": "Taken",
         "quote": "I will find you and I will kill you",
-        "year": 2008, "difficulty": "Intermediate", "actor": "Liam Neeson",
+        "year": 2008, "difficulty": "Advanced", "actor": "Liam Neeson",
     },
     "titanic": {
         "movie": "Titanic",
-        "quote": "I'm flying Jack!",
-        "year": 1997, "difficulty": "Beginner", "actor": "Kate Winslet",
+        "quote": "Give me your hands. Now close your eyes. Do you trust me?",
+        "year": 1997, "difficulty": "Intermediate", "actor": "Leonardo DiCaprio",
     },
     "basic_instinct": {
         "movie": "Basic Instinct",
-        "quote": "No I'm an amateur",
-        "year": 1992, "difficulty": "Advanced", "actor": "Sharon Stone", "mature": True,
+        "quote": "What are you, a pro? No, I'm an amateur.",
+        "year": 1992, "difficulty": "Intermediate", "actor": "Sharon Stone", "mature": True,
     },
     "sixth_sense": {
         "movie": "The Sixth Sense",
-        "quote": "I see dead people",
+        "quote": "I want to tell you my secret now. I see dead people. Walking around like regular people.",
         "year": 1999, "difficulty": "Intermediate", "actor": "Haley Joel Osment",
     },
     "terminator": {
         "movie": "The Terminator",
         "quote": "I'll be back",
-        "year": 1984, "difficulty": "Beginner", "actor": "Arnold Schwarzenegger",
+        "year": 1984, "difficulty": "Intermediate", "actor": "Arnold Schwarzenegger",
     },
 }
 
@@ -245,9 +245,9 @@ SCENES = {
 # Each level lists which scene IDs belong to it and what minimum sync_score
 # (%) a user needs on any scene from the *previous* level to unlock it.
 LEVELS = [
-    {"level": 1, "scenes": ["the_matrix", "seven", "avengers", "titanic", "terminator"],     "unlock_score": 0},
-    {"level": 2, "scenes": ["fight_club", "taken", "sixth_sense"],                           "unlock_score": 60},
-    {"level": 3, "scenes": ["back_to_the_future", "forrest_gump", "heat", "basic_instinct"], "unlock_score": 70},
+    {"level": 1, "scenes": ["fight_club", "back_to_the_future", "forrest_gump", "the_matrix", "seven"],             "unlock_score": 0},
+    {"level": 2, "scenes": ["heat", "avengers", "titanic", "basic_instinct", "sixth_sense", "terminator"],          "unlock_score": 60},
+    {"level": 3, "scenes": ["taken"],                                                                                "unlock_score": 70},
 ]
 
 # ---------------------------------------------------------------------------
@@ -277,17 +277,17 @@ def get_next_division(points: int) -> Optional[dict]:
 # Spanish translations — unlocked after 3+ attempts with 70%+ best score
 # ---------------------------------------------------------------------------
 SCENE_TRANSLATIONS = {
-    "fight_club":         "¿Sabes lo que es un edredón?",
-    "back_to_the_future": "Caminos. A donde vamos no necesitamos caminos.",
-    "forrest_gump":       "Nunca sabes lo que te va a tocar.",
-    "the_matrix":         "Sé kung fu.",
-    "seven":              "¿Qué hay en la caja?",
-    "heat":               "Para de hablar, ¿vale, listo?",
-    "avengers":           "¡Hulk... aplasta!",
+    "fight_club":         "¿Sabes lo que es un edredón? Es una manta. Solo una manta.",
+    "back_to_the_future": "¡Caminos! A donde vamos no necesitamos caminos.",
+    "forrest_gump":       "Mi mamá siempre decía que la vida era como una caja de chocolates. Nunca sabes lo que te va a tocar.",
+    "the_matrix":         "Sé kung fu. Muéstrame.",
+    "seven":              "Suelta el arma. Te vi con la caja. ¿Qué había en la caja?",
+    "heat":               "¿Siempre trabajan juntos? Todo el tiempo. Un equipo muy unido, ¿eh? Para de hablar, ¿vale, listo?",
+    "avengers":           "Cualquier cosa que salga más de tres bloques, la haces regresar o la conviertes en ceniza. Mejor agárrate, Legolas.",
     "taken":              "Te voy a encontrar y te voy a matar.",
-    "titanic":            "¡Estoy volando, Jack!",
-    "basic_instinct":     "No, soy una aficionada.",
-    "sixth_sense":        "Veo gente muerta.",
+    "titanic":            "Dame tus manos. Ahora cierra los ojos. ¿Confías en mí?",
+    "basic_instinct":     "¿Eres profesional? No, soy una aficionada.",
+    "sixth_sense":        "Quiero contarte mi secreto ahora. Veo gente muerta. Caminando como personas normales.",
     "terminator":         "Volveré.",
 }
 

@@ -2401,27 +2401,27 @@ const YOUTUBE_IDS = {
   forrest_gump:       'egkrxkiUnoo',
   the_matrix:         'fhrNgXJ__n8',
   seven:              'lHpHxLZReiI',
-  heat:               '1zvgrhn9el4?start=1',
-  avengers:           'EcLfyxzV4lI?start=38',
+  heat:               '1zvgrhn9el4',
+  avengers:           'EcLfyxzV4lI',
   taken:              '',
-  titanic:            'sRkrvgy-feU?start=121',
-  basic_instinct:     'qFzd2UVFAMg?start=57',
-  sixth_sense:        'RoYEEjtDYKw?start=232',
-  terminator:         'Lj5bciUc1G0?start=76',
+  titanic:            'sRkrvgy-feU',
+  basic_instinct:     'qFzd2UVFAMg',
+  sixth_sense:        'RoYEEjtDYKw',
+  terminator:         'Lj5bciUc1G0',
 };
 
 const SCENE_TIMES = {
-  fight_club:         { start: 1,   end: 35  },
-  back_to_the_future: { start: 14,  end: 22  },
-  forrest_gump:       { start: 0,   end: 8   },
-  the_matrix:         { start: 0,   end: 6   },
-  seven:              { start: 0,   end: 8   },
-  heat:               { start: 1,   end: 45  },
-  avengers:           { start: 38,  end: 42  },
+  fight_club:         { start: 0,   end: 6   },
+  back_to_the_future: { start: 9,   end: 19  },
+  forrest_gump:       { start: 24,  end: 57  },
+  the_matrix:         { start: 20,  end: 30  },
+  seven:              { start: 0,   end: 6   },
+  heat:               { start: 0,   end: 18  },
+  avengers:           { start: 15,  end: 27  },
   taken:              { start: 211, end: 249 },
-  titanic:            { start: 121, end: 145 },
-  basic_instinct:     { start: 57,  end: 102 },
-  sixth_sense:        { start: 232, end: 242 },
+  titanic:            { start: 51,  end: 125 },
+  basic_instinct:     { start: 53,  end: 87  },
+  sixth_sense:        { start: 220, end: 275 },
   terminator:         { start: 76,  end: 80  },
 };
 
@@ -2442,9 +2442,9 @@ const CARD_COLORS = {
 
 // Which level each scene belongs to — keep in sync with LEVELS in main.py
 const LEVEL_MAP = {
-  the_matrix: 1, seven: 1, avengers: 1, titanic: 1, terminator: 1,
-  fight_club: 2, taken: 2, sixth_sense: 2,
-  back_to_the_future: 3, forrest_gump: 3, heat: 3, basic_instinct: 3,
+  fight_club: 1, back_to_the_future: 1, forrest_gump: 1, the_matrix: 1, seven: 1,
+  heat: 2, avengers: 2, titanic: 2, basic_instinct: 2, sixth_sense: 2, terminator: 2,
+  taken: 3,
 };
 const LEVEL_NAMES = { 1: 'Beginner', 2: 'Intermediate', 3: 'Advanced' };
 
@@ -2478,7 +2478,7 @@ let activeLbTab = null;
 let userProgress = {
   level: 1,
   best_scores: {},
-  unlocked_scenes: ['the_matrix', 'seven', 'avengers', 'titanic', 'terminator'],
+  unlocked_scenes: ['fight_club', 'back_to_the_future', 'forrest_gump', 'the_matrix', 'seven'],
   next_level: { level: 2, required_score: 60, best_score: 0 },
 };
 
@@ -2722,18 +2722,18 @@ async function loadScenes() {
     scenes  = await r.json();
   } catch {
     scenes = {
-      fight_club:         { movie: 'Fight Club',         quote: 'You know what a duvet is?',               year: 1999, difficulty: 'Intermediate', actor: 'Brad Pitt'             },
-      back_to_the_future: { movie: 'Back to the Future', quote: "Where we're going, we don't need roads.",  year: 1985, difficulty: 'Advanced',     actor: 'Christopher Lloyd'    },
-      forrest_gump:       { movie: 'Forrest Gump',       quote: "You never know what you're gonna get.",    year: 1994, difficulty: 'Advanced',     actor: 'Tom Hanks'             },
-      the_matrix:         { movie: 'The Matrix',         quote: 'I know kung fu.',                          year: 1999, difficulty: 'Beginner',     actor: 'Keanu Reeves'          },
-      seven:              { movie: 'Se7en',               quote: "What's in the box?",                      year: 1995, difficulty: 'Beginner',     actor: 'Brad Pitt'             },
-      heat:               { movie: 'Heat',               quote: 'Stop talking okay Slick',                  year: 1995, difficulty: 'Advanced',     actor: 'Al Pacino'             },
-      avengers:           { movie: 'Avengers',           quote: 'Hulk... Smash',                            year: 2012, difficulty: 'Beginner',     actor: 'Mark Ruffalo'          },
-      taken:              { movie: 'Taken',              quote: 'I will find you and I will kill you',       year: 2008, difficulty: 'Intermediate', actor: 'Liam Neeson'           },
-      titanic:            { movie: 'Titanic',            quote: "I'm flying Jack!",                         year: 1997, difficulty: 'Beginner',     actor: 'Kate Winslet'          },
-      basic_instinct:     { movie: 'Basic Instinct',    quote: "No I'm an amateur",                        year: 1992, difficulty: 'Advanced',     actor: 'Sharon Stone', mature: true },
-      sixth_sense:        { movie: 'The Sixth Sense',   quote: 'I see dead people',                        year: 1999, difficulty: 'Intermediate', actor: 'Haley Joel Osment'     },
-      terminator:         { movie: 'The Terminator',    quote: "I'll be back",                             year: 1984, difficulty: 'Beginner',     actor: 'Arnold Schwarzenegger' },
+      fight_club:         { movie: 'Fight Club',         quote: "You know what a duvet is? It's a blanket. Just a blanket.",                                                          year: 1999, difficulty: 'Beginner',      actor: 'Brad Pitt'             },
+      back_to_the_future: { movie: 'Back to the Future', quote: "Roads! Where we're going we don't need roads!",                                                                    year: 1985, difficulty: 'Beginner',      actor: 'Christopher Lloyd'    },
+      forrest_gump:       { movie: 'Forrest Gump',       quote: "My mom always said life was like a box of chocolates. You never know what you're gonna get.",                       year: 1994, difficulty: 'Beginner',      actor: 'Tom Hanks'             },
+      the_matrix:         { movie: 'The Matrix',         quote: 'I know kung fu. Show me.',                                                                                          year: 1999, difficulty: 'Beginner',      actor: 'Keanu Reeves'          },
+      seven:              { movie: 'Se7en',               quote: 'Put the gun down. I saw you with the box. What was in the box?',                                                   year: 1995, difficulty: 'Beginner',      actor: 'Brad Pitt'             },
+      heat:               { movie: 'Heat',               quote: 'You guys always work together? All the time. Real tight crew, huh? Stop talking, okay Slick.',                     year: 1995, difficulty: 'Intermediate',  actor: 'Al Pacino'             },
+      avengers:           { movie: 'The Avengers',       quote: 'Anything gets more than three blocks out, you turn it back or you turn it to ash. Better clench up, Legolas.',     year: 2012, difficulty: 'Intermediate',  actor: 'Robert Downey Jr.'     },
+      taken:              { movie: 'Taken',              quote: 'I will find you and I will kill you',                                                                               year: 2008, difficulty: 'Advanced',      actor: 'Liam Neeson'           },
+      titanic:            { movie: 'Titanic',            quote: 'Give me your hands. Now close your eyes. Do you trust me?',                                                         year: 1997, difficulty: 'Intermediate',  actor: 'Leonardo DiCaprio'     },
+      basic_instinct:     { movie: 'Basic Instinct',    quote: "What are you, a pro? No, I'm an amateur.",                                                                          year: 1992, difficulty: 'Intermediate',  actor: 'Sharon Stone', mature: true },
+      sixth_sense:        { movie: 'The Sixth Sense',   quote: 'I want to tell you my secret now. I see dead people. Walking around like regular people.',                          year: 1999, difficulty: 'Intermediate',  actor: 'Haley Joel Osment'     },
+      terminator:         { movie: 'The Terminator',    quote: "I'll be back",                                                                                                       year: 1984, difficulty: 'Intermediate',  actor: 'Arnold Schwarzenegger' },
     };
   }
   renderCards();
