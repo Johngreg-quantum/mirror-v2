@@ -744,13 +744,16 @@ async def submit_recording(
     conn = get_conn()
     cur  = conn.cursor()
 
-    # Check if this is the user's first attempt on this scene (before inserting)
+    # Check attempt count and previous best before inserting (single query)
     cur.execute(
-        f"SELECT COUNT(*) FROM scores WHERE user_id = {PH} AND scene_id = {PH}",
+        f"SELECT COUNT(*), MAX(sync_score) FROM scores WHERE user_id = {PH} AND scene_id = {PH}",
         (user["id"], scene_id),
     )
-    attempt_count = cur.fetchone()[0]
+    pre = cur.fetchone()
+    attempt_count    = pre[0]
+    prev_best        = float(pre[1]) if pre[1] is not None else None
     is_first_attempt = attempt_count == 0
+    is_new_pb        = prev_best is None or score > prev_best
 
     # Insert the new score
     cur.execute(
@@ -833,6 +836,8 @@ async def submit_recording(
         "daily_bonus":          daily_bonus,
         "daily_already_done":   daily_already_done,
         "streak":               new_streak,
+        "is_new_pb":            is_new_pb,
+        "prev_best":            prev_best,
     }
 
 

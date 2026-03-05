@@ -1570,6 +1570,68 @@ header {
 .btn-try-again:hover { color: var(--text); border-color: rgba(255,255,255,.2); background: rgba(255,255,255,.04); }
 
 /* ══════════════════════════════════════════════
+   PERSONAL BEST
+══════════════════════════════════════════════ */
+/* PB badge on scene card */
+.pb-badge-row { margin: -6px 0 10px; }
+.pb-badge {
+  display: inline-flex; align-items: center; gap: 4px;
+  font-size: 10px; font-weight: 700; letter-spacing: .06em;
+  color: var(--gold); background: rgba(201,168,76,.1);
+  border: 1px solid rgba(201,168,76,.3);
+  padding: 3px 9px; border-radius: 100px;
+}
+
+/* PB banner inside score panel */
+.pb-banner {
+  display: none; margin-bottom: 14px; padding: 10px 16px;
+  background: rgba(201,168,76,.1); border: 1px solid rgba(201,168,76,.4);
+  border-radius: 10px; color: var(--gold);
+  font-family: 'Bebas Neue', cursive; font-size: 20px; letter-spacing: .08em;
+  text-align: center;
+}
+.pb-banner.on { display: block; animation: pb-in .45s cubic-bezier(.175,.885,.32,1.275); }
+@keyframes pb-in { 0%{transform:scale(.85);opacity:0} 100%{transform:scale(1);opacity:1} }
+
+/* Confetti blast overlay */
+.pb-blast { position: fixed; inset: 0; pointer-events: none; z-index: 10001; overflow: hidden; }
+.pb-blast-text {
+  position: absolute; top: 28%; left: 50%; transform: translateX(-50%);
+  font-family: 'Bebas Neue', cursive; font-size: 48px; letter-spacing: .12em; white-space: nowrap;
+  color: var(--gold); text-shadow: 0 0 60px rgba(201,168,76,.9), 0 2px 0 rgba(0,0,0,.5);
+  animation: pb-text-pop .7s cubic-bezier(.175,.885,.32,1.275) forwards;
+}
+@media (max-width:480px) { .pb-blast-text { font-size: 32px; } }
+@keyframes pb-text-pop {
+  0%   { opacity:0; transform:translateX(-50%) scale(.4); }
+  70%  { opacity:1; transform:translateX(-50%) scale(1.08); }
+  100% { opacity:1; transform:translateX(-50%) scale(1); }
+}
+.pb-confetti { position: absolute; width: 8px; height: 8px; border-radius: 2px; animation: pb-fall linear forwards; }
+@keyframes pb-fall {
+  0%   { opacity:1; transform:translateY(-10px) rotate(0deg); }
+  100% { opacity:0; transform:translateY(100vh) rotate(720deg); }
+}
+
+/* Personal Bests in Progress modal */
+.pb-section-label {
+  font-size: 10px; letter-spacing: .18em; text-transform: uppercase;
+  color: var(--muted); margin: 24px 0 10px;
+}
+.pb-list { display: flex; flex-direction: column; gap: 6px; margin-bottom: 20px; }
+.pb-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 10px 14px; background: var(--surface-2);
+  border-radius: 10px; border: 1px solid var(--border);
+}
+.pb-rank  { font-family: 'Bebas Neue', cursive; font-size: 16px; color: var(--muted); width: 22px; flex-shrink: 0; text-align: center; }
+.pb-movie { flex: 1; font-size: 13px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pb-arrow { font-size: 12px; color: var(--green); flex-shrink: 0; }
+.pb-score { font-family: 'Bebas Neue', cursive; font-size: 20px; flex-shrink: 0; }
+.pb-score sup { font-size: 11px; opacity: .65; }
+.pb-empty { font-size: 13px; color: var(--muted); text-align: center; padding: 16px 0 8px; }
+
+/* ══════════════════════════════════════════════
    CHALLENGE SYSTEM
 ══════════════════════════════════════════════ */
 /* ── Challenge button in score panel ── */
@@ -2112,6 +2174,7 @@ header {
         <div class="score-bar-track">
           <div class="score-bar-fill" id="scoreBar"></div>
         </div>
+        <div class="pb-banner" id="pbBanner">&#11088; New Personal Best!</div>
         <div class="perfect-badge" id="perfectBadge">&#11088; Perfect Score! You nailed every word.</div>
         <div class="pts-earned" id="ptsEarned">
           <div class="pts-earned-left">
@@ -2312,6 +2375,11 @@ header {
             <div class="prog-stat-lbl">Improvement</div>
           </div>
         </div>
+      </div>
+
+      <div class="pb-section-label">Personal Bests</div>
+      <div class="pb-list" id="pbList">
+        <div class="pb-empty">No scores yet — start recording!</div>
       </div>
 
       <div class="history-section-label" id="historyLabel">Score History</div>
@@ -2681,6 +2749,7 @@ function makeCard(id, s) {
   const locked  = !userProgress.unlocked_scenes.includes(id);
   const isDaily = dailyChallenge && dailyChallenge.scene_id === id;
   const color   = locked ? 'var(--muted)' : (CARD_COLORS[id] || '#c9a84c');
+  const pb      = !locked && userProgress.best_scores[id];
   const el      = document.createElement('div');
   el.className  = 'scene-card' + (locked ? ' locked' : '') + (isDaily ? ' daily' : '');
   el.style.setProperty('--c', color);
@@ -2701,6 +2770,7 @@ function makeCard(id, s) {
         <span class="badge ${s.difficulty.toLowerCase()}">${s.difficulty}</span>
       </div>
     </div>
+    ${pb ? `<div class="pb-badge-row"><span class="pb-badge">&#11088; PB: ${Math.round(pb)}%</span></div>` : ''}
     <div class="card-movie">${s.movie}</div>
     <div class="card-quote">&ldquo;${s.quote}&rdquo;</div>
     <div class="card-foot">
@@ -2974,6 +3044,7 @@ function resetRec() {
   document.getElementById('scorePanel').classList.remove('on');
   document.getElementById('pbCompare').classList.remove('on');
   document.getElementById('phonSection').style.display = 'none';
+  document.getElementById('pbBanner').classList.remove('on');
   document.getElementById('perfectBadge').classList.remove('on');
   const ptsPanel = document.getElementById('ptsEarned');
   ptsPanel.classList.remove('on');
@@ -3137,10 +3208,33 @@ function showScore(data) {
     requestAnimationFrame(() => { bar.style.width = `${pct}%`; });
   });
 
+  if (data.is_new_pb) {
+    document.getElementById('pbBanner').classList.add('on');
+    showPBBlast();
+  }
+
   if (challengeCtx) {
     showChallengeResult(pct, challengeCtx.score_to_beat);
     challengeCtx = null;
   }
+}
+
+function showPBBlast() {
+  const COLORS = ['#C9A84C', '#fff', '#06d6a0', '#ffd166', '#f4a261', '#67e8f9'];
+  const el = document.createElement('div');
+  el.className = 'pb-blast';
+  let html = `<div class="pb-blast-text">&#11088; New Personal Best!</div>`;
+  for (let i = 0; i < 70; i++) {
+    const color = COLORS[i % COLORS.length];
+    const left  = Math.random() * 100;
+    const delay = Math.random() * 0.6;
+    const dur   = 1.4 + Math.random() * 1.4;
+    const size  = 6 + Math.floor(Math.random() * 6);
+    html += `<div class="pb-confetti" style="left:${left}%;width:${size}px;height:${size}px;background:${color};animation-duration:${dur}s;animation-delay:${delay}s"></div>`;
+  }
+  el.innerHTML = html;
+  document.body.appendChild(el);
+  setTimeout(() => el.remove(), 3200);
 }
 
 function animateNum(el, from, to, ms) {
@@ -3608,6 +3702,7 @@ async function loadHistory() {
     if (!histRes.ok) throw new Error();
     const data = await histRes.json();
     renderProgressDashboard(data);
+    renderPersonalBests(data.history);
     if (profRes.ok) {
       const prof = await profRes.json();
       renderDivCard(prof);
@@ -3680,6 +3775,38 @@ function renderProgressDashboard({ history, stats }) {
       <span class="history-date">${date}</span>
       <span class="history-score" style="color:${c}">${h.sync_score}<sup style="font-size:11px;opacity:.7">%</sup></span>
       ${isUp ? '<span class="history-improved-badge">\u2191 Improved</span>' : ''}
+    </div>`;
+  }).join('');
+}
+
+function renderPersonalBests(history) {
+  const pbEl = document.getElementById('pbList');
+  const best = userProgress.best_scores;
+  if (!best || !Object.keys(best).length) {
+    pbEl.innerHTML = '<div class="pb-empty">No scores yet \u2014 start recording!</div>';
+    return;
+  }
+
+  // Build latest and second-latest score per scene from history (newest-first order)
+  const latestByScene = {}, prevByScene = {};
+  for (const h of history) {
+    if (!(h.scene_id in latestByScene)) latestByScene[h.scene_id] = h.sync_score;
+    else if (!(h.scene_id in prevByScene)) prevByScene[h.scene_id] = h.sync_score;
+  }
+
+  const sorted = Object.entries(best).sort(([, a], [, b]) => b - a);
+  pbEl.innerHTML = sorted.map(([sid, score], idx) => {
+    const movie    = scenes[sid]?.movie || sid;
+    const color    = CARD_COLORS[sid] || 'var(--gold)';
+    const latest   = latestByScene[sid];
+    const prev     = prevByScene[sid];
+    // Show ↑ if the most recent attempt is better than the one before it
+    const improved = latest !== undefined && prev !== undefined && latest > prev;
+    return `<div class="pb-item">
+      <div class="pb-rank">#${idx + 1}</div>
+      <div class="pb-movie">${movie}</div>
+      ${improved ? '<div class="pb-arrow">&#8593;</div>' : ''}
+      <div class="pb-score" style="color:${color}">${Math.round(score)}<sup>%</sup></div>
     </div>`;
   }).join('');
 }
