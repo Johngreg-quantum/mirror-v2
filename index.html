@@ -1717,6 +1717,124 @@ header {
 .btn-accept:hover { opacity: .85; }
 .chlg-auth-note { font-size: 12px; color: var(--muted); margin-top: 4px; }
 .chlg-auth-note a { color: var(--gold); cursor: pointer; text-decoration: none; }
+
+/* ── CINEMATIC LEVEL CARDS ── */
+.clv-section { padding: 120px 0 80px; background: var(--bg); }
+.clv-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-top: 48px;
+}
+.clv-card {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  cursor: pointer;
+  aspect-ratio: 3/4;
+  transition: transform .35s cubic-bezier(.25,.46,.45,.94), box-shadow .35s ease;
+  box-shadow: 0 8px 32px rgba(0,0,0,.5);
+}
+.clv-card:hover { transform: translateY(-8px) scale(1.02); box-shadow: 0 24px 56px rgba(0,0,0,.7); }
+.clv-card-bg {
+  position: absolute; inset: 0;
+  background-size: cover;
+  background-position: center top;
+  transition: transform .6s ease;
+  transform-origin: center;
+}
+.clv-card:hover .clv-card-bg { transform: scale(1.08); }
+.clv-card-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, rgba(0,0,0,.05) 0%, rgba(0,0,0,.35) 40%, rgba(0,0,0,.88) 80%, rgba(0,0,0,.96) 100%);
+}
+.clv-card-body {
+  position: relative; z-index: 1;
+  display: flex; flex-direction: column; justify-content: flex-end;
+  height: 100%; padding: 28px 24px;
+}
+.clv-badge {
+  display: inline-block;
+  font-size: 10px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 4px; border: 1px solid;
+  margin-bottom: 10px; width: fit-content;
+}
+.clv-badge.beg { color: var(--green); border-color: rgba(6,214,160,.4); background: rgba(6,214,160,.12); }
+.clv-badge.int { color: var(--gold);  border-color: rgba(201,168,76,.4);  background: rgba(201,168,76,.12); }
+.clv-badge.adv { color: #f4a261;      border-color: rgba(244,162,97,.4);  background: rgba(244,162,97,.12); }
+.clv-title { font-size: clamp(22px,3vw,32px); font-weight: 800; color: #fff; margin: 0 0 6px; letter-spacing: -.02em; }
+.clv-subtitle { font-size: 13px; color: rgba(255,255,255,.6); margin: 0 0 14px; line-height: 1.5; }
+.clv-meta { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+.clv-count  { font-size: 12px; color: rgba(255,255,255,.45); }
+.clv-pb-avg { font-size: 12px; color: var(--gold); font-weight: 600; }
+.clv-lock {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; color: rgba(255,255,255,.4); margin-bottom: 12px;
+}
+.clv-cta { font-size: 13px; font-weight: 600; color: #fff; letter-spacing: .04em; opacity: .75; transition: opacity .2s; }
+.clv-card:hover .clv-cta { opacity: 1; }
+/* ── LEVEL PANEL ── */
+.clv-panel {
+  position: fixed; bottom: 0;
+  left: 50%; transform: translateX(-50%) translateY(100%);
+  width: min(540px, 100vw); max-height: 80vh;
+  background: var(--surface); border-radius: 20px 20px 0 0;
+  z-index: 1200;
+  transition: transform .4s cubic-bezier(.25,.46,.45,.94);
+  display: flex; flex-direction: column;
+}
+.clv-panel.open { transform: translateX(-50%) translateY(0); }
+.clv-panel-inner { overflow-y: auto; padding: 24px 20px 36px; position: relative; }
+.clv-panel-close {
+  position: absolute; top: 16px; right: 16px;
+  background: rgba(255,255,255,.08); border: none; border-radius: 50%;
+  width: 32px; height: 32px; font-size: 14px; color: var(--muted);
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+}
+.clv-panel-header { margin-bottom: 20px; padding-right: 40px; }
+.clv-panel-badge {
+  display: inline-block; font-size: 10px; font-weight: 700;
+  letter-spacing: .1em; text-transform: uppercase;
+  padding: 3px 8px; border-radius: 4px; border: 1px solid; margin-bottom: 8px;
+}
+.clv-panel-badge.beg { color: var(--green); border-color: rgba(6,214,160,.4); background: rgba(6,214,160,.1); }
+.clv-panel-badge.int { color: var(--gold);  border-color: rgba(201,168,76,.4);  background: rgba(201,168,76,.1); }
+.clv-panel-badge.adv { color: #f4a261;      border-color: rgba(244,162,97,.4);  background: rgba(244,162,97,.1); }
+.clv-panel-title { font-size: 24px; font-weight: 800; color: var(--text); margin: 0 0 4px; }
+.clv-panel-sub   { font-size: 13px; color: var(--muted); margin: 0; }
+.clv-clip-list   { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.clv-clip-row {
+  display: flex; align-items: center; justify-content: space-between;
+  background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07);
+  border-radius: 12px; padding: 14px 16px; cursor: pointer;
+  transition: background .2s, border-color .2s; gap: 12px;
+}
+.clv-clip-row:hover:not(.locked) { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.15); }
+.clv-clip-row.locked { opacity: .4; cursor: default; }
+.clv-clip-info  { flex: 1; min-width: 0; }
+.clv-clip-movie { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.clv-clip-quote { font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.clv-clip-right { flex-shrink: 0; }
+.clv-clip-pb    { font-size: 13px; font-weight: 700; color: var(--gold); }
+.clv-clip-play  { font-size: 14px; color: rgba(255,255,255,.45); }
+.clv-clip-lock  { color: rgba(255,255,255,.3); }
+.clv-panel-play-btn {
+  width: 100%; padding: 14px;
+  background: var(--gold); color: #000;
+  font-size: 14px; font-weight: 700; letter-spacing: .04em;
+  border: none; border-radius: 12px; cursor: pointer; transition: opacity .2s;
+}
+.clv-panel-play-btn:hover { opacity: .88; }
+.clv-panel-backdrop {
+  display: none; position: fixed; inset: 0;
+  background: rgba(0,0,0,.65); z-index: 1199;
+}
+.clv-panel-backdrop.open { display: block; }
+@media (max-width: 768px) {
+  .clv-grid { grid-template-columns: 1fr; gap: 16px; }
+  .clv-card { aspect-ratio: 16/9; }
+  .clv-card-bg { background-position: center center; }
+}
   </style>
 </head>
 <body>
@@ -1860,72 +1978,86 @@ header {
   </section>
 
   <!-- ── LEVELS ── -->
-  <section class="levels-section fade-up" id="levelsSection">
+  <section class="clv-section fade-up" id="levelsSection">
     <div class="section-wrap">
       <p class="section-eyebrow">Progressive Difficulty</p>
       <h2 class="section-heading">Your Journey</h2>
-      <div class="lvl-grid">
+      <div class="clv-grid">
 
-        <div class="lvl-card lvl-beginner">
-          <div class="lvl-top-bar"></div>
-          <span class="lvl-badge">Beginner</span>
-          <h3 class="lvl-name">Level 1</h3>
-          <p class="lvl-desc">Short, clear lines. Get comfortable speaking on camera and hitting your first sync scores.</p>
-          <ul class="lvl-scenes">
-            <li>The Matrix</li>
-            <li>Avengers</li>
-            <li>Se7en</li>
-            <li>Titanic</li>
-            <li>Terminator</li>
-          </ul>
-        </div>
-
-        <div class="lvl-card lvl-intermediate">
-          <div class="lvl-top-bar"></div>
-          <span class="lvl-badge">Intermediate</span>
-          <h3 class="lvl-name">Level 2</h3>
-          <p class="lvl-desc">Longer phrases, rhythm, and emotion start to matter. Delivery over accuracy.</p>
-          <ul class="lvl-scenes">
-            <li>Fight Club</li>
-            <li>Taken</li>
-            <li>The Sixth Sense</li>
-          </ul>
-          <div class="lvl-lock">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            Score 60% to unlock
+        <!-- Level 1 — Beginner -->
+        <div class="clv-card" id="clvCard1" onclick="openLevelPanel(1)">
+          <div class="clv-card-bg" style="background-image:url('/static/beginner-card.jpg');background-color:#1a2a1a"></div>
+          <div class="clv-card-overlay"></div>
+          <div class="clv-card-body">
+            <span class="clv-badge beg">Beginner</span>
+            <h3 class="clv-title">Level 1</h3>
+            <p class="clv-subtitle">Short, clear lines. Build confidence on camera.</p>
+            <div class="clv-meta">
+              <span class="clv-count">5 scenes</span>
+              <span class="clv-pb-avg" id="clvPbAvg1"></span>
+            </div>
+            <div class="clv-cta">Explore Level &rarr;</div>
           </div>
         </div>
 
-        <div class="lvl-card lvl-advanced">
-          <div class="lvl-top-bar"></div>
-          <span class="lvl-badge">Advanced</span>
-          <h3 class="lvl-name">Level 3</h3>
-          <p class="lvl-desc">Complex delivery, accent precision, and subtle stress patterns. The real challenge begins.</p>
-          <ul class="lvl-scenes">
-            <li>Back to the Future</li>
-            <li>Forrest Gump</li>
-            <li>Heat</li>
-            <li>Basic Instinct</li>
-          </ul>
-          <div class="lvl-lock">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            Score 70% to unlock
+        <!-- Level 2 — Intermediate -->
+        <div class="clv-card" id="clvCard2" onclick="openLevelPanel(2)">
+          <div class="clv-card-bg" style="background-image:url('/static/intermediate-card.jpg');background-color:#1a1a2a"></div>
+          <div class="clv-card-overlay"></div>
+          <div class="clv-card-body">
+            <span class="clv-badge int">Intermediate</span>
+            <h3 class="clv-title">Level 2</h3>
+            <p class="clv-subtitle">Rhythm and emotion start to matter.</p>
+            <div class="clv-meta">
+              <span class="clv-count">6 scenes</span>
+              <span class="clv-pb-avg" id="clvPbAvg2"></span>
+            </div>
+            <div class="clv-lock" id="clvLock2">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              Score 60% to unlock
+            </div>
+            <div class="clv-cta" id="clvCta2" style="display:none">Explore Level &rarr;</div>
           </div>
         </div>
 
-        <div class="lvl-card lvl-native">
-          <div class="lvl-top-bar"></div>
-          <span class="lvl-badge">Native</span>
-          <h3 class="lvl-name">Level 4</h3>
-          <p class="lvl-desc">You're indistinguishable from the actor. The ultimate benchmark of spoken English mastery.</p>
-          <div class="lvl-lock">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            Coming soon
+        <!-- Level 3 — Advanced -->
+        <div class="clv-card" id="clvCard3" onclick="openLevelPanel(3)">
+          <div class="clv-card-bg" style="background-image:url('/static/advanced-card.jpg');background-color:#2a1a0a"></div>
+          <div class="clv-card-overlay"></div>
+          <div class="clv-card-body">
+            <span class="clv-badge adv">Advanced</span>
+            <h3 class="clv-title">Level 3</h3>
+            <p class="clv-subtitle">Accent precision and raw delivery.</p>
+            <div class="clv-meta">
+              <span class="clv-count">1 scene</span>
+              <span class="clv-pb-avg" id="clvPbAvg3"></span>
+            </div>
+            <div class="clv-lock" id="clvLock3">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+              Score 70% to unlock
+            </div>
+            <div class="clv-cta" id="clvCta3" style="display:none">Explore Level &rarr;</div>
           </div>
         </div>
 
       </div>
     </div>
+
+    <!-- Level detail panel -->
+    <div class="clv-panel" id="clvPanel">
+      <div class="clv-panel-inner">
+        <button class="clv-panel-close" onclick="closeLevelPanel()">&#x2715;</button>
+        <div class="clv-panel-header">
+          <span class="clv-panel-badge" id="clvPanelBadge"></span>
+          <h3 class="clv-panel-title" id="clvPanelTitle"></h3>
+          <p class="clv-panel-sub" id="clvPanelSub"></p>
+        </div>
+        <div class="clv-clip-list" id="clvClipList"></div>
+        <button class="clv-panel-play-btn" id="clvPanelPlayBtn">&#9654; Start Level</button>
+      </div>
+    </div>
+    <div class="clv-panel-backdrop" id="clvPanelBackdrop" onclick="closeLevelPanel()"></div>
+
   </section>
 
   <!-- ── PRICING ── -->
@@ -4045,6 +4177,114 @@ function showChallengeResult(score, scoreToBeat) {
       <div class="chlg-result-sub">You scored ${score}% — need ${scoreToBeat}% to win. Try again!</div>`;
   }
 }
+
+// ══════════════════════════════════════════════
+// CINEMATIC LEVEL CARDS
+// ══════════════════════════════════════════════
+const SCENE_ID_MAP = [
+  'fight_club', 'back_to_the_future', 'forrest_gump', 'the_matrix', 'seven',
+  'heat', 'avengers', 'titanic', 'basic_instinct', 'sixth_sense', 'terminator',
+];
+
+const CLV_LEVELS = [
+  {
+    level: 1, label: 'Beginner', cls: 'beg', unlock: 0,
+    desc: 'Short, clear lines. Get comfortable speaking on camera.',
+    scenes: ['fight_club', 'back_to_the_future', 'forrest_gump', 'the_matrix', 'seven'],
+  },
+  {
+    level: 2, label: 'Intermediate', cls: 'int', unlock: 60,
+    desc: 'Longer phrases, rhythm, and emotion start to matter.',
+    scenes: ['heat', 'avengers', 'titanic', 'basic_instinct', 'sixth_sense', 'terminator'],
+  },
+  {
+    level: 3, label: 'Advanced', cls: 'adv', unlock: 70,
+    desc: 'Accent precision and raw delivery. The real challenge begins.',
+    scenes: ['taken'],
+  },
+];
+
+function updateLevelCardStats() {
+  const best     = (userProgress && userProgress.best_scores) ? userProgress.best_scores : {};
+  const unlocked = (userProgress && userProgress.unlocked_scenes) ? userProgress.unlocked_scenes : ['fight_club','back_to_the_future','forrest_gump','the_matrix','seven'];
+  CLV_LEVELS.forEach(lv => {
+    const scores = lv.scenes.map(sid => best[sid]).filter(v => v > 0);
+    const avg    = scores.length ? Math.round(scores.reduce((a, b) => a + b, 0) / scores.length) : 0;
+    const avgEl  = document.getElementById(`clvPbAvg${lv.level}`);
+    if (avgEl) avgEl.textContent = scores.length ? `Avg PB: ${avg}%` : '';
+    if (lv.level === 1) return; // Level 1 always unlocked
+    const isUnlocked = lv.scenes.some(sid => unlocked.includes(sid));
+    const lockEl = document.getElementById(`clvLock${lv.level}`);
+    const ctaEl  = document.getElementById(`clvCta${lv.level}`);
+    if (lockEl) lockEl.style.display = isUnlocked ? 'none' : '';
+    if (ctaEl)  ctaEl.style.display  = isUnlocked ? ''     : 'none';
+  });
+}
+
+function openLevelPanel(level) {
+  const lv = CLV_LEVELS.find(l => l.level === level);
+  if (!lv) return;
+  const badgeEl = document.getElementById('clvPanelBadge');
+  badgeEl.textContent = lv.label;
+  badgeEl.className   = `clv-panel-badge ${lv.cls}`;
+  document.getElementById('clvPanelTitle').textContent = `Level ${lv.level}`;
+  document.getElementById('clvPanelSub').textContent   = lv.desc;
+
+  const best     = (userProgress && userProgress.best_scores)      ? userProgress.best_scores      : {};
+  const unlocked = (userProgress && userProgress.unlocked_scenes)  ? userProgress.unlocked_scenes  : ['fight_club','back_to_the_future','forrest_gump','the_matrix','seven'];
+
+  const list = document.getElementById('clvClipList');
+  list.innerHTML = lv.scenes.map(sid => {
+    const s      = (scenes && scenes[sid]) ? scenes[sid] : {};
+    const pb     = best[sid] ? Math.round(best[sid]) : null;
+    const locked = !unlocked.includes(sid);
+    const quote  = s.quote ? s.quote.slice(0, 60) + (s.quote.length > 60 ? '\u2026' : '') : '';
+    const right  = locked
+      ? `<svg class="clv-clip-lock" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`
+      : (pb ? `<span class="clv-clip-pb">${pb}%</span>` : `<span class="clv-clip-play">&#9654;</span>`);
+    return `<div class="clv-clip-row${locked ? ' locked' : ''}"${locked ? '' : ` onclick="selectScene('${sid}')"`}>
+      <div class="clv-clip-info">
+        <div class="clv-clip-movie">${s.movie || sid}</div>
+        <div class="clv-clip-quote">&ldquo;${quote}&rdquo;</div>
+      </div>
+      <div class="clv-clip-right">${right}</div>
+    </div>`;
+  }).join('');
+
+  const firstScene = lv.scenes.find(sid => unlocked.includes(sid));
+  const playBtn    = document.getElementById('clvPanelPlayBtn');
+  if (firstScene) {
+    playBtn.style.display = '';
+    playBtn.onclick = () => { closeLevelPanel(); selectScene(firstScene); };
+  } else {
+    playBtn.style.display = 'none';
+  }
+
+  document.getElementById('clvPanel').classList.add('open');
+  document.getElementById('clvPanelBackdrop').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLevelPanel() {
+  document.getElementById('clvPanel').classList.remove('open');
+  document.getElementById('clvPanelBackdrop').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function selectScene(sid) {
+  closeLevelPanel();
+  const appScreen = document.getElementById('appScreen');
+  if (appScreen && appScreen.style.display !== 'none') {
+    const s = scenes && scenes[sid];
+    if (s) openModal(sid, s);
+  } else {
+    openAuthModal('register');
+  }
+}
+
+// Hook renderLevelBar to also refresh level card stats after progress loads
+const _clvOrigRLB = renderLevelBar;
+renderLevelBar = function () { _clvOrigRLB(); updateLevelCardStats(); };
 </script>
 </body>
 </html>
