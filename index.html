@@ -196,22 +196,26 @@ body::after {
 }
 .hero-glow {
   position: absolute;
-  top: 15%; left: 50%;
+  top: 10%; left: 50%;
   transform: translateX(-50%);
-  width: 800px; height: 600px;
-  background: radial-gradient(ellipse, rgba(201,168,76,0.11) 0%, transparent 65%);
+  width: 900px; height: 600px;
+  background: radial-gradient(ellipse, rgba(201,168,76,0.09) 0%, transparent 65%);
   pointer-events: none;
 }
-.hero-content {
+
+/* ── New centered layout ── */
+.hero-content--levels {
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 64px;
+  display: flex;
+  flex-direction: column;
   align-items: center;
   position: relative;
 }
+
+.hero-text--center { text-align: center; margin-bottom: 56px; }
+
 .hero-eyebrow {
   font-size: 11px; font-weight: 600;
   letter-spacing: 0.44em; text-transform: uppercase;
@@ -219,26 +223,34 @@ body::after {
 }
 .hero-title {
   font-family: 'Bebas Neue', cursive;
-  font-size: clamp(82px, 11vw, 164px);
-  line-height: 0.9;
-  letter-spacing: 0.03em;
+  font-size: clamp(64px, 9vw, 120px);
+  line-height: 0.92;
+  letter-spacing: 0.04em;
   color: var(--text);
   text-shadow: 0 0 140px rgba(201,168,76,.12);
-  margin-bottom: 28px;
+  margin-bottom: 22px;
 }
-.hero-subtitle {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: clamp(18px, 2.2vw, 24px);
-  font-style: italic;
-  color: var(--gold);
+.hero-title-gold { color: var(--gold); }
+
+.hero-subtitle--levels {
+  font-family: 'DM Sans', sans-serif;
+  font-size: clamp(14px, 1.6vw, 16px);
+  font-style: normal;
+  color: var(--muted);
   line-height: 1.65;
-  margin-bottom: 48px;
+  margin-bottom: 36px;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
 }
-.hero-btns {
+
+.hero-btns--center {
   display: flex;
   gap: 14px;
   flex-wrap: wrap;
+  justify-content: center;
 }
+
 .hero-btn {
   display: inline-flex;
   align-items: center;
@@ -271,56 +283,335 @@ body::after {
   transform: translateY(-2px);
 }
 
-/* ── Hero floating cards ── */
-.hero-cards-wrap {
+/* ══ HERO LEVEL CARDS ══ */
+.hero-levels {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  width: 100%;
+}
+
+.hero-lv {
   position: relative;
-  height: 480px;
-}
-.hero-card {
-  position: absolute;
   background: var(--surface);
-  border: 1px solid var(--border);
   border-radius: 16px;
-  padding: 22px 24px;
-  width: 210px;
-  box-shadow: 0 24px 64px rgba(0,0,0,.5);
+  padding: 28px 24px 24px;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
 }
-.hero-card::before {
+
+/* Top accent line */
+.hero-lv::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 24px; right: 24px;
+  height: 1px;
+  transition: all 0.4s ease;
+  opacity: 0;
+}
+
+/* Background glow on hover */
+.hero-lv::after {
+  content: '';
+  position: absolute;
+  top: -50%; left: -20%; right: -20%;
+  height: 120%;
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+  filter: blur(40px);
+}
+
+/* ── Beginner — Green (matches --green / PR score badges) ── */
+.hero-lv--beg::before { background: var(--green); }
+.hero-lv--beg::after { background: rgba(6,214,160,0.05); }
+.hero-lv--beg:hover {
+  border-color: rgba(6,214,160,0.2);
+  transform: translateY(-4px);
+  background: #141418;
+}
+.hero-lv--beg:hover::before { opacity: 1; height: 2px; left: 0; right: 0; border-radius: 16px 16px 0 0; }
+.hero-lv--beg:hover::after { opacity: 1; }
+.hero-lv--beg .hero-lv-num { color: var(--green); }
+.hero-lv-tag--beg { background: rgba(6,214,160,0.1); color: var(--green); border: 1px solid rgba(6,214,160,0.2); }
+.hero-lv--beg .hero-lv-status--open { color: var(--green); }
+.hero-lv-count--beg strong { color: var(--green); }
+.hero-lv-cta--beg { background: rgba(6,214,160,0.1); color: var(--green); border: 1px solid rgba(6,214,160,0.2); }
+.hero-lv--beg:hover .hero-lv-cta--beg { background: rgba(6,214,160,0.18); }
+
+/* ── Intermediate — Gold (site's signature accent --gold) ── */
+.hero-lv--int::before { background: var(--gold); }
+.hero-lv--int::after { background: rgba(201,168,76,0.05); }
+.hero-lv--int:hover {
+  border-color: rgba(201,168,76,0.22);
+  transform: translateY(-4px);
+  background: #141418;
+}
+.hero-lv--int:hover::before { opacity: 1; height: 2px; left: 0; right: 0; border-radius: 16px 16px 0 0; }
+.hero-lv--int:hover::after { opacity: 1; }
+.hero-lv--int .hero-lv-num { color: var(--gold); }
+.hero-lv-tag--int { background: rgba(201,168,76,0.1); color: var(--gold); border: 1px solid rgba(201,168,76,0.22); }
+.hero-lv-count--int strong { color: var(--gold); }
+.hero-lv--int .lock-icon { color: var(--gold); }
+.hero-lv-cta--int { background: rgba(201,168,76,0.1); color: var(--gold); border: 1px solid rgba(201,168,76,0.22); }
+.hero-lv--int:hover .hero-lv-cta--int { background: rgba(201,168,76,0.18); }
+
+/* ── Advanced — Red (matches --red accent) ── */
+.hero-lv--adv::before { background: var(--red); }
+.hero-lv--adv::after { background: rgba(230,57,70,0.04); }
+.hero-lv--adv:hover {
+  border-color: rgba(230,57,70,0.18);
+  transform: translateY(-4px);
+  background: #141418;
+}
+.hero-lv--adv:hover::before { opacity: 1; height: 2px; left: 0; right: 0; border-radius: 16px 16px 0 0; }
+.hero-lv--adv:hover::after { opacity: 1; }
+.hero-lv--adv .hero-lv-num { color: var(--red); }
+.hero-lv-tag--adv { background: rgba(230,57,70,0.1); color: var(--red); border: 1px solid rgba(230,57,70,0.18); }
+.hero-lv-count--adv strong { color: var(--red); }
+.hero-lv--adv .lock-icon { color: var(--red); }
+.hero-lv-cta--adv { background: rgba(230,57,70,0.1); color: var(--red); border: 1px solid rgba(230,57,70,0.18); }
+.hero-lv--adv:hover .hero-lv-cta--adv { background: rgba(230,57,70,0.18); }
+
+/* ── Card internals ── */
+.hero-lv-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-lv-num {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 48px;
+  line-height: 1;
+  opacity: 0.12;
+  position: absolute;
+  top: -6px; right: 0;
+}
+
+.hero-lv-tag {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 4px 12px;
+  border-radius: 4px;
+}
+
+.hero-lv-body {
+  flex: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-lv-name {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 28px;
+  letter-spacing: 0.08em;
+  color: var(--text);
+  margin-bottom: 8px;
+  line-height: 1.1;
+}
+
+.hero-lv-desc {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--muted);
+  line-height: 1.6;
+  margin-bottom: 22px;
+}
+
+/* Scene thumbnails */
+/* ── Mini Carousel ── */
+.hero-lv-carousel {
+  position: relative;
+  height: 72px;
+  margin-bottom: 18px;
+  overflow: hidden;
+  perspective: 400px;
+  mask-image: linear-gradient(90deg, transparent 0%, black 20%, black 80%, transparent 100%);
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 20%, black 80%, transparent 100%);
+}
+
+.carousel-track {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  gap: 8px;
+  animation: carousel-slide var(--carousel-dur, 12s) ease-in-out infinite alternate;
+}
+
+.carousel-card {
+  flex-shrink: 0;
+  width: 90px;
+  height: 56px;
+  border-radius: 8px;
+  background: linear-gradient(135deg, var(--card-color) 0%, color-mix(in srgb, var(--card-color) 40%, #000) 100%);
+  border: 1px solid rgba(255,255,255,0.08);
+  display: flex;
+  align-items: flex-end;
+  justify-content: flex-start;
+  padding: 6px 8px;
+  position: relative;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  transition: transform 0.4s ease, opacity 0.4s ease;
+  transform-style: preserve-3d;
+}
+
+.carousel-card span {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 10px;
+  letter-spacing: 0.06em;
+  color: rgba(255,255,255,0.85);
+  line-height: 1.15;
+  text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+}
+
+/* Glow bar at top of each mini card */
+.carousel-card::before {
   content: '';
   position: absolute;
   top: 0; left: 0; right: 0;
   height: 2px;
-  background: var(--gold);
-  border-radius: 16px 16px 0 0;
-}
-.hc-movie {
-  font-family: 'Bebas Neue', cursive;
-  font-size: 17px; letter-spacing: 0.1em;
-  color: var(--gold); margin-bottom: 8px;
-}
-.hc-quote {
-  font-family: 'Cormorant Garamond', serif;
-  font-size: 13px; font-style: italic;
-  color: var(--muted); line-height: 1.5; margin-bottom: 18px;
-}
-.hc-score {
-  font-family: 'Bebas Neue', cursive;
-  font-size: 44px; line-height: 1;
-  color: var(--green);
-}
-.hc-score sup { font-size: 20px; opacity: 0.7; }
-.hc-label {
-  font-size: 9px; letter-spacing: 0.24em;
-  text-transform: uppercase; color: var(--muted); margin-top: 2px;
+  background: var(--card-color);
+  border-radius: 8px 8px 0 0;
+  opacity: 0.7;
 }
 
-@keyframes float1 { 0%,100%{transform:translateY(0)}   50%{transform:translateY(-14px)} }
-@keyframes float2 { 0%,100%{transform:translateY(0)}   50%{transform:translateY(-20px)} }
-@keyframes float3 { 0%,100%{transform:translateY(0)}   50%{transform:translateY(-10px)} }
+/* Hover: lift the whole carousel slightly */
+.hero-lv:hover .carousel-card {
+  box-shadow: 0 6px 20px rgba(0,0,0,0.55);
+}
 
-.hc-1 { top: 20px;  left: 20px;  animation: float1 4.5s ease-in-out infinite; }
-.hc-2 { top: 175px; right: 10px; animation: float2 5.8s ease-in-out infinite 0.7s; }
-.hc-3 { bottom: 50px; left: 55px; animation: float3 4.2s ease-in-out infinite 1.4s; }
+/* Slide animation — track slides left then right */
+@keyframes carousel-slide {
+  0%   { transform: translateX(20px); }
+  100% { transform: translateX(-20px); }
+}
+
+/* Level 1: 5 cards — wider travel */
+.hero-lv--beg .carousel-track { --carousel-dur: 10s; }
+.hero-lv--beg .carousel-track {
+  animation-name: carousel-slide-5;
+}
+@keyframes carousel-slide-5 {
+  0%   { transform: translateX(40px); }
+  100% { transform: translateX(-40px); }
+}
+
+/* Level 2: 6 cards — widest travel */
+.hero-lv--int .carousel-track { --carousel-dur: 14s; }
+.hero-lv--int .carousel-track {
+  animation-name: carousel-slide-6;
+}
+@keyframes carousel-slide-6 {
+  0%   { transform: translateX(60px); }
+  100% { transform: translateX(-60px); }
+}
+
+/* Level 3: 1 card — gentle float instead of slide */
+.hero-lv--adv .carousel-track {
+  animation-name: carousel-float;
+  --carousel-dur: 3s;
+}
+.hero-lv--adv .carousel-card {
+  width: 110px;
+  height: 64px;
+}
+@keyframes carousel-float {
+  0%   { transform: translateY(0px) scale(1); }
+  50%  { transform: translateY(-4px) scale(1.03); }
+  100% { transform: translateY(0px) scale(1); }
+}
+
+/* Pause animation on hover for polish */
+.hero-lv:hover .carousel-track {
+  animation-play-state: paused;
+}
+
+/* Meta row */
+.hero-lv-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.hero-lv-count {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  color: rgba(255,255,255,0.3);
+}
+.hero-lv-count svg { opacity: 0.4; }
+
+.hero-lv-status {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 11px;
+  font-weight: 500;
+  color: rgba(255,255,255,0.3);
+  letter-spacing: 0.3px;
+}
+.hero-lv-status--open { color: var(--green); }
+
+/* CTA button */
+.hero-lv-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 600;
+  font-size: 12px;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+.hero-lv-cta svg {
+  transition: transform 0.3s ease;
+}
+.hero-lv:hover .hero-lv-cta svg {
+  transform: translateX(3px);
+}
+.hero-lv-cta.locked {
+  opacity: 0.7;
+  cursor: default;
+}
+.hero-lv-cta.locked svg {
+  transform: none !important;
+}
+
+/* ── Responsive ── */
+@media (max-width: 768px) {
+  .hero-levels {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+    margin: 0 auto;
+    gap: 16px;
+  }
+  .hero-lv { padding: 24px 20px 20px; }
+}
 
 /* ═══════════════════════════════════════════════
    STATS BAR
@@ -715,7 +1006,26 @@ header {
 .scenes-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(310px, 1fr));
-  gap: 18px; margin-bottom: 72px;
+  gap: 18px; margin-bottom: 40px;
+}
+.level-group { margin-bottom: 56px; }
+.level-group-header {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 20px; padding-bottom: 12px;
+  border-bottom: 1px solid var(--border);
+}
+.level-group-title {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 22px; letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.level-group-title.beginner     { color: var(--green); }
+.level-group-title.intermediate { color: var(--gold);  }
+.level-group-title.advanced     { color: #e63946;      }
+.level-group-lock {
+  font-size: 11px; letter-spacing: .08em; text-transform: uppercase;
+  color: var(--muted); background: var(--border);
+  padding: 3px 10px; border-radius: 100px;
 }
 .scene-card {
   --c: var(--gold);
@@ -1089,8 +1399,7 @@ header {
 }
 
 @media (max-width: 768px) {
-  .hero-content { grid-template-columns: 1fr; }
-  .hero-cards-wrap { display: none; }
+  .hero-content--levels { align-items: center; }
   .hiw-grid { grid-template-columns: 1fr; }
   .pricing-grid { grid-template-columns: 1fr; max-width: 480px; }
 
@@ -1124,7 +1433,7 @@ header {
 
   .auth-modal-box { padding: 32px 20px; }
   .hero { padding: 100px 20px 60px; }
-  .hero-title { font-size: clamp(72px, 20vw, 120px); }
+  .hero-title { font-size: clamp(52px, 16vw, 80px); }
   .section-wrap { padding: 0 20px; }
   .hiw-section, .levels-section, .pricing-section { padding: 80px 0; }
   .lvl-grid { grid-template-columns: 1fr; }
@@ -1802,22 +2111,66 @@ header {
 .clv-panel-badge.adv { color: #f4a261;      border-color: rgba(244,162,97,.4);  background: rgba(244,162,97,.1); }
 .clv-panel-title { font-size: 24px; font-weight: 800; color: var(--text); margin: 0 0 4px; }
 .clv-panel-sub   { font-size: 13px; color: var(--muted); margin: 0; }
-.clv-clip-list   { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
+.clv-clip-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
 .clv-clip-row {
-  display: flex; align-items: center; justify-content: space-between;
-  background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07);
-  border-radius: 12px; padding: 14px 16px; cursor: pointer;
-  transition: background .2s, border-color .2s; gap: 12px;
+  display: flex; align-items: center; justify-content: space-between; gap: 14px;
+  background: rgba(255,255,255,.045);
+  border: 1px solid rgba(255,255,255,.09);
+  border-radius: 14px; padding: 16px 18px;
+  cursor: pointer; position: relative; overflow: hidden;
+  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease, background .22s ease;
 }
-.clv-clip-row:hover:not(.locked) { background: rgba(255,255,255,.08); border-color: rgba(255,255,255,.15); }
-.clv-clip-row.locked { opacity: .4; cursor: default; }
+.clv-clip-row::before {
+  content: ''; position: absolute; inset: 0;
+  background: radial-gradient(ellipse at top left, var(--c, rgba(201,168,76,.12)) 0%, transparent 65%);
+  opacity: 0; transition: opacity .22s;
+}
+.clv-clip-row:hover:not(.locked) {
+  transform: translateY(-2px);
+  background: rgba(255,255,255,.07);
+  border-color: rgba(255,255,255,.18);
+  box-shadow: 0 8px 28px rgba(0,0,0,.45);
+}
+.clv-clip-row:hover:not(.locked)::before { opacity: 1; }
+.clv-clip-row.locked { opacity: .38; cursor: default; }
+
+/* Accent left bar */
+.clv-clip-accent {
+  width: 3px; flex-shrink: 0; border-radius: 100px;
+  background: var(--c, rgba(201,168,76,.6));
+  align-self: stretch; min-height: 36px;
+}
+
 .clv-clip-info  { flex: 1; min-width: 0; }
-.clv-clip-movie { font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.clv-clip-quote { font-size: 11px; color: var(--muted); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.clv-clip-right { flex-shrink: 0; }
-.clv-clip-pb    { font-size: 13px; font-weight: 700; color: var(--gold); }
-.clv-clip-play  { font-size: 14px; color: rgba(255,255,255,.45); }
-.clv-clip-lock  { color: rgba(255,255,255,.3); }
+.clv-clip-movie {
+  font-size: 14px; font-weight: 700; color: var(--text);
+  margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  letter-spacing: .01em;
+}
+.clv-clip-year  { display: inline-block; font-size: 9px; font-weight: 600; letter-spacing: .14em;
+  text-transform: uppercase; color: rgba(255,255,255,.35); margin-bottom: 5px; }
+.clv-clip-quote {
+  font-size: 11px; color: var(--muted); font-style: italic;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.45;
+}
+.clv-clip-right { flex-shrink: 0; display: flex; align-items: center; }
+.clv-clip-pb {
+  font-size: 13px; font-weight: 800; color: var(--gold);
+  background: rgba(201,168,76,.12); border: 1px solid rgba(201,168,76,.28);
+  padding: 3px 9px; border-radius: 100px; letter-spacing: .03em;
+}
+.clv-clip-play {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; color: rgba(255,255,255,.7);
+  transition: background .2s, border-color .2s;
+}
+.clv-clip-row:hover:not(.locked) .clv-clip-play {
+  background: rgba(255,255,255,.15); border-color: rgba(255,255,255,.3);
+}
+.clv-clip-lock { color: rgba(255,255,255,.25); }
 .clv-panel-play-btn {
   width: 100%; padding: 14px;
   background: var(--gold); color: #000;
@@ -1868,40 +2221,125 @@ header {
   <section class="hero">
     <div class="hero-grid-bg"></div>
     <div class="hero-glow"></div>
-    <div class="hero-content">
+    <div class="hero-content hero-content--levels">
 
-      <div class="hero-text">
-        <p class="hero-eyebrow">English Like Never Before</p>
-        <h1 class="hero-title">ACT THE<br>SCENE</h1>
-        <p class="hero-subtitle">Speak every line. Score every take.<br>Unlock every level.</p>
-        <div class="hero-btns">
-          <button class="hero-btn hero-btn--primary" id="heroStartBtn">Start for Free</button>
+      <div class="hero-text hero-text--center">
+        <p class="hero-eyebrow">AI-Powered Movie English</p>
+        <h1 class="hero-title">CHOOSE YOUR<br><span class="hero-title-gold">LEVEL</span></h1>
+        <p class="hero-subtitle hero-subtitle--levels">Pick a level, enter its scene library, and practice movie clips matched to your difficulty.</p>
+        <div class="hero-btns hero-btns--center">
+          <button class="hero-btn hero-btn--primary" id="heroStartBtn">Start Training</button>
           <a href="#howItWorks" class="hero-btn hero-btn--ghost">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-            Watch How It Works
+            How It Works
           </a>
         </div>
       </div>
 
-      <div class="hero-cards-wrap">
-        <div class="hero-card hc-1">
-          <div class="hc-movie">The Matrix</div>
-          <div class="hc-quote">"I know kung fu."</div>
-          <div class="hc-score"><span>94</span><sup>%</sup></div>
-          <div class="hc-label">Sync Score</div>
+      <div class="hero-levels">
+
+        <!-- Level 1 — Beginner -->
+        <div class="hero-lv hero-lv--beg" onclick="openLevelPanel(1)">
+          <div class="hero-lv-top">
+            <span class="hero-lv-tag hero-lv-tag--beg">Beginner</span>
+            <span class="hero-lv-num">01</span>
+          </div>
+          <div class="hero-lv-body">
+            <h3 class="hero-lv-name">LEVEL 1</h3>
+            <p class="hero-lv-desc">Short, clear lines. Build confidence on camera with simple scenes.</p>
+            <div class="hero-lv-carousel">
+              <div class="carousel-track">
+                <div class="carousel-card" style="--card-color: #e63946"><span>Fight Club</span></div>
+                <div class="carousel-card" style="--card-color: #4895ef"><span>Back to the Future</span></div>
+                <div class="carousel-card" style="--card-color: #f4a261"><span>Forrest Gump</span></div>
+                <div class="carousel-card" style="--card-color: #06d6a0"><span>The Matrix</span></div>
+                <div class="carousel-card" style="--card-color: #ffd166"><span>Se7en</span></div>
+              </div>
+            </div>
+            <div class="hero-lv-meta">
+              <div class="hero-lv-count hero-lv-count--beg">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="3"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+                <strong>5</strong> scenes
+              </div>
+              <div class="hero-lv-status hero-lv-status--open">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 11V7a5 5 0 0 1 10 0v4"/><rect x="3" y="11" width="18" height="11" rx="2"/></svg>
+                Open
+              </div>
+            </div>
+          </div>
+          <button class="hero-lv-cta hero-lv-cta--beg">
+            Explore Level
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+          </button>
         </div>
-        <div class="hero-card hc-2">
-          <div class="hc-movie">Fight Club</div>
-          <div class="hc-quote">"You know what a duvet is?"</div>
-          <div class="hc-score"><span>81</span><sup>%</sup></div>
-          <div class="hc-label">Sync Score</div>
+
+        <!-- Level 2 — Intermediate -->
+        <div class="hero-lv hero-lv--int" onclick="openLevelPanel(2)">
+          <div class="hero-lv-top">
+            <span class="hero-lv-tag hero-lv-tag--int">Intermediate</span>
+            <span class="hero-lv-num">02</span>
+          </div>
+          <div class="hero-lv-body">
+            <h3 class="hero-lv-name">LEVEL 2</h3>
+            <p class="hero-lv-desc">Rhythm and emotion start to matter. Longer lines, nuanced delivery.</p>
+            <div class="hero-lv-carousel">
+              <div class="carousel-track">
+                <div class="carousel-card" style="--card-color: #ff6b35"><span>Heat</span></div>
+                <div class="carousel-card" style="--card-color: #a855f7"><span>The Avengers</span></div>
+                <div class="carousel-card" style="--card-color: #06b6d4"><span>Titanic</span></div>
+                <div class="carousel-card" style="--card-color: #f43f5e"><span>Basic Instinct</span></div>
+                <div class="carousel-card" style="--card-color: #8b5cf6"><span>The Sixth Sense</span></div>
+                <div class="carousel-card" style="--card-color: #ef4444"><span>The Terminator</span></div>
+              </div>
+            </div>
+            <div class="hero-lv-meta">
+              <div class="hero-lv-count hero-lv-count--int">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="3"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+                <strong>6</strong> scenes
+              </div>
+              <div class="hero-lv-status">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                Unlock at 60%
+              </div>
+            </div>
+          </div>
+          <button class="hero-lv-cta hero-lv-cta--int locked">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Locked
+          </button>
         </div>
-        <div class="hero-card hc-3">
-          <div class="hc-movie">Se7en</div>
-          <div class="hc-quote">"What's in the box?"</div>
-          <div class="hc-score"><span>76</span><sup>%</sup></div>
-          <div class="hc-label">Sync Score</div>
+
+        <!-- Level 3 — Advanced -->
+        <div class="hero-lv hero-lv--adv" onclick="openLevelPanel(3)">
+          <div class="hero-lv-top">
+            <span class="hero-lv-tag hero-lv-tag--adv">Advanced</span>
+            <span class="hero-lv-num">03</span>
+          </div>
+          <div class="hero-lv-body">
+            <h3 class="hero-lv-name">LEVEL 3</h3>
+            <p class="hero-lv-desc">Accent precision and raw delivery. Only the sharpest speakers survive.</p>
+            <div class="hero-lv-carousel">
+              <div class="carousel-track">
+                <div class="carousel-card" style="--card-color: #3b82f6"><span>Taken</span></div>
+              </div>
+            </div>
+            <div class="hero-lv-meta">
+              <div class="hero-lv-count hero-lv-count--adv">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="3"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
+                <strong>1</strong> scene
+              </div>
+              <div class="hero-lv-status">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                Unlock at 70%
+              </div>
+            </div>
+          </div>
+          <button class="hero-lv-cta hero-lv-cta--adv locked">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            Locked
+          </button>
         </div>
+
       </div>
 
     </div>
@@ -2220,7 +2658,28 @@ header {
     </div>
 
     <p class="section-label">Choose a scene</p>
-    <div class="scenes-grid" id="scenesGrid"></div>
+    <div id="scenesGrid">
+      <div class="level-group" id="groupBeginner">
+        <div class="level-group-header">
+          <span class="level-group-title beginner">Beginner</span>
+        </div>
+        <div class="scenes-grid" id="gridBeginner"></div>
+      </div>
+      <div class="level-group" id="groupIntermediate">
+        <div class="level-group-header">
+          <span class="level-group-title intermediate">Intermediate</span>
+          <span class="level-group-lock" id="lockIntermediate"></span>
+        </div>
+        <div class="scenes-grid" id="gridIntermediate"></div>
+      </div>
+      <div class="level-group" id="groupAdvanced">
+        <div class="level-group-header">
+          <span class="level-group-title advanced">Advanced</span>
+          <span class="level-group-lock" id="lockAdvanced"></span>
+        </div>
+        <div class="scenes-grid" id="gridAdvanced"></div>
+      </div>
+    </div>
 
     <p class="section-label">Top 10 per scene</p>
     <div class="lb-tabs"  id="lbTabs"></div>
@@ -2872,9 +3331,25 @@ async function loadScenes() {
 }
 
 function renderCards() {
-  const grid = document.getElementById('scenesGrid');
-  grid.innerHTML = '';
-  for (const [id, s] of Object.entries(scenes)) grid.appendChild(makeCard(id, s));
+  const grids = {
+    Beginner:     document.getElementById('gridBeginner'),
+    Intermediate: document.getElementById('gridIntermediate'),
+    Advanced:     document.getElementById('gridAdvanced'),
+  };
+  // Clear all grids
+  Object.values(grids).forEach(g => { if (g) g.innerHTML = ''; });
+
+  for (const [id, s] of Object.entries(scenes)) {
+    const target = grids[s.difficulty] || grids.Beginner;
+    target.appendChild(makeCard(id, s));
+  }
+
+  // Show unlock hint on locked level headers
+  const nextLevel = userProgress.next_level;
+  const lockInter = document.getElementById('lockIntermediate');
+  const lockAdv   = document.getElementById('lockAdvanced');
+  if (lockInter) lockInter.textContent = userProgress.level >= 2 ? '' : 'Unlock at 60%';
+  if (lockAdv)   lockAdv.textContent   = userProgress.level >= 3 ? '' : 'Unlock at 70%';
 }
 
 function makeCard(id, s) {
@@ -4242,8 +4717,11 @@ function openLevelPanel(level) {
     const right  = locked
       ? `<svg class="clv-clip-lock" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`
       : (pb ? `<span class="clv-clip-pb">${pb}%</span>` : `<span class="clv-clip-play">&#9654;</span>`);
-    return `<div class="clv-clip-row${locked ? ' locked' : ''}"${locked ? '' : ` onclick="selectScene('${sid}')"`}>
+    const color = CARD_COLORS[sid] ? `${CARD_COLORS[sid]}99` : 'rgba(201,168,76,.6)';
+    return `<div class="clv-clip-row${locked ? ' locked' : ''}" style="--c:${color}"${locked ? '' : ` onclick="selectScene('${sid}')"`}>
+      <div class="clv-clip-accent"></div>
       <div class="clv-clip-info">
+        ${s.year ? `<span class="clv-clip-year">${s.year}</span>` : ''}
         <div class="clv-clip-movie">${s.movie || sid}</div>
         <div class="clv-clip-quote">&ldquo;${quote}&rdquo;</div>
       </div>
