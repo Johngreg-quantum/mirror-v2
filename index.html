@@ -2736,20 +2736,6 @@ header {
       </div>
     </div>
 
-    <!-- Level detail panel -->
-    <div class="clv-panel" id="clvPanel">
-      <div class="clv-panel-inner">
-        <button class="clv-panel-close" onclick="closeLevelPanel()">&#x2715;</button>
-        <div class="clv-panel-header">
-          <span class="clv-panel-badge" id="clvPanelBadge"></span>
-          <h3 class="clv-panel-title" id="clvPanelTitle"></h3>
-          <p class="clv-panel-sub" id="clvPanelSub"></p>
-        </div>
-        <div class="clv-clip-list" id="clvClipList"></div>
-        <button class="clv-panel-play-btn" id="clvPanelPlayBtn">&#9654; Start Level</button>
-      </div>
-    </div>
-    <div class="clv-panel-backdrop" id="clvPanelBackdrop" onclick="closeLevelPanel()"></div>
 
   </section>
 
@@ -3432,6 +3418,21 @@ header {
     </div>
   </div>
 </div>
+
+<!-- Level detail panel (shared between auth + app screens) -->
+<div class="clv-panel" id="clvPanel">
+  <div class="clv-panel-inner">
+    <button class="clv-panel-close" onclick="closeLevelPanel()">&#x2715;</button>
+    <div class="clv-panel-header">
+      <span class="clv-panel-badge" id="clvPanelBadge"></span>
+      <h3 class="clv-panel-title" id="clvPanelTitle"></h3>
+      <p class="clv-panel-sub" id="clvPanelSub"></p>
+    </div>
+    <div class="clv-clip-list" id="clvClipList"></div>
+    <button class="clv-panel-play-btn" id="clvPanelPlayBtn">&#9654; Start Level</button>
+  </div>
+</div>
+<div class="clv-panel-backdrop" id="clvPanelBackdrop" onclick="closeLevelPanel()"></div>
 
 <script>
 // ══════════════════════════════════════════════
