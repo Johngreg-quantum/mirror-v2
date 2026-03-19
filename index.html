@@ -455,7 +455,7 @@ body::after {
   width: 90px;
   height: 56px;
   border-radius: 8px;
-  background: linear-gradient(135deg, var(--card-color) 0%, color-mix(in srgb, var(--card-color) 40%, #000) 100%);
+  background: linear-gradient(135deg, var(--card-color, #222) 0%, color-mix(in srgb, var(--card-color, #111) 40%, #000) 100%);
   border: 1px solid rgba(255,255,255,0.08);
   display: flex;
   align-items: flex-end;
@@ -465,26 +465,37 @@ body::after {
   box-shadow: 0 4px 16px rgba(0,0,0,0.4);
   transition: transform 0.4s ease, opacity 0.4s ease;
   transform-style: preserve-3d;
+  overflow: hidden;
+}
+
+.carousel-card img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 8px;
 }
 
 .carousel-card span {
+  position: relative;
+  z-index: 2;
   font-family: 'Bebas Neue', cursive;
   font-size: 10px;
   letter-spacing: 0.06em;
-  color: rgba(255,255,255,0.85);
+  color: rgba(255,255,255,0.9);
   line-height: 1.15;
-  text-shadow: 0 1px 3px rgba(0,0,0,0.6);
+  text-shadow: 0 1px 4px rgba(0,0,0,0.8);
 }
 
-/* Glow bar at top of each mini card */
+/* Bottom-fade overlay so title is readable over poster image */
 .carousel-card::before {
   content: '';
   position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 2px;
-  background: var(--card-color);
-  border-radius: 8px 8px 0 0;
-  opacity: 0.7;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.7) 100%);
+  border-radius: 8px;
+  z-index: 1;
 }
 
 /* Hover: lift the whole carousel slightly */
@@ -2504,11 +2515,11 @@ header {
             <p class="hero-lv-desc">Short, clear lines. Build confidence on camera with simple scenes.</p>
             <div class="hero-lv-carousel">
               <div class="carousel-track">
-                <div class="carousel-card" style="--card-color: #e63946"><span>Fight Club</span></div>
-                <div class="carousel-card" style="--card-color: #4895ef"><span>Back to the Future</span></div>
-                <div class="carousel-card" style="--card-color: #f4a261"><span>Forrest Gump</span></div>
-                <div class="carousel-card" style="--card-color: #06d6a0"><span>The Matrix</span></div>
-                <div class="carousel-card" style="--card-color: #ffd166"><span>Se7en</span></div>
+                <div class="carousel-card"><img src="/static/posters/fight_club.jpg" alt="Fight Club"><span>Fight Club</span></div>
+                <div class="carousel-card"><img src="/static/posters/back_to_the_future.jpg" alt="Back to the Future"><span>Back to the Future</span></div>
+                <div class="carousel-card"><img src="/static/posters/forrest_gump.jpg" alt="Forrest Gump"><span>Forrest Gump</span></div>
+                <div class="carousel-card"><img src="/static/posters/the_matrix.jpg" alt="The Matrix"><span>The Matrix</span></div>
+                <div class="carousel-card"><img src="/static/posters/seven.jpg" alt="Se7en"><span>Se7en</span></div>
               </div>
             </div>
             <div class="hero-lv-meta">
@@ -2539,12 +2550,11 @@ header {
             <p class="hero-lv-desc">Rhythm and emotion start to matter. Longer lines, nuanced delivery.</p>
             <div class="hero-lv-carousel">
               <div class="carousel-track">
-                <div class="carousel-card" style="--card-color: #ff6b35"><span>Heat</span></div>
-                <div class="carousel-card" style="--card-color: #a855f7"><span>The Avengers</span></div>
-                <div class="carousel-card" style="--card-color: #06b6d4"><span>Titanic</span></div>
-                <div class="carousel-card" style="--card-color: #f43f5e"><span>Basic Instinct</span></div>
-                <div class="carousel-card" style="--card-color: #8b5cf6"><span>The Sixth Sense</span></div>
-                <div class="carousel-card" style="--card-color: #ef4444"><span>The Terminator</span></div>
+                <div class="carousel-card"><img src="/static/posters/heat.jpg" alt="Heat"><span>Heat</span></div>
+                <div class="carousel-card"><img src="/static/posters/avengers.jpg" alt="The Avengers"><span>The Avengers</span></div>
+                <div class="carousel-card"><img src="/static/posters/titanic.jpg" alt="Titanic"><span>Titanic</span></div>
+                <div class="carousel-card"><img src="/static/posters/sixth_sense.jpg" alt="The Sixth Sense"><span>The Sixth Sense</span></div>
+                <div class="carousel-card"><img src="/static/posters/terminator.jpg" alt="The Terminator"><span>The Terminator</span></div>
               </div>
             </div>
             <div class="hero-lv-meta">
