@@ -185,80 +185,102 @@ body::after {
   display: flex;
   align-items: center;
   overflow: hidden;
-  padding: 130px 32px 80px;
+  padding: 130px 40px 80px;
 }
 .hero-grid-bg {
   position: absolute; inset: 0;
   background-image:
-    linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
+    linear-gradient(rgba(201,168,76,0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201,168,76,0.035) 1px, transparent 1px);
   background-size: 64px 64px;
 }
 .hero-glow {
   position: absolute;
-  top: 10%; left: 50%;
-  transform: translateX(-50%);
-  width: 900px; height: 600px;
-  background: radial-gradient(ellipse, rgba(201,168,76,0.09) 0%, transparent 65%);
+  top: 8%; left: 42%;
+  width: 900px; height: 700px;
+  background: radial-gradient(ellipse, rgba(201,168,76,0.09) 0%, transparent 60%);
   pointer-events: none;
 }
-
-/* ── New centered layout ── */
-.hero-content--levels {
+.hero-glow-2 {
+  position: absolute;
+  bottom: 0; right: 5%;
+  width: 600px; height: 500px;
+  background: radial-gradient(ellipse, rgba(6,214,160,0.025) 0%, transparent 60%);
+  pointer-events: none;
+}
+.hero-content {
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1.15fr 0.85fr;
+  gap: 72px;
   align-items: center;
   position: relative;
 }
 
-.hero-text--center { text-align: center; margin-bottom: 56px; }
-
+/* ── Hero Text (left) ── */
 .hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
   font-size: 11px; font-weight: 600;
-  letter-spacing: 0.44em; text-transform: uppercase;
-  color: var(--gold); margin-bottom: 20px;
+  letter-spacing: 0.42em; text-transform: uppercase;
+  color: var(--gold); margin-bottom: 28px;
+  opacity: 0;
+  animation: heroFadeUp 0.7s ease forwards 0.1s;
+}
+.hero-eyebrow::before,
+.hero-eyebrow::after {
+  content: '';
+  width: 24px; height: 1px;
+  background: var(--gold);
+  opacity: 0.3;
 }
 .hero-title {
   font-family: 'Bebas Neue', cursive;
-  font-size: clamp(64px, 9vw, 120px);
-  line-height: 0.92;
-  letter-spacing: 0.04em;
+  font-size: clamp(76px, 9vw, 102px);
+  line-height: 0.88;
+  letter-spacing: 0.025em;
   color: var(--text);
-  text-shadow: 0 0 140px rgba(201,168,76,.12);
-  margin-bottom: 22px;
+  text-shadow: 0 0 120px rgba(201,168,76,.08);
+  margin-bottom: 8px;
+  opacity: 0;
+  animation: heroFadeUp 0.7s ease forwards 0.25s;
 }
-.hero-title-gold { color: var(--gold); }
-
-.hero-subtitle--levels {
-  font-family: 'DM Sans', sans-serif;
-  font-size: clamp(14px, 1.6vw, 16px);
-  font-style: normal;
-  color: var(--muted);
-  line-height: 1.65;
-  margin-bottom: 36px;
-  max-width: 480px;
-  margin-left: auto;
-  margin-right: auto;
+.hero-title-gold {
+  display: block;
+  color: var(--gold);
+  font-size: clamp(88px, 10.5vw, 118px);
+  letter-spacing: 0.035em;
 }
-
-.hero-btns--center {
+.hero-subtitle {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(19px, 2.2vw, 23px);
+  font-style: italic;
+  color: rgba(201,168,76,0.6);
+  line-height: 1.6;
+  margin-bottom: 42px;
+  max-width: 420px;
+  opacity: 0;
+  animation: heroFadeUp 0.7s ease forwards 0.4s;
+}
+.hero-btns {
   display: flex;
   gap: 14px;
   flex-wrap: wrap;
-  justify-content: center;
+  margin-bottom: 48px;
+  opacity: 0;
+  animation: heroFadeUp 0.7s ease forwards 0.55s;
 }
-
 .hero-btn {
   display: inline-flex;
   align-items: center;
   gap: 9px;
-  padding: 15px 32px;
+  padding: 16px 38px;
   border-radius: 8px;
   font-family: 'DM Sans', sans-serif;
-  font-size: 14px; font-weight: 600;
+  font-size: 15px; font-weight: 700;
   text-decoration: none;
   cursor: none;
   transition: all 0.25s;
@@ -267,361 +289,163 @@ body::after {
 }
 .hero-btn--primary {
   background: var(--gold); color: #000;
+  box-shadow: 0 4px 28px rgba(201,168,76,.22);
+  letter-spacing: 0.02em;
 }
 .hero-btn--primary:hover {
-  filter: brightness(1.1);
+  filter: brightness(1.08);
   transform: translateY(-2px);
-  box-shadow: 0 14px 44px rgba(201,168,76,.28);
+  box-shadow: 0 12px 44px rgba(201,168,76,.32);
 }
 .hero-btn--ghost {
   background: transparent; color: var(--text);
   border: 1px solid var(--border);
+  font-weight: 500; font-size: 14px;
+  padding: 16px 28px;
 }
 .hero-btn--ghost:hover {
-  border-color: rgba(255,255,255,.24);
-  background: rgba(255,255,255,.04);
+  border-color: rgba(255,255,255,.22);
+  background: rgba(255,255,255,.03);
   transform: translateY(-2px);
 }
 
-/* ══ HERO LEVEL CARDS ══ */
-.hero-levels {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
-  width: 100%;
-}
-
-.hero-lv {
-  position: relative;
-  background: var(--surface);
-  border-radius: 16px;
-  padding: 28px 24px 24px;
-  border: 1px solid var(--border);
-  cursor: pointer;
-  transition: all 0.4s cubic-bezier(0.23, 1, 0.32, 1);
-  overflow: hidden;
+/* ── Social Proof ── */
+.social-proof {
   display: flex;
-  flex-direction: column;
-}
-
-/* Top accent line */
-.hero-lv::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 24px; right: 24px;
-  height: 1px;
-  transition: all 0.4s ease;
+  align-items: center;
+  gap: 14px;
   opacity: 0;
+  animation: heroFadeUp 0.7s ease forwards 0.7s;
 }
-
-/* Background glow on hover */
-.hero-lv::after {
-  content: '';
-  position: absolute;
-  top: -50%; left: -20%; right: -20%;
-  height: 120%;
+.proof-avatars { display: flex; }
+.proof-avatar {
+  width: 32px; height: 32px;
   border-radius: 50%;
-  opacity: 0;
-  transition: opacity 0.5s ease;
-  pointer-events: none;
-  filter: blur(40px);
-}
-
-/* ── Beginner — Green (matches --green / PR score badges) ── */
-.hero-lv--beg::before { background: var(--green); }
-.hero-lv--beg::after { background: rgba(6,214,160,0.05); }
-.hero-lv--beg:hover {
-  border-color: rgba(6,214,160,0.2);
-  transform: translateY(-4px);
-  background: #141418;
-}
-.hero-lv--beg:hover::before { opacity: 1; height: 2px; left: 0; right: 0; border-radius: 16px 16px 0 0; }
-.hero-lv--beg:hover::after { opacity: 1; }
-.hero-lv--beg .hero-lv-num { color: var(--green); }
-.hero-lv-tag--beg { background: rgba(6,214,160,0.1); color: var(--green); border: 1px solid rgba(6,214,160,0.2); }
-.hero-lv--beg .hero-lv-status--open { color: var(--green); }
-.hero-lv-count--beg strong { color: var(--green); }
-.hero-lv-cta--beg { background: rgba(6,214,160,0.1); color: var(--green); border: 1px solid rgba(6,214,160,0.2); }
-.hero-lv--beg:hover .hero-lv-cta--beg { background: rgba(6,214,160,0.18); }
-
-/* ── Intermediate — Gold (site's signature accent --gold) ── */
-.hero-lv--int::before { background: var(--gold); }
-.hero-lv--int::after { background: rgba(201,168,76,0.05); }
-.hero-lv--int:hover {
-  border-color: rgba(201,168,76,0.22);
-  transform: translateY(-4px);
-  background: #141418;
-}
-.hero-lv--int:hover::before { opacity: 1; height: 2px; left: 0; right: 0; border-radius: 16px 16px 0 0; }
-.hero-lv--int:hover::after { opacity: 1; }
-.hero-lv--int .hero-lv-num { color: var(--gold); }
-.hero-lv-tag--int { background: rgba(201,168,76,0.1); color: var(--gold); border: 1px solid rgba(201,168,76,0.22); }
-.hero-lv-count--int strong { color: var(--gold); }
-.hero-lv--int .lock-icon { color: var(--gold); }
-.hero-lv-cta--int { background: rgba(201,168,76,0.1); color: var(--gold); border: 1px solid rgba(201,168,76,0.22); }
-.hero-lv--int:hover .hero-lv-cta--int { background: rgba(201,168,76,0.18); }
-
-/* ── Advanced — Red (matches --red accent) ── */
-.hero-lv--adv::before { background: var(--red); }
-.hero-lv--adv::after { background: rgba(230,57,70,0.04); }
-.hero-lv--adv:hover {
-  border-color: rgba(230,57,70,0.18);
-  transform: translateY(-4px);
-  background: #141418;
-}
-.hero-lv--adv:hover::before { opacity: 1; height: 2px; left: 0; right: 0; border-radius: 16px 16px 0 0; }
-.hero-lv--adv:hover::after { opacity: 1; }
-.hero-lv--adv .hero-lv-num { color: var(--red); }
-.hero-lv-tag--adv { background: rgba(230,57,70,0.1); color: var(--red); border: 1px solid rgba(230,57,70,0.18); }
-.hero-lv-count--adv strong { color: var(--red); }
-.hero-lv--adv .lock-icon { color: var(--red); }
-.hero-lv-cta--adv { background: rgba(230,57,70,0.1); color: var(--red); border: 1px solid rgba(230,57,70,0.18); }
-.hero-lv--adv:hover .hero-lv-cta--adv { background: rgba(230,57,70,0.18); }
-
-/* ── Card internals ── */
-.hero-lv-top {
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  position: relative;
-  z-index: 1;
-}
-
-.hero-lv-num {
-  font-family: 'Bebas Neue', cursive;
-  font-size: 48px;
-  line-height: 1;
-  opacity: 0.12;
-  position: absolute;
-  top: -6px; right: 0;
-}
-
-.hero-lv-tag {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 1.5px;
-  text-transform: uppercase;
-  padding: 4px 12px;
-  border-radius: 4px;
-}
-
-.hero-lv-body {
-  flex: 1;
-  position: relative;
-  z-index: 1;
-}
-
-.hero-lv-name {
-  font-family: 'Bebas Neue', cursive;
-  font-size: 28px;
-  letter-spacing: 0.08em;
-  color: var(--text);
-  margin-bottom: 8px;
-  line-height: 1.1;
-}
-
-.hero-lv-desc {
-  font-size: 13px;
-  font-weight: 400;
-  color: var(--muted);
-  line-height: 1.6;
-  margin-bottom: 22px;
-}
-
-/* Scene thumbnails */
-/* ── Mini Carousel ── */
-.hero-lv-carousel {
-  position: relative;
-  height: 72px;
-  margin-bottom: 18px;
-  overflow: hidden;
-  perspective: 400px;
-  mask-image: linear-gradient(90deg, transparent 0%, black 20%, black 80%, transparent 100%);
-  -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 20%, black 80%, transparent 100%);
-}
-
-.carousel-track {
+  border: 2px solid var(--bg);
+  margin-left: -8px;
+  background: var(--av, #2a2a2a);
   display: flex;
   align-items: center;
   justify-content: center;
-  height: 100%;
-  gap: 8px;
-  animation: carousel-slide var(--carousel-dur, 12s) ease-in-out infinite alternate;
+  font-size: 10px; font-weight: 600;
+  color: rgba(255,255,255,0.6);
 }
+.proof-avatar:first-child { margin-left: 0; }
+.proof-text {
+  font-size: 12px;
+  color: #555;
+  line-height: 1.5;
+}
+.proof-text strong { color: #999; font-weight: 500; }
 
-.carousel-card {
-  flex-shrink: 0;
-  width: 90px;
-  height: 56px;
-  border-radius: 8px;
-  background: linear-gradient(135deg, var(--card-color, #222) 0%, color-mix(in srgb, var(--card-color, #111) 40%, #000) 100%);
-  border: 1px solid rgba(255,255,255,0.08);
-  display: flex;
-  align-items: flex-end;
-  justify-content: flex-start;
-  padding: 6px 8px;
+/* ── Hero Visual (right side) ── */
+.hero-visual {
   position: relative;
-  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
-  transition: transform 0.4s ease, opacity 0.4s ease;
-  transform-style: preserve-3d;
-  overflow: hidden;
+  height: 540px;
+  opacity: 0;
+  animation: heroFadeUp 0.8s ease forwards 0.5s;
 }
 
-.carousel-card img {
+/* Poster fan stack */
+.poster-fan {
   position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
+  top: 50%; left: 50%;
+  transform: translate(-38%, -50%);
+  width: 280px; height: 360px;
+  z-index: 3;
+}
+.pf-card {
+  position: absolute;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid rgba(255,255,255,0.1);
+  box-shadow: 0 16px 48px rgba(0,0,0,0.6);
+}
+.pf-card img {
+  width: 100%; height: 100%;
   object-fit: cover;
-  border-radius: 8px;
+  display: block;
 }
-
-.carousel-card span {
-  position: relative;
-  z-index: 2;
-  font-family: 'Bebas Neue', cursive;
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  color: rgba(255,255,255,0.9);
-  line-height: 1.15;
-  text-shadow: 0 1px 4px rgba(0,0,0,0.8);
+.pf-card::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.55) 100%);
 }
+.pf-1 { width: 125px; height: 185px; top: 55px; left: -55px; transform: rotate(-10deg) scale(0.82); opacity: 0.4; z-index: 1; }
+.pf-2 { width: 135px; height: 200px; top: 30px; left: 5px;   transform: rotate(-4.5deg) scale(0.91); opacity: 0.68; z-index: 2; }
+.pf-3 { width: 158px; height: 232px; top: 8px;  left: 60px;  transform: rotate(1.5deg); z-index: 4; box-shadow: 0 24px 64px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,255,255,0.12); }
+.pf-4 { width: 135px; height: 200px; top: 30px; left: 150px; transform: rotate(6deg) scale(0.91); opacity: 0.68; z-index: 2; }
+.pf-5 { width: 125px; height: 185px; top: 55px; left: 200px; transform: rotate(11deg) scale(0.82); opacity: 0.4; z-index: 1; }
 
-/* Bottom-fade overlay so title is readable over poster image */
-.carousel-card::before {
+/* Floating score cards */
+.float-card {
+  position: absolute;
+  background: rgba(17,17,17,0.92);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 18px 22px;
+  box-shadow: 0 20px 52px rgba(0,0,0,0.55);
+  z-index: 6;
+}
+.float-card::before {
   content: '';
   position: absolute;
-  inset: 0;
-  background: linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.7) 100%);
-  border-radius: 8px;
-  z-index: 1;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  border-radius: 14px 14px 0 0;
+}
+.fc-movie {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 15px; letter-spacing: 0.1em;
+  margin-bottom: 4px;
+}
+.fc-quote {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 12px; font-style: italic;
+  color: var(--muted); line-height: 1.4; margin-bottom: 14px;
+}
+.fc-score {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 42px; line-height: 1;
+}
+.fc-score sup { font-size: 18px; opacity: 0.6; }
+.fc-label {
+  font-size: 8px; letter-spacing: 0.24em;
+  text-transform: uppercase; color: var(--muted); margin-top: 2px;
 }
 
-/* Hover: lift the whole carousel slightly */
-.hero-lv:hover .carousel-card {
-  box-shadow: 0 6px 20px rgba(0,0,0,0.55);
+.fc-1 {
+  top: 15px; right: 30px; width: 180px;
+  animation: heroFloat1 4.5s ease-in-out infinite;
 }
+.fc-1::before { background: var(--green); }
+.fc-1 .fc-movie { color: var(--green); }
+.fc-1 .fc-score { color: var(--green); }
 
-/* Slide animation — track slides left then right */
-@keyframes carousel-slide {
-  0%   { transform: translateX(20px); }
-  100% { transform: translateX(-20px); }
+.fc-2 {
+  bottom: 75px; right: -5px; width: 192px;
+  animation: heroFloat2 5.5s ease-in-out infinite 0.5s;
 }
+.fc-2::before { background: var(--gold); }
+.fc-2 .fc-movie { color: var(--gold); }
+.fc-2 .fc-score { color: var(--gold); }
 
-/* Level 1: 5 cards — wider travel */
-.hero-lv--beg .carousel-track { --carousel-dur: 10s; }
-.hero-lv--beg .carousel-track {
-  animation-name: carousel-slide-5;
+.fc-3 {
+  top: 200px; left: -25px; width: 170px;
+  animation: heroFloat3 4s ease-in-out infinite 1s;
 }
-@keyframes carousel-slide-5 {
-  0%   { transform: translateX(40px); }
-  100% { transform: translateX(-40px); }
-}
+.fc-3::before { background: #ffd166; }
+.fc-3 .fc-movie { color: #ffd166; }
+.fc-3 .fc-score { color: #ffd166; }
 
-/* Level 2: 6 cards — widest travel */
-.hero-lv--int .carousel-track { --carousel-dur: 14s; }
-.hero-lv--int .carousel-track {
-  animation-name: carousel-slide-6;
-}
-@keyframes carousel-slide-6 {
-  0%   { transform: translateX(60px); }
-  100% { transform: translateX(-60px); }
-}
-
-/* Level 3: 1 card — gentle float instead of slide */
-.hero-lv--adv .carousel-track {
-  animation-name: carousel-float;
-  --carousel-dur: 3s;
-}
-.hero-lv--adv .carousel-card {
-  width: 110px;
-  height: 64px;
-}
-@keyframes carousel-float {
-  0%   { transform: translateY(0px) scale(1); }
-  50%  { transform: translateY(-4px) scale(1.03); }
-  100% { transform: translateY(0px) scale(1); }
-}
-
-/* Pause animation on hover for polish */
-.hero-lv:hover .carousel-track {
-  animation-play-state: paused;
-}
-
-/* Meta row */
-.hero-lv-meta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 20px;
-  padding-top: 14px;
-  border-top: 1px solid var(--border);
-}
-
-.hero-lv-count {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 12px;
-  color: rgba(255,255,255,0.3);
-}
-.hero-lv-count svg { opacity: 0.4; }
-
-.hero-lv-status {
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-size: 11px;
-  font-weight: 500;
-  color: rgba(255,255,255,0.3);
-  letter-spacing: 0.3px;
-}
-.hero-lv-status--open { color: var(--green); }
-
-/* CTA button */
-.hero-lv-cta {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  width: 100%;
-  padding: 12px;
-  border: none;
-  border-radius: 6px;
-  font-family: 'DM Sans', sans-serif;
-  font-weight: 600;
-  font-size: 12px;
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  z-index: 1;
-}
-.hero-lv-cta svg {
-  transition: transform 0.3s ease;
-}
-.hero-lv:hover .hero-lv-cta svg {
-  transform: translateX(3px);
-}
-.hero-lv-cta.locked {
-  opacity: 0.7;
-  cursor: default;
-}
-.hero-lv-cta.locked svg {
-  transform: none !important;
-}
-
-/* ── Responsive ── */
-@media (max-width: 768px) {
-  .hero-levels {
-    grid-template-columns: 1fr;
-    max-width: 400px;
-    margin: 0 auto;
-    gap: 16px;
-  }
-  .hero-lv { padding: 24px 20px 20px; }
+@keyframes heroFloat1 { 0%,100%{transform:translateY(0) rotate(-1.5deg)}   50%{transform:translateY(-14px) rotate(0.5deg)} }
+@keyframes heroFloat2 { 0%,100%{transform:translateY(0) rotate(0.5deg)}    50%{transform:translateY(-18px) rotate(-1deg)} }
+@keyframes heroFloat3 { 0%,100%{transform:translateY(0) rotate(1.5deg)}    50%{transform:translateY(-10px) rotate(-0.5deg)} }
+@keyframes heroFadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
 /* ═══════════════════════════════════════════════
@@ -1410,7 +1234,9 @@ header {
 }
 
 @media (max-width: 768px) {
-  .hero-content--levels { align-items: center; }
+  .hero-content { grid-template-columns: 1fr; gap: 40px; }
+  .hero-visual { height: 400px; }
+  .poster-fan { transform: translate(-50%, -50%); }
   .hiw-grid { grid-template-columns: 1fr; }
   .pricing-grid { grid-template-columns: 1fr; max-width: 480px; }
 
@@ -1444,7 +1270,13 @@ header {
 
   .auth-modal-box { padding: 32px 20px; }
   .hero { padding: 100px 20px 60px; }
-  .hero-title { font-size: clamp(52px, 16vw, 80px); }
+  .hero-title { font-size: clamp(56px, 14vw, 76px); }
+  .hero-visual { height: 340px; }
+  .poster-fan { width: 220px; }
+  .pf-3 { width: 120px; height: 180px; }
+  .float-card { display: none; }
+  .hero-btns { flex-direction: column; gap: 10px; }
+  .hero-btn--primary, .hero-btn--ghost { width: 100%; justify-content: center; }
   .section-wrap { padding: 0 20px; }
   .hiw-section, .levels-section, .pricing-section { padding: 80px 0; }
   .lvl-grid { grid-template-columns: 1fr; }
@@ -2487,124 +2319,60 @@ header {
   <section class="hero">
     <div class="hero-grid-bg"></div>
     <div class="hero-glow"></div>
-    <div class="hero-content hero-content--levels">
+    <div class="hero-glow-2"></div>
+    <div class="hero-content">
 
-      <div class="hero-text hero-text--center">
+      <!-- LEFT: Text -->
+      <div class="hero-text">
         <p class="hero-eyebrow">AI-Powered Movie English</p>
-        <h1 class="hero-title">CHOOSE YOUR<br><span class="hero-title-gold">LEVEL</span></h1>
-        <p class="hero-subtitle hero-subtitle--levels">Pick a level, enter its scene library, and practice movie clips matched to your difficulty.</p>
-        <div class="hero-btns hero-btns--center">
-          <button class="hero-btn hero-btn--primary" id="heroStartBtn">Start Training</button>
+        <h1 class="hero-title">ACT THE<span class="hero-title-gold">SCENE.</span></h1>
+        <p class="hero-subtitle">Speak every line. Score every take.<br>Unlock every level.</p>
+        <div class="hero-btns">
+          <button class="hero-btn hero-btn--primary" id="heroStartBtn">Start for Free</button>
           <a href="#howItWorks" class="hero-btn hero-btn--ghost">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
             How It Works
           </a>
         </div>
+        <div class="social-proof">
+          <div class="proof-avatars">
+            <div class="proof-av" style="background:#4ade80">J</div>
+            <div class="proof-av" style="background:#60a5fa">M</div>
+            <div class="proof-av" style="background:#f472b6">A</div>
+            <div class="proof-av" style="background:#fb923c">K</div>
+          </div>
+          <div class="proof-text"><strong>50+ learners</strong> practicing now &mdash; join them</div>
+        </div>
       </div>
 
-      <div class="hero-levels">
-
-        <!-- Level 1 — Beginner -->
-        <div class="hero-lv hero-lv--beg" onclick="openLevelPanel(1)">
-          <div class="hero-lv-top">
-            <span class="hero-lv-tag hero-lv-tag--beg">Beginner</span>
-            <span class="hero-lv-num">01</span>
-          </div>
-          <div class="hero-lv-body">
-            <h3 class="hero-lv-name">LEVEL 1</h3>
-            <p class="hero-lv-desc">Short, clear lines. Build confidence on camera with simple scenes.</p>
-            <div class="hero-lv-carousel">
-              <div class="carousel-track">
-                <div class="carousel-card"><img src="/static/posters/fight_club.jpg" alt="Fight Club"><span>Fight Club</span></div>
-                <div class="carousel-card"><img src="/static/posters/back_to_the_future.jpg" alt="Back to the Future"><span>Back to the Future</span></div>
-                <div class="carousel-card"><img src="/static/posters/forrest_gump.jpg" alt="Forrest Gump"><span>Forrest Gump</span></div>
-                <div class="carousel-card"><img src="/static/posters/the_matrix.jpg" alt="The Matrix"><span>The Matrix</span></div>
-                <div class="carousel-card"><img src="/static/posters/seven.jpg" alt="Se7en"><span>Se7en</span></div>
-              </div>
-            </div>
-            <div class="hero-lv-meta">
-              <div class="hero-lv-count hero-lv-count--beg">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="3"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
-                <strong>5</strong> scenes
-              </div>
-              <div class="hero-lv-status hero-lv-status--open">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 11V7a5 5 0 0 1 10 0v4"/><rect x="3" y="11" width="18" height="11" rx="2"/></svg>
-                Open
-              </div>
-            </div>
-          </div>
-          <button class="hero-lv-cta hero-lv-cta--beg">
-            Explore Level
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
-          </button>
+      <!-- RIGHT: Visual -->
+      <div class="hero-visual">
+        <div class="poster-fan">
+          <div class="pf-card pf-1"><img src="/static/posters/heat.jpg" alt="Heat"></div>
+          <div class="pf-card pf-2"><img src="/static/posters/back_to_the_future.jpg" alt="Back to the Future"></div>
+          <div class="pf-card pf-3"><img src="/static/posters/forrest_gump.jpg" alt="Forrest Gump"></div>
+          <div class="pf-card pf-4"><img src="/static/posters/the_matrix.jpg" alt="The Matrix"></div>
+          <div class="pf-card pf-5"><img src="/static/posters/fight_club.jpg" alt="Fight Club"></div>
         </div>
 
-        <!-- Level 2 — Intermediate -->
-        <div class="hero-lv hero-lv--int" onclick="openLevelPanel(2)">
-          <div class="hero-lv-top">
-            <span class="hero-lv-tag hero-lv-tag--int">Intermediate</span>
-            <span class="hero-lv-num">02</span>
-          </div>
-          <div class="hero-lv-body">
-            <h3 class="hero-lv-name">LEVEL 2</h3>
-            <p class="hero-lv-desc">Rhythm and emotion start to matter. Longer lines, nuanced delivery.</p>
-            <div class="hero-lv-carousel">
-              <div class="carousel-track">
-                <div class="carousel-card"><img src="/static/posters/heat.jpg" alt="Heat"><span>Heat</span></div>
-                <div class="carousel-card"><img src="/static/posters/avengers.jpg" alt="The Avengers"><span>The Avengers</span></div>
-                <div class="carousel-card"><img src="/static/posters/titanic.jpg" alt="Titanic"><span>Titanic</span></div>
-                <div class="carousel-card"><img src="/static/posters/sixth_sense.jpg" alt="The Sixth Sense"><span>The Sixth Sense</span></div>
-                <div class="carousel-card"><img src="/static/posters/terminator.jpg" alt="The Terminator"><span>The Terminator</span></div>
-              </div>
-            </div>
-            <div class="hero-lv-meta">
-              <div class="hero-lv-count hero-lv-count--int">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="3"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
-                <strong>6</strong> scenes
-              </div>
-              <div class="hero-lv-status">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                Unlock at 60%
-              </div>
-            </div>
-          </div>
-          <button class="hero-lv-cta hero-lv-cta--int locked">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            Locked
-          </button>
+        <!-- Floating score cards -->
+        <div class="float-card fc-1">
+          <div class="fc-label">Your Score</div>
+          <div class="fc-value">94<span class="fc-unit">%</span></div>
+          <div class="fc-sub">Forrest Gump · Scene 3</div>
         </div>
-
-        <!-- Level 3 — Advanced -->
-        <div class="hero-lv hero-lv--adv" onclick="openLevelPanel(3)">
-          <div class="hero-lv-top">
-            <span class="hero-lv-tag hero-lv-tag--adv">Advanced</span>
-            <span class="hero-lv-num">03</span>
+        <div class="float-card fc-2">
+          <div class="fc-icon">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
           </div>
-          <div class="hero-lv-body">
-            <h3 class="hero-lv-name">LEVEL 3</h3>
-            <p class="hero-lv-desc">Accent precision and raw delivery. Only the sharpest speakers survive.</p>
-            <div class="hero-lv-carousel">
-              <div class="carousel-track">
-                <div class="carousel-card" style="--card-color: #3b82f6"><span>Taken</span></div>
-              </div>
-            </div>
-            <div class="hero-lv-meta">
-              <div class="hero-lv-count hero-lv-count--adv">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="3"/><polygon points="10 8 16 12 10 16 10 8"/></svg>
-                <strong>1</strong> scene
-              </div>
-              <div class="hero-lv-status">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-                Unlock at 70%
-              </div>
-            </div>
-          </div>
-          <button class="hero-lv-cta hero-lv-cta--adv locked">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-            Locked
-          </button>
+          <div class="fc-value-sm">Level 2</div>
+          <div class="fc-sub">Unlocked!</div>
         </div>
-
+        <div class="float-card fc-3">
+          <div class="fc-label">Streak</div>
+          <div class="fc-value">7<span class="fc-unit">d</span></div>
+          <div class="fc-sub">Keep it up</div>
+        </div>
       </div>
 
     </div>
