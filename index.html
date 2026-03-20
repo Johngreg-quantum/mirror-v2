@@ -2180,111 +2180,182 @@ header {
 }
 .clv-cta { font-size: 13px; font-weight: 600; color: #fff; letter-spacing: .04em; opacity: .75; transition: opacity .2s; }
 .clv-card:hover .clv-cta { opacity: 1; }
-/* ── LEVEL PANEL ── */
+/* ── LEVEL PANEL (Horizontal Scene Cards) ── */
 .clv-panel {
   position: fixed; bottom: 0;
   left: 50%; transform: translateX(-50%) translateY(100%);
-  width: min(540px, 100vw); max-height: 80vh;
+  width: min(900px, 96vw); max-height: 85vh;
   background: var(--surface); border-radius: 20px 20px 0 0;
+  border: 1px solid var(--border); border-bottom: none;
   z-index: 1200;
   transition: transform .4s cubic-bezier(.25,.46,.45,.94);
   display: flex; flex-direction: column;
 }
 .clv-panel.open { transform: translateX(-50%) translateY(0); }
-.clv-panel-inner { overflow-y: auto; padding: 24px 20px 36px; position: relative; }
-.clv-panel-close {
-  position: absolute; top: 16px; right: 16px;
-  background: rgba(255,255,255,.08); border: none; border-radius: 50%;
-  width: 32px; height: 32px; font-size: 14px; color: var(--muted);
-  cursor: pointer; display: flex; align-items: center; justify-content: center;
+.clv-panel-inner { overflow-y: auto; padding: 28px 32px 36px; position: relative; }
+
+/* Panel header */
+.clv-panel-head-row {
+  display: flex; align-items: flex-start; justify-content: space-between;
+  margin-bottom: 24px;
 }
-.clv-panel-header { margin-bottom: 20px; padding-right: 40px; }
+.clv-panel-head-left { display: flex; align-items: center; gap: 14px; }
+.clv-panel-num {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 48px; line-height: 1;
+  opacity: 0.12;
+}
+.clv-panel-close {
+  width: 36px; height: 36px; border-radius: 50%;
+  background: rgba(255,255,255,.06); border: none;
+  color: var(--muted); font-size: 15px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; transition: color 0.2s;
+}
+.clv-panel-close:hover { color: var(--text); }
+
 .clv-panel-badge {
   display: inline-block; font-size: 10px; font-weight: 700;
-  letter-spacing: .1em; text-transform: uppercase;
-  padding: 3px 8px; border-radius: 4px; border: 1px solid; margin-bottom: 8px;
+  letter-spacing: .12em; text-transform: uppercase;
+  padding: 4px 12px; border-radius: 4px; border: 1px solid; margin-bottom: 6px;
 }
-.clv-panel-badge.beg { color: var(--green); border-color: rgba(6,214,160,.4); background: rgba(6,214,160,.1); }
-.clv-panel-badge.int { color: var(--gold);  border-color: rgba(201,168,76,.4);  background: rgba(201,168,76,.1); }
-.clv-panel-badge.adv { color: #f4a261;      border-color: rgba(244,162,97,.4);  background: rgba(244,162,97,.1); }
-.clv-panel-title { font-size: 24px; font-weight: 800; color: var(--text); margin: 0 0 4px; }
-.clv-panel-sub   { font-size: 13px; color: var(--muted); margin: 0; }
-.clv-clip-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px; }
-.clv-clip-row {
-  display: flex; align-items: center; justify-content: space-between; gap: 14px;
-  background: rgba(255,255,255,.045);
-  border: 1px solid rgba(255,255,255,.09);
-  border-radius: 14px; padding: 16px 18px;
-  cursor: pointer; position: relative; overflow: hidden;
-  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-  transition: transform .22s ease, border-color .22s ease, box-shadow .22s ease, background .22s ease;
-}
-.clv-clip-row::before {
-  content: ''; position: absolute; inset: 0;
-  background: radial-gradient(ellipse at top left, var(--c, rgba(201,168,76,.12)) 0%, transparent 65%);
-  opacity: 0; transition: opacity .22s;
-}
-.clv-clip-row:hover:not(.locked) {
-  transform: translateY(-2px);
-  background: rgba(255,255,255,.07);
-  border-color: rgba(255,255,255,.18);
-  box-shadow: 0 8px 28px rgba(0,0,0,.45);
-}
-.clv-clip-row:hover:not(.locked)::before { opacity: 1; }
-.clv-clip-row.locked { opacity: .38; cursor: default; }
+.clv-panel-badge.beg { color: var(--green); border-color: rgba(6,214,160,.4); background: rgba(6,214,160,.12); }
+.clv-panel-badge.int { color: var(--gold);  border-color: rgba(201,168,76,.4);  background: rgba(201,168,76,.12); }
+.clv-panel-badge.adv { color: #f4a261;      border-color: rgba(244,162,97,.4);  background: rgba(244,162,97,.12); }
+.clv-panel-title { font-family: 'Bebas Neue', cursive; font-size: 28px; letter-spacing: 0.08em; color: var(--text); margin: 0; }
+.clv-panel-sub   { font-size: 13px; color: var(--muted); margin: 4px 0 0; }
+.clv-panel-meta  { display: flex; align-items: center; gap: 14px; margin-top: 8px; }
+.clv-panel-count { font-size: 12px; color: rgba(255,255,255,0.35); }
+.clv-panel-count strong { color: var(--green); font-size: 14px; }
+.clv-panel-avg   { font-size: 12px; color: var(--gold); font-weight: 600; }
 
-/* Accent left bar */
-.clv-clip-accent {
-  width: 3px; flex-shrink: 0; border-radius: 100px;
-  background: var(--c, rgba(201,168,76,.6));
-  align-self: stretch; min-height: 36px;
+/* Scene cards grid — horizontal */
+.clv-clip-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
 }
 
-.clv-clip-info  { flex: 1; min-width: 0; }
-.clv-clip-movie {
-  font-size: 14px; font-weight: 700; color: var(--text);
-  margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  letter-spacing: .01em;
+.sc-card {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.3s ease;
 }
-.clv-clip-year  { display: inline-block; font-size: 9px; font-weight: 600; letter-spacing: .14em;
-  text-transform: uppercase; color: rgba(255,255,255,.35); margin-bottom: 5px; }
-.clv-clip-quote {
-  font-size: 11px; color: var(--muted); font-style: italic;
-  white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.45;
+.sc-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255,255,255,0.15);
+  box-shadow: 0 16px 40px rgba(0,0,0,0.5);
 }
-.clv-clip-right { flex-shrink: 0; display: flex; align-items: center; }
-.clv-clip-pb {
-  font-size: 13px; font-weight: 800; color: var(--gold);
-  background: rgba(201,168,76,.12); border: 1px solid rgba(201,168,76,.28);
-  padding: 3px 9px; border-radius: 100px; letter-spacing: .03em;
+.sc-card.locked {
+  opacity: 0.4;
+  cursor: default;
 }
-.clv-clip-play {
-  width: 32px; height: 32px; border-radius: 50%;
-  background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.14);
+.sc-card.locked:hover {
+  transform: none;
+  border-color: var(--border);
+  box-shadow: none;
+}
+
+/* Poster area */
+.sc-poster {
+  position: relative;
+  aspect-ratio: 2/3;
+  overflow: hidden;
+  background: var(--surface-2);
+}
+.sc-poster img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+.sc-card:hover .sc-poster img { transform: scale(1.06); }
+.sc-card.locked:hover .sc-poster img { transform: none; }
+.sc-poster-ph { width: 100%; height: 100%; }
+.sc-poster-overlay {
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.75) 100%);
+}
+.sc-year {
+  position: absolute; top: 8px; left: 10px;
+  font-size: 9px; font-weight: 600; letter-spacing: 0.12em;
+  color: rgba(255,255,255,0.4); z-index: 2;
+}
+.sc-score {
+  position: absolute; top: 8px; right: 8px;
+  font-size: 11px; font-weight: 800;
+  padding: 2px 8px; border-radius: 100px;
+  letter-spacing: 0.03em; z-index: 2;
+  border: 1px solid;
+}
+.sc-lock-badge {
+  position: absolute; top: 8px; right: 8px;
+  color: rgba(255,255,255,0.3); z-index: 2;
+}
+.sc-play {
+  position: absolute; top: 50%; left: 50%;
+  transform: translate(-50%,-50%);
+  width: 40px; height: 40px; border-radius: 50%;
+  background: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.2);
   display: flex; align-items: center; justify-content: center;
-  font-size: 11px; color: rgba(255,255,255,.7);
-  transition: background .2s, border-color .2s;
+  opacity: 0; transition: opacity 0.3s; z-index: 2;
 }
-.clv-clip-row:hover:not(.locked) .clv-clip-play {
-  background: rgba(255,255,255,.15); border-color: rgba(255,255,255,.3);
+.sc-play svg { margin-left: 2px; }
+.sc-card:hover .sc-play { opacity: 1; }
+.sc-card.locked:hover .sc-play { opacity: 0; }
+
+/* Card info area */
+.sc-info { padding: 12px 14px 14px; }
+.sc-accent { width: 100%; height: 2px; border-radius: 1px; margin-bottom: 8px; }
+.sc-movie {
+  font-family: 'Bebas Neue', cursive;
+  font-size: 16px; letter-spacing: 0.06em;
+  color: var(--text); margin-bottom: 4px; line-height: 1.1;
 }
-.clv-clip-lock { color: rgba(255,255,255,.25); }
+.sc-quote {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 11px; font-style: italic;
+  color: var(--muted); line-height: 1.4;
+  display: -webkit-box; -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical; overflow: hidden;
+}
+
+/* Start Level button */
 .clv-panel-play-btn {
-  width: 100%; padding: 14px;
+  width: 100%; padding: 15px;
   background: var(--gold); color: #000;
   font-size: 14px; font-weight: 700; letter-spacing: .04em;
-  border: none; border-radius: 12px; cursor: pointer; transition: opacity .2s;
+  border: none; border-radius: 12px; cursor: pointer;
+  transition: opacity .2s;
+  font-family: 'DM Sans', sans-serif;
 }
 .clv-panel-play-btn:hover { opacity: .88; }
+
+/* Backdrop */
 .clv-panel-backdrop {
   display: none; position: fixed; inset: 0;
   background: rgba(0,0,0,.65); z-index: 1199;
 }
 .clv-panel-backdrop.open { display: block; }
+
 @media (max-width: 768px) {
   .clv-grid { grid-template-columns: 1fr; gap: 16px; }
   .clv-card { aspect-ratio: 16/9; }
   .clv-card-bg { background-position: center center; }
+  .clv-panel { width: 100vw; border-radius: 16px 16px 0 0; }
+  .clv-clip-grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 10px; }
+  .clv-panel-inner { padding: 22px 18px 30px; }
+  .clv-panel-head-row { flex-direction: column; gap: 12px; }
+  .clv-panel-close { position: absolute; top: 16px; right: 16px; }
+}
+@media (max-width: 480px) {
+  .clv-clip-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .sc-movie { font-size: 14px; }
 }
   </style>
 </head>
@@ -3200,13 +3271,22 @@ header {
 <!-- Level detail panel (shared — must be outside authScreen) -->
 <div class="clv-panel" id="clvPanel">
   <div class="clv-panel-inner">
-    <button class="clv-panel-close" onclick="closeLevelPanel()">&#x2715;</button>
-    <div class="clv-panel-header">
-      <span class="clv-panel-badge" id="clvPanelBadge"></span>
-      <h3 class="clv-panel-title" id="clvPanelTitle"></h3>
-      <p class="clv-panel-sub" id="clvPanelSub"></p>
+    <div class="clv-panel-head-row">
+      <div class="clv-panel-head-left">
+        <span class="clv-panel-num" id="clvPanelNum">01</span>
+        <div>
+          <span class="clv-panel-badge" id="clvPanelBadge"></span>
+          <h3 class="clv-panel-title" id="clvPanelTitle"></h3>
+          <p class="clv-panel-sub" id="clvPanelSub"></p>
+          <div class="clv-panel-meta">
+            <span class="clv-panel-count" id="clvPanelCount"></span>
+            <span class="clv-panel-avg" id="clvPanelAvg"></span>
+          </div>
+        </div>
+      </div>
+      <button class="clv-panel-close" onclick="closeLevelPanel()">&#x2715;</button>
     </div>
-    <div class="clv-clip-list" id="clvClipList"></div>
+    <div class="clv-clip-grid" id="clvClipList"></div>
     <button class="clv-panel-play-btn" id="clvPanelPlayBtn">&#9654; Start Level</button>
   </div>
 </div>
@@ -3259,6 +3339,21 @@ const CARD_COLORS = {
   basic_instinct:     '#f43f5e',
   sixth_sense:        '#8b5cf6',
   terminator:         '#ef4444',
+};
+
+const POSTER_IMAGES = {
+  fight_club:         '/static/posters/fight_club.jpg',
+  back_to_the_future: '/static/posters/back_to_the_future.jpg',
+  forrest_gump:       '/static/posters/forrest_gump.jpg',
+  the_matrix:         '/static/posters/the_matrix.jpg',
+  seven:              '/static/posters/seven.jpg',
+  heat:               '/static/posters/heat.jpg',
+  avengers:           '/static/posters/avengers.jpg',
+  titanic:            '/static/posters/titanic.jpg',
+  basic_instinct:     '',
+  sixth_sense:        '/static/posters/sixth_sense.jpg',
+  terminator:         '/static/posters/terminator.jpg',
+  taken:              '',
 };
 
 // Which level each scene belongs to — keep in sync with LEVELS in main.py
@@ -4931,39 +5026,66 @@ function openLevelPanel(level) {
   if (!lv) return;
   const badgeEl = document.getElementById('clvPanelBadge');
   badgeEl.textContent = lv.label;
-  badgeEl.className   = `clv-panel-badge ${lv.cls}`;
-  document.getElementById('clvPanelTitle').textContent = `Level ${lv.level}`;
+  badgeEl.className   = 'clv-panel-badge ' + lv.cls;
+  document.getElementById('clvPanelTitle').textContent = 'Level ' + lv.level;
   document.getElementById('clvPanelSub').textContent   = lv.desc;
+
+  // Set the level number
+  const numEl = document.getElementById('clvPanelNum');
+  if (numEl) numEl.textContent = String(lv.level).padStart(2, '0');
 
   const best     = (userProgress && userProgress.best_scores)      ? userProgress.best_scores      : {};
   const unlocked = (userProgress && userProgress.unlocked_scenes)  ? userProgress.unlocked_scenes  : ['fight_club','back_to_the_future','forrest_gump','the_matrix','seven'];
 
+  // Scene count
+  const countEl = document.getElementById('clvPanelCount');
+  if (countEl) countEl.innerHTML = '<strong>' + lv.scenes.length + '</strong> scenes';
+
+  // Avg PB
+  const scores = lv.scenes.map(function(sid) { return best[sid]; }).filter(function(v) { return v > 0; });
+  const avg = scores.length ? Math.round(scores.reduce(function(a, b) { return a + b; }, 0) / scores.length) : 0;
+  const avgEl = document.getElementById('clvPanelAvg');
+  if (avgEl) avgEl.textContent = scores.length ? 'Avg PB: ' + avg + '%' : '';
+
   const list = document.getElementById('clvClipList');
-  list.innerHTML = lv.scenes.map(sid => {
-    const s      = (scenes && scenes[sid]) ? scenes[sid] : {};
-    const pb     = best[sid] ? Math.round(best[sid]) : null;
-    const locked = !unlocked.includes(sid);
-    const quote  = s.quote ? s.quote.slice(0, 60) + (s.quote.length > 60 ? '\u2026' : '') : '';
-    const right  = locked
-      ? `<svg class="clv-clip-lock" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>`
-      : (pb ? `<span class="clv-clip-pb">${pb}%</span>` : `<span class="clv-clip-play">&#9654;</span>`);
-    const color = CARD_COLORS[sid] ? `${CARD_COLORS[sid]}99` : 'rgba(201,168,76,.6)';
-    return `<div class="clv-clip-row${locked ? ' locked' : ''}" style="--c:${color}"${locked ? '' : ` onclick="selectScene('${sid}')"`}>
-      <div class="clv-clip-accent"></div>
-      <div class="clv-clip-info">
-        ${s.year ? `<span class="clv-clip-year">${s.year}</span>` : ''}
-        <div class="clv-clip-movie">${s.movie || sid}</div>
-        <div class="clv-clip-quote">&ldquo;${quote}&rdquo;</div>
-      </div>
-      <div class="clv-clip-right">${right}</div>
-    </div>`;
+  list.innerHTML = lv.scenes.map(function(sid) {
+    var s      = (scenes && scenes[sid]) ? scenes[sid] : {};
+    var pb     = best[sid] ? Math.round(best[sid]) : null;
+    var locked = !unlocked.includes(sid);
+    var quote  = s.quote ? s.quote.slice(0, 55) + (s.quote.length > 55 ? '\u2026' : '') : '';
+    var color  = CARD_COLORS[sid] || '#C9A84C';
+    var poster = (typeof POSTER_IMAGES !== 'undefined' && POSTER_IMAGES[sid]) ? POSTER_IMAGES[sid] : '';
+    var posterHTML = poster
+      ? '<img src="' + poster + '" alt="' + (s.movie || sid) + '" loading="lazy">'
+      : '<div class="sc-poster-ph" style="background:linear-gradient(150deg,' + color + ',#111)"></div>';
+    var scoreHTML = '';
+    if (locked) {
+      scoreHTML = '<span class="sc-lock-badge"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>';
+    } else if (pb) {
+      var scoreColor = pb >= 85 ? '#06d6a0' : pb >= 65 ? '#ffd166' : '#C9A84C';
+      scoreHTML = '<span class="sc-score" style="color:' + scoreColor + ';background:' + scoreColor + '18;border-color:' + scoreColor + '44">' + pb + '%</span>';
+    }
+    return '<div class="sc-card' + (locked ? ' locked' : '') + '"' + (locked ? '' : ' onclick="selectScene(\'' + sid + '\')"') + '>'
+      + '<div class="sc-poster">'
+      + posterHTML
+      + '<div class="sc-poster-overlay"></div>'
+      + (s.year ? '<span class="sc-year">' + s.year + '</span>' : '')
+      + scoreHTML
+      + (locked ? '' : '<div class="sc-play"><svg width="14" height="14" viewBox="0 0 24 24" fill="#fff"><path d="M8 5v14l11-7z"/></svg></div>')
+      + '</div>'
+      + '<div class="sc-info">'
+      + '<div class="sc-accent" style="background:' + color + '"></div>'
+      + '<div class="sc-movie">' + (s.movie || sid) + '</div>'
+      + '<div class="sc-quote">&ldquo;' + quote + '&rdquo;</div>'
+      + '</div>'
+      + '</div>';
   }).join('');
 
-  const firstScene = lv.scenes.find(sid => unlocked.includes(sid));
-  const playBtn    = document.getElementById('clvPanelPlayBtn');
+  var firstScene = lv.scenes.find(function(sid) { return unlocked.includes(sid); });
+  var playBtn    = document.getElementById('clvPanelPlayBtn');
   if (firstScene) {
     playBtn.style.display = '';
-    playBtn.onclick = () => { closeLevelPanel(); selectScene(firstScene); };
+    playBtn.onclick = function() { closeLevelPanel(); selectScene(firstScene); };
   } else {
     playBtn.style.display = 'none';
   }
