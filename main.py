@@ -124,6 +124,14 @@ DB_PATH   = "mirror.db"
 SECRET    = os.getenv("JWT_SECRET", "change-me-to-a-long-random-string-in-production")
 ALGORITHM = "HS256"
 TOKEN_TTL = 30  # days
+APP_BASE_URL = os.getenv("APP_BASE_URL", "").rstrip("/")
+
+
+def build_app_url(path: str) -> str:
+    """Return an app URL using APP_BASE_URL when configured, else a relative path."""
+    if not path.startswith("/"):
+        path = f"/{path}"
+    return f"{APP_BASE_URL}{path}" if APP_BASE_URL else path
 
 # ---------------------------------------------------------------------------
 # Database backend — PostgreSQL when DATABASE_URL is set, SQLite otherwise
@@ -956,7 +964,7 @@ async def create_challenge(req: ChallengeRequest, user: dict = Depends(current_u
     conn.close()
     return {
         "challenge_id": cid,
-        "url": f"https://mirror-app-z8wr.onrender.com/challenge/{cid}",
+        "url": build_app_url(f"/challenge/{cid}"),
     }
 
 

@@ -3447,7 +3447,13 @@ function getDivision(points) {
   return DIVISIONS[0];
 }
 
-const API = 'https://mirror-app-z8wr.onrender.com';
+const APP_BASE = (window.MIRROR_APP_BASE || '').replace(/\/$/, '');
+const API = APP_BASE;
+
+function resolveAppUrl(path) {
+  if (!path) return path;
+  return new URL(path, window.location.origin).toString();
+}
 
 // ══════════════════════════════════════════════
 // STATE
@@ -5054,11 +5060,12 @@ async function createChallenge() {
     });
     if (!r.ok) throw new Error('Failed');
     const data = await r.json();
+    const challengeUrl = resolveAppUrl(data.url);
     const movie = scenes[activeScene]?.movie || 'MIRROR';
-    const msg   = `I scored ${score}% on ${movie} in MIRROR! Can you beat it? ${data.url}`;
-    document.getElementById('chlgLinkInput').textContent = data.url;
+    const msg   = `I scored ${score}% on ${movie} in MIRROR! Can you beat it? ${challengeUrl}`;
+    document.getElementById('chlgLinkInput').textContent = challengeUrl;
     document.getElementById('btnCopyLink').onclick = () => {
-      navigator.clipboard.writeText(data.url).then(() => {
+      navigator.clipboard.writeText(challengeUrl).then(() => {
         document.getElementById('btnCopyLink').textContent = '\u2713 Copied!';
         setTimeout(() => { document.getElementById('btnCopyLink').textContent = 'Copy'; }, 2000);
       });
