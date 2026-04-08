@@ -33,6 +33,21 @@ function getDivision(points) {
 const APP_BASE = (window.MIRROR_APP_BASE || '').replace(/\/$/, '');
 const API = APP_BASE;
 
+// ══════════════════════════════════════════════
+// DOM HELPERS
+// ══════════════════════════════════════════════
+function el(id) {
+  return document.getElementById(id);
+}
+
+function setBodyScrollLocked(locked) {
+  document.body.style.overflow = locked ? 'hidden' : '';
+}
+
+function setOverlayOpen(id, isOpen) {
+  el(id).classList.toggle('open', isOpen);
+}
+
 function resolveAppUrl(path) {
   if (!path) return path;
   return new URL(path, window.location.origin).toString();
@@ -112,6 +127,17 @@ function getScenePoster(sceneId) {
   return (typeof poster === 'string') ? poster : '';
 }
 
+function getScenePlaybackMeta(sceneId) {
+  const ytRaw = getSceneYouTubeId(sceneId);
+  const times = getSceneTimes(sceneId);
+  return {
+    ytRaw,
+    videoId: ytRaw ? ytRaw.split('?')[0] : '',
+    times,
+    startSec: times ? times.start : 0,
+  };
+}
+
 // ══════════════════════════════════════════════
 // STATE
 // ══════════════════════════════════════════════
@@ -168,9 +194,7 @@ const WAVE_BARS    = 48;
   if (authToken) {
     const ok = await verifyToken();
     if (ok) {
-      showApp();
-      await loadProgress();
-      await Promise.all([loadScenes(), loadScores(), loadDaily(), loadStreakCard()]);
+      await enterAuthenticatedApp();
       return;
     }
   }
@@ -195,24 +219,24 @@ async function verifyToken() {
 }
 
 function showAuthScreen() {
-  document.getElementById('authScreen').style.display     = '';
-  document.getElementById('appScreen').style.display      = 'none';
-  document.getElementById('challengeScreen').classList.remove('on');
-  document.getElementById('authModalOverlay').classList.remove('open');
-  document.body.style.overflow = '';
+  el('authScreen').style.display = '';
+  el('appScreen').style.display = 'none';
+  el('challengeScreen').classList.remove('on');
+  setOverlayOpen('authModalOverlay', false);
+  setBodyScrollLocked(false);
 }
 
 function showApp() {
-  document.getElementById('authScreen').style.display     = 'none';
-  document.getElementById('appScreen').style.display      = '';
-  document.getElementById('challengeScreen').classList.remove('on');
-  document.getElementById('userChipName').textContent = authUser.username;
+  el('authScreen').style.display = 'none';
+  el('appScreen').style.display = '';
+  el('challengeScreen').classList.remove('on');
+  el('userChipName').textContent = authUser.username;
   updateDivDot(0);  // default Bronze until profile loads
 }
 
 function updateDivDot(points) {
   const d   = getDivision(points);
-  const dot = document.getElementById('divDot');
+  const dot = el('divDot');
   dot.style.background = d.color;
   dot.title = d.name;
 }
@@ -230,58 +254,67 @@ function logout() {
   showAuthScreen();
 }
 
-document.getElementById('btnLogout').addEventListener('click', logout);
+async function enterAuthenticatedApp(options = {}) {
+  const { showOnboarding = false } = options;
+  showApp();
+  if (showOnboarding && !activeChallenge) maybeShowOnboarding();
+  await loadProgress();
+  await Promise.all([loadScenes(), loadScores(), loadDaily(), loadStreakCard()]);
+  if (activeChallenge) enterChallengeFromAuth();
+}
+
+el('btnLogout').addEventListener('click', logout);
 
 // ══════════════════════════════════════════════
 // AUTH — modal open / close
 // ══════════════════════════════════════════════
 function openAuthModal(tab) {
   switchAuthTab(tab || 'login');
-  document.getElementById('authModalOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
+  setOverlayOpen('authModalOverlay', true);
+  setBodyScrollLocked(true);
 }
 
 function closeAuthModal() {
-  document.getElementById('authModalOverlay').classList.remove('open');
-  document.body.style.overflow = '';
+  setOverlayOpen('authModalOverlay', false);
+  setBodyScrollLocked(false);
 }
 
-document.getElementById('authModalClose').addEventListener('click', closeAuthModal);
-document.getElementById('authModalOverlay').addEventListener('click', e => {
-  if (e.target === document.getElementById('authModalOverlay')) closeAuthModal();
+el('authModalClose').addEventListener('click', closeAuthModal);
+el('authModalOverlay').addEventListener('click', e => {
+  if (e.target === el('authModalOverlay')) closeAuthModal();
 });
 
-document.getElementById('navLoginBtn').addEventListener('click',     () => openAuthModal('login'));
-document.getElementById('navRegisterBtn').addEventListener('click',  () => openAuthModal('register'));
-document.getElementById('heroStartBtn').addEventListener('click',    () => openAuthModal('register'));
-document.getElementById('pricingFreeBtn').addEventListener('click',  () => openAuthModal('register'));
-document.getElementById('pricingProBtn').addEventListener('click',   () => openAuthModal('register'));
+el('navLoginBtn').addEventListener('click',     () => openAuthModal('login'));
+el('navRegisterBtn').addEventListener('click',  () => openAuthModal('register'));
+el('heroStartBtn').addEventListener('click',    () => openAuthModal('register'));
+el('pricingFreeBtn').addEventListener('click',  () => openAuthModal('register'));
+el('pricingProBtn').addEventListener('click',   () => openAuthModal('register'));
 
 // ══════════════════════════════════════════════
 // AUTH — tab switching
 // ══════════════════════════════════════════════
-document.getElementById('tabLoginBtn').addEventListener('click', () => switchAuthTab('login'));
-document.getElementById('tabRegBtn').addEventListener('click',   () => switchAuthTab('register'));
+el('tabLoginBtn').addEventListener('click', () => switchAuthTab('login'));
+el('tabRegBtn').addEventListener('click',   () => switchAuthTab('register'));
 
 function switchAuthTab(tab) {
   const isLogin = tab === 'login';
-  document.getElementById('tabLoginBtn').classList.toggle('active',  isLogin);
-  document.getElementById('tabRegBtn').classList.toggle('active',   !isLogin);
-  document.getElementById('loginForm').classList.toggle('hidden',   !isLogin);
-  document.getElementById('registerForm').classList.toggle('hidden', isLogin);
-  document.getElementById('loginError').textContent    = '';
-  document.getElementById('registerError').textContent = '';
+  el('tabLoginBtn').classList.toggle('active',  isLogin);
+  el('tabRegBtn').classList.toggle('active',   !isLogin);
+  el('loginForm').classList.toggle('hidden',   !isLogin);
+  el('registerForm').classList.toggle('hidden', isLogin);
+  el('loginError').textContent    = '';
+  el('registerError').textContent = '';
 }
 
 // ══════════════════════════════════════════════
 // AUTH — login
 // ══════════════════════════════════════════════
-document.getElementById('loginForm').addEventListener('submit', async e => {
+el('loginForm').addEventListener('submit', async e => {
   e.preventDefault();
-  const email    = document.getElementById('loginEmail').value.trim();
-  const password = document.getElementById('loginPassword').value;
-  const errEl    = document.getElementById('loginError');
-  const btn      = document.getElementById('loginSubmit');
+  const email    = el('loginEmail').value.trim();
+  const password = el('loginPassword').value;
+  const errEl    = el('loginError');
+  const btn      = el('loginSubmit');
 
   errEl.textContent = '';
   btn.disabled      = true;
@@ -299,10 +332,7 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
     authToken = data.access_token;
     authUser  = { username: data.username };
     localStorage.setItem('mirror_token', authToken);
-    showApp();
-    await loadProgress();
-    await Promise.all([loadScenes(), loadScores(), loadDaily(), loadStreakCard()]);
-    if (activeChallenge) enterChallengeFromAuth();
+    await enterAuthenticatedApp();
   } catch (err) {
     errEl.textContent = err.message;
   } finally {
@@ -314,22 +344,22 @@ document.getElementById('loginForm').addEventListener('submit', async e => {
 // ══════════════════════════════════════════════
 // AUTH — register
 // ══════════════════════════════════════════════
-document.getElementById('registerForm').addEventListener('submit', async e => {
+el('registerForm').addEventListener('submit', async e => {
   e.preventDefault();
-  const username = document.getElementById('regUsername').value.trim();
-  const email    = document.getElementById('regEmail').value.trim();
-  const password = document.getElementById('regPassword').value;
-  const confirm  = document.getElementById('regConfirm').value;
-  const errEl    = document.getElementById('registerError');
-  const btn      = document.getElementById('registerSubmit');
+  const username = el('regUsername').value.trim();
+  const email    = el('regEmail').value.trim();
+  const password = el('regPassword').value;
+  const confirm  = el('regConfirm').value;
+  const errEl    = el('registerError');
+  const btn      = el('registerSubmit');
 
   errEl.textContent = '';
 
   if (password !== confirm) {
     errEl.textContent = 'Passwords do not match';
-    const el = document.getElementById('regConfirm');
-    el.classList.add('shake');
-    setTimeout(() => el.classList.remove('shake'), 400);
+    const confirmEl = el('regConfirm');
+    confirmEl.classList.add('shake');
+    setTimeout(() => confirmEl.classList.remove('shake'), 400);
     return;
   }
 
@@ -348,11 +378,7 @@ document.getElementById('registerForm').addEventListener('submit', async e => {
     authToken = data.access_token;
     authUser  = { username: data.username };
     localStorage.setItem('mirror_token', authToken);
-    showApp();
-    if (!activeChallenge) maybeShowOnboarding();
-    await loadProgress();
-    await Promise.all([loadScenes(), loadScores(), loadDaily(), loadStreakCard()]);
-    if (activeChallenge) enterChallengeFromAuth();
+    await enterAuthenticatedApp({ showOnboarding: true });
   } catch (err) {
     errEl.textContent = err.message;
   } finally {
@@ -605,33 +631,30 @@ function showLevelUp(newLevel) {
 function openModal(id, s) {
   activeScene = id;
   const color = getSceneColor(id);
+  const playback = getScenePlaybackMeta(id);
 
-  document.getElementById('modal').style.setProperty('--mc', color);
-  document.getElementById('mYear').textContent  = s.year;
-  document.getElementById('mTitle').textContent = s.movie;
-  document.getElementById('mTitle').style.color = color;
-  document.getElementById('mQuote').textContent = `\u201c${s.quote}\u201d`;
+  el('modal').style.setProperty('--mc', color);
+  el('mYear').textContent  = s.year;
+  el('mTitle').textContent = s.movie;
+  el('mTitle').style.color = color;
+  el('mQuote').textContent = `\u201c${s.quote}\u201d`;
   document.querySelector('.target-quote').style.borderLeftColor = color;
-  document.getElementById('btnAnalyze').style.background = color;
+  el('btnAnalyze').style.background = color;
 
-  const ytRaw    = getSceneYouTubeId(id);
-  const frameDiv = document.getElementById('videoFrame');
-  const ph       = document.getElementById('videoPlaceholder');
+  const frameDiv = el('videoFrame');
+  const ph       = el('videoPlaceholder');
   stopEndCheck();
   hideReplayLine();
-  if (ytRaw) {
-    const videoId  = ytRaw.split('?')[0];
-    const times    = getSceneTimes(id);
-    const startSec = times ? times.start : 0;
+  if (playback.ytRaw) {
     frameDiv.style.display = '';
     ph.style.display = 'none';
     if (ytApiReady) {
-      initYTPlayer(videoId, startSec);
+      initYTPlayer(playback.videoId, playback.startSec);
     } else {
       const waitId = setInterval(() => {
         if (!ytApiReady) return;
         clearInterval(waitId);
-        initYTPlayer(videoId, startSec);
+        initYTPlayer(playback.videoId, playback.startSec);
       }, 100);
     }
   } else {
@@ -641,7 +664,7 @@ function openModal(id, s) {
   }
 
   // Show 2× badge if this is today's daily challenge
-  const badge = document.getElementById('dailyModalBadge');
+  const badge = el('dailyModalBadge');
   if (dailyChallenge && id === dailyChallenge.scene_id) {
     badge.classList.add('on');
   } else {
@@ -649,13 +672,13 @@ function openModal(id, s) {
   }
 
   resetRec();
-  document.getElementById('overlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
+  setOverlayOpen('overlay', true);
+  setBodyScrollLocked(true);
 }
 
 function closeModal() {
-  document.getElementById('overlay').classList.remove('open');
-  document.body.style.overflow = '';
+  setOverlayOpen('overlay', false);
+  setBodyScrollLocked(false);
   stopRecordingCleanup();
   stopEndCheck();
   hideReplayLine();
@@ -663,15 +686,15 @@ function closeModal() {
   activeScene = null;
 }
 
-document.getElementById('btnClose').addEventListener('click', closeModal);
-document.getElementById('overlay').addEventListener('click', e => {
-  if (e.target === document.getElementById('overlay')) closeModal();
+el('btnClose').addEventListener('click', closeModal);
+el('overlay').addEventListener('click', e => {
+  if (e.target === el('overlay')) closeModal();
 });
 document.addEventListener('keydown', e => {
   if (e.key !== 'Escape') return;
-  if (document.getElementById('authModalOverlay').classList.contains('open')) {
+  if (el('authModalOverlay').classList.contains('open')) {
     closeAuthModal();
-  } else if (document.getElementById('progressOverlay').classList.contains('open')) {
+  } else if (el('progressOverlay').classList.contains('open')) {
     closeProgressDashboard();
   } else {
     closeModal();
@@ -716,10 +739,10 @@ function stopRecordingCleanup() {
   stopWaveform();
 }
 
-document.getElementById('btnRecord').addEventListener('click', startRec);
-document.getElementById('btnStop').addEventListener('click', stopRec);
-document.getElementById('btnPlay').addEventListener('click', togglePlayback);
-document.getElementById('btnAnalyze').addEventListener('click', analyze);
+el('btnRecord').addEventListener('click', startRec);
+el('btnStop').addEventListener('click', stopRec);
+el('btnPlay').addEventListener('click', togglePlayback);
+el('btnAnalyze').addEventListener('click', analyze);
 
 async function startRec() {
   try {
@@ -767,13 +790,13 @@ async function startRec() {
   startWaveform();
   setBtn('btnRecord', true);
   setBtn('btnStop',   false);
-  document.getElementById('recInd').classList.add('on');
+  el('recInd').classList.add('on');
 
   recSecs = 0;
   timerInterval = setInterval(() => {
     recSecs++;
     const m = Math.floor(recSecs / 60), s = recSecs % 60;
-    document.getElementById('recTime').textContent = `${m}:${s.toString().padStart(2,'0')}`;
+    el('recTime').textContent = `${m}:${s.toString().padStart(2,'0')}`;
     if (recSecs >= 30) stopRec();
   }, 1000);
 }
@@ -783,7 +806,7 @@ function stopRec() {
   clearInterval(timerInterval);
   stopWaveform();
   setBtn('btnStop', true);
-  document.getElementById('recInd').classList.remove('on');
+  el('recInd').classList.remove('on');
 }
 
 function togglePlayback() {
@@ -811,9 +834,9 @@ async function analyze() {
 
   setBtn('btnAnalyze', true);
   setBtn('btnRecord',  true);
-  document.getElementById('spinner').classList.add('on');
-  document.getElementById('analyzeLabel').textContent = 'Analyzing\u2026';
-  document.getElementById('scorePanel').classList.remove('on');
+  el('spinner').classList.add('on');
+  el('analyzeLabel').textContent = 'Analyzing\u2026';
+  el('scorePanel').classList.remove('on');
 
   const form = new FormData();
   form.append('scene_id', activeScene);
@@ -849,8 +872,8 @@ async function analyze() {
   } catch (err) {
     alert(`Error: ${err.message}`);
   } finally {
-    document.getElementById('spinner').classList.remove('on');
-    document.getElementById('analyzeLabel').textContent = 'Analyze';
+    el('spinner').classList.remove('on');
+    el('analyzeLabel').textContent = 'Analyze';
     setBtn('btnAnalyze', false);
     setBtn('btnRecord',  false, btnRecordHTML());
   }
@@ -1107,9 +1130,9 @@ function maybeShowOnboarding() {
   });
 }
 
-document.getElementById('btnStartActing').addEventListener('click', () => {
+el('btnStartActing').addEventListener('click', () => {
   localStorage.setItem('mirror_onboarded', '1');
-  const screen = document.getElementById('onboardScreen');
+  const screen = el('onboardScreen');
   screen.classList.add('out');
   setTimeout(() => screen.remove(), 580);
 });
@@ -1119,7 +1142,7 @@ document.getElementById('btnStartActing').addEventListener('click', () => {
 // ══════════════════════════════════════════════
 
 // Custom cursor
-const cursorDot = document.getElementById('cursorDot');
+const cursorDot = el('cursorDot');
 document.addEventListener('mousemove', e => {
   cursorDot.style.left = e.clientX + 'px';
   cursorDot.style.top  = e.clientY + 'px';
@@ -1127,19 +1150,19 @@ document.addEventListener('mousemove', e => {
 
 // Nav scroll effect
 window.addEventListener('scroll', () => {
-  document.getElementById('siteNav').classList.toggle('scrolled', window.scrollY > 50);
+  el('siteNav').classList.toggle('scrolled', window.scrollY > 50);
 }, { passive: true });
 
 // Hamburger menu
-document.getElementById('hamburger').addEventListener('click', () => {
-  document.getElementById('navLinks').classList.toggle('open');
-  document.getElementById('hamburger').classList.toggle('open');
+el('hamburger').addEventListener('click', () => {
+  el('navLinks').classList.toggle('open');
+  el('hamburger').classList.toggle('open');
 });
 
 // Close mobile nav on outside click
 document.addEventListener('click', e => {
-  const nav  = document.getElementById('navLinks');
-  const hamb = document.getElementById('hamburger');
+  const nav  = el('navLinks');
+  const hamb = el('hamburger');
   if (nav.classList.contains('open') && !nav.contains(e.target) && !hamb.contains(e.target)) {
     nav.classList.remove('open');
     hamb.classList.remove('open');
@@ -1153,8 +1176,8 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     if (!target) return;
     e.preventDefault();
     target.scrollIntoView({ behavior: 'smooth' });
-    document.getElementById('navLinks').classList.remove('open');
-    document.getElementById('hamburger').classList.remove('open');
+    el('navLinks').classList.remove('open');
+    el('hamburger').classList.remove('open');
   });
 });
 
@@ -1358,21 +1381,21 @@ function lcsLength(a, b) {
 // ══════════════════════════════════════════════
 // PROGRESS DASHBOARD
 // ══════════════════════════════════════════════
-document.getElementById('btnMyProgress').addEventListener('click', openProgressDashboard);
-document.getElementById('btnProgressClose').addEventListener('click', closeProgressDashboard);
-document.getElementById('progressOverlay').addEventListener('click', e => {
-  if (e.target === document.getElementById('progressOverlay')) closeProgressDashboard();
+el('btnMyProgress').addEventListener('click', openProgressDashboard);
+el('btnProgressClose').addEventListener('click', closeProgressDashboard);
+el('progressOverlay').addEventListener('click', e => {
+  if (e.target === el('progressOverlay')) closeProgressDashboard();
 });
 
 function openProgressDashboard() {
-  document.getElementById('progressOverlay').classList.add('open');
-  document.body.style.overflow = 'hidden';
+  setOverlayOpen('progressOverlay', true);
+  setBodyScrollLocked(true);
   loadHistory();
 }
 
 function closeProgressDashboard() {
-  document.getElementById('progressOverlay').classList.remove('open');
-  document.body.style.overflow = '';
+  setOverlayOpen('progressOverlay', false);
+  setBodyScrollLocked(false);
 }
 
 async function loadHistory() {
@@ -1526,41 +1549,38 @@ function computeImprovedIds(history) {
 // ══════════════════════════════════════════════
 // PLAYBACK COMPARE — Hear the Actor / Hear Yourself
 // ══════════════════════════════════════════════
-document.getElementById('dcOpenBtn').addEventListener('click', () => {
+el('dcOpenBtn').addEventListener('click', () => {
   if (!dailyChallenge) return;
   const s = dailyChallenge.scene || scenes[dailyChallenge.scene_id];
   if (s) openModal(dailyChallenge.scene_id, s);
 });
 
-document.getElementById('btnHearActor').addEventListener('click', hearActor);
-document.getElementById('btnHearSelf').addEventListener('click',  hearSelf);
+el('btnHearActor').addEventListener('click', hearActor);
+el('btnHearSelf').addEventListener('click',  hearSelf);
 
 // Flip word cards on tap/click
-document.getElementById('phonWords').addEventListener('click', e => {
+el('phonWords').addEventListener('click', e => {
   const card = e.target.closest('.phon-word');
   if (card) card.classList.toggle('flipped');
 });
-document.getElementById('btnTryAgain').addEventListener('click', () => {
+el('btnTryAgain').addEventListener('click', () => {
   resetRec();
-  document.getElementById('modal').scrollTo({ top: 0, behavior: 'smooth' });
+  el('modal').scrollTo({ top: 0, behavior: 'smooth' });
 });
 
 function hearActor() {
-  const ytRaw = getSceneYouTubeId(activeScene);
-  if (!ytRaw) return;
-  const videoId  = ytRaw.split('?')[0];
-  const times    = getSceneTimes(activeScene);
-  const startSec = times ? times.start : 0;
+  const playback = getScenePlaybackMeta(activeScene);
+  if (!playback.ytRaw) return;
   hideReplayLine();
   if (ytPlayer) {
-    ytPlayer.seekTo(startSec, true);
+    ytPlayer.seekTo(playback.startSec, true);
     ytPlayer.playVideo();
   } else {
-    document.getElementById('videoFrame').style.display = '';
-    document.getElementById('videoPlaceholder').style.display = 'none';
-    initYTPlayer(videoId, startSec);
+    el('videoFrame').style.display = '';
+    el('videoPlaceholder').style.display = 'none';
+    initYTPlayer(playback.videoId, playback.startSec);
   }
-  document.getElementById('modal').scrollTo({ top: 0, behavior: 'smooth' });
+  el('modal').scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function hearSelf() {
@@ -1611,18 +1631,17 @@ function stopEndCheck() {
 }
 
 function showReplayLine() {
-  document.getElementById('replayLineWrap').style.display = 'flex';
+  el('replayLineWrap').style.display = 'flex';
 }
 
 function hideReplayLine() {
-  document.getElementById('replayLineWrap').style.display = 'none';
+  el('replayLineWrap').style.display = 'none';
 }
 
-document.getElementById('btnReplayLine').addEventListener('click', () => {
-  const times = getSceneTimes(activeScene);
-  const startSec = times ? times.start : 0;
+el('btnReplayLine').addEventListener('click', () => {
+  const playback = getScenePlaybackMeta(activeScene);
   hideReplayLine();
-  if (ytPlayer) { ytPlayer.seekTo(startSec, true); ytPlayer.playVideo(); }
+  if (ytPlayer) { ytPlayer.seekTo(playback.startSec, true); ytPlayer.playVideo(); }
 });
 
 // ══════════════════════════════════════════════
@@ -1672,7 +1691,7 @@ function enterChallengeFromAuth() {
   if (s) openModal(sid, s);
 }
 
-document.getElementById('btnAcceptChallenge').addEventListener('click', () => {
+el('btnAcceptChallenge').addEventListener('click', () => {
   if (!activeChallenge) return;
   if (authToken && authUser) {
     enterChallengeFromAuth();
@@ -1681,7 +1700,7 @@ document.getElementById('btnAcceptChallenge').addEventListener('click', () => {
   }
 });
 
-document.getElementById('btnChallenge').addEventListener('click', createChallenge);
+el('btnChallenge').addEventListener('click', createChallenge);
 
 async function createChallenge() {
   if (!authToken || !activeScene) return;
@@ -1827,13 +1846,13 @@ async function openLevelPanel(level) {
 
   document.getElementById('clvPanel').classList.add('open');
   document.getElementById('clvPanelBackdrop').classList.add('open');
-  document.body.style.overflow = 'hidden';
+  setBodyScrollLocked(true);
 }
 
 function closeLevelPanel() {
   document.getElementById('clvPanel').classList.remove('open');
   document.getElementById('clvPanelBackdrop').classList.remove('open');
-  document.body.style.overflow = '';
+  setBodyScrollLocked(false);
 }
 
 function selectScene(sid) {
