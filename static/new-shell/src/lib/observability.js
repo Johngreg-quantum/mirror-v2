@@ -1,6 +1,8 @@
 const ANALYTICS_QUEUE_KEY = '__MIRROR_ANALYTICS__';
 const ERROR_QUEUE_KEY = '__MIRROR_ERRORS__';
 const MAX_QUEUE_SIZE = 100;
+let globalCaptureInitialized = false;
+let activeContextGetter = () => ({});
 
 function nowIso() {
   return new Date().toISOString();
@@ -15,6 +17,11 @@ function trimQueue(queue) {
 function getWindowQueue(key) {
   window[key] = Array.isArray(window[key]) ? window[key] : [];
   return window[key];
+}
+
+export function initObservabilityQueues() {
+  getWindowQueue(ANALYTICS_QUEUE_KEY);
+  getWindowQueue(ERROR_QUEUE_KEY);
 }
 
 function serializeError(error) {
@@ -105,13 +112,23 @@ export function logApiFailure(error, context = {}) {
 }
 
 export function initGlobalErrorCapture({ getContext = () => ({}) } = {}) {
+  initObservabilityQueues();
+
+  activeContextGetter = getContext;
+
+  if (globalCaptureInitialized) {
+    return;
+  }
+
+  globalCaptureInitialized = true;
+
   window.addEventListener('error', (event) => {
     logFrontendError(event.error || new Error(event.message), {
       phase: 'window-error',
       filename: event.filename || '',
       line: event.lineno || 0,
       column: event.colno || 0,
-      ...getContext(),
+      ...activeContextGetter(),
     });
   });
 
@@ -122,7 +139,7 @@ export function initGlobalErrorCapture({ getContext = () => ({}) } = {}) {
 
     logFrontendError(reason, {
       phase: 'unhandled-rejection',
-      ...getContext(),
+      ...activeContextGetter(),
     });
   });
 }
