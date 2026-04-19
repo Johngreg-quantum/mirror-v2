@@ -95,7 +95,7 @@ function renderDailySurface({ daily, profile, profileError, session }) {
     h('div', { className: 'ns-grid ns-grid--two' }, [
       card({
         title: 'Daily result summary',
-        body: 'Points, streak bonus, and reset-related copy update after a scored daily take returns from the existing API.',
+        body: 'Points, streak bonus, and reset timing update after a scored daily take.',
       }),
       card({
         title: 'Daily sync',

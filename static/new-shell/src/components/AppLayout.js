@@ -64,7 +64,7 @@ export function createAppLayout({ routes, sessionActions = {} }) {
       ]),
       h('p', {
         className: 'ns-shell__tagline',
-        text: 'Practice scenes, track progress, and keep your streak moving.',
+        text: 'Cinematic scene practice with score-backed progress.',
       }),
       sessionSlot,
       nav,

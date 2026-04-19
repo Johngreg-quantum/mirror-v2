@@ -1,7 +1,9 @@
 import { h } from '../lib/helpers/dom.js';
 
-export function card({ title, eyebrow, body, children = [] }) {
-  return h('section', { className: 'ns-card' }, [
+export function card({ title, eyebrow, body, children = [], className = '' }) {
+  const classes = `ns-card${className ? ` ${className}` : ''}`;
+
+  return h('section', { className: classes }, [
     eyebrow ? h('p', { className: 'ns-eyebrow', text: eyebrow }) : null,
     h('h3', { text: title }),
     body ? h('p', { text: body }) : null,

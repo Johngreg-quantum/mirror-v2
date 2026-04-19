@@ -52,7 +52,7 @@ function renderLevelSurface({ levels, progressSummary }) {
     ]),
     levels.length
       ? h('div', { className: 'ns-level-grid' }, levels.map((level) => renderLevelSummaryCard({ level })))
-      : card({ title: 'No levels found', body: 'The scene-config endpoint returned no level records.' }),
+      : card({ title: 'No levels found', body: 'Levels will appear here when the catalog is ready.' }),
     card({
       title: 'Level unlocks',
       body: 'Level cards combine scene requirements with your authenticated progress so available practice stays clear.',

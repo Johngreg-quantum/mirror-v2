@@ -44,7 +44,7 @@ async function loadChallengeViewModel(appState, challengeId) {
 
 function renderChallengeRouteError(challengeId) {
   return h('article', { className: 'ns-page' }, [
-    renderErrorState(new Error(`Challenge ${challengeId} could not load from /api/challenge/${challengeId}.`), {
+    renderErrorState(new Error(`Challenge ${challengeId} could not load right now.`), {
       title: 'Challenge could not load',
     }),
     card({
@@ -66,14 +66,17 @@ function renderChallengeEntryCard({ challengeEntry, isAuthenticated }) {
     ? createAppHref(buildChallengeScenePath(challengeEntry))
     : buildChallengeAuthPath(challengeEntry);
 
-  return h('section', { className: 'ns-challenge-entry' }, [
-    h('div', {}, [
+  return h('section', { className: 'ns-challenge-entry ns-challenge-entry--hero' }, [
+    h('div', { className: 'ns-challenge-entry__copy' }, [
       h('p', { className: 'ns-eyebrow', text: 'Incoming challenge' }),
       h('h3', { text: `${challengeEntry.challengerName} challenged you` }),
       h('p', { text: `${challengeEntry.sceneTitle} from ${challengeEntry.film}` }),
     ]),
+    h('div', { className: 'ns-challenge-entry__benchmark' }, [
+      h('span', { text: 'Score to beat' }),
+      h('strong', { text: challengeEntry.targetScoreLabel }),
+    ]),
     h('div', { className: 'ns-inline-list' }, [
-      statusPill(`Beat ${challengeEntry.targetScoreLabel}`),
       statusPill(challengeEntry.createdLabel),
       statusPill(isAuthenticated ? 'Ready to record' : 'Sign-in handoff'),
     ]),
@@ -95,7 +98,8 @@ function renderChallengeResultSummary({ challengeResult }) {
   if (!challengeResult) {
     return card({
       title: 'Challenge aftermath',
-      body: 'Your compare result will appear here after a scored take returns from /api/submit.',
+      body: 'Your result appears here after the scored take returns.',
+      className: 'ns-challenge-aftermath',
       children: [statusPill('Awaiting scored take')],
     });
   }
@@ -103,6 +107,7 @@ function renderChallengeResultSummary({ challengeResult }) {
   return card({
     title: 'Challenge aftermath',
     body: challengeResult.message,
+    className: `ns-challenge-aftermath ns-challenge-aftermath--${challengeResult.outcome === 'won' ? 'win' : 'loss'}`,
     children: [
       h('div', { className: 'ns-inline-list' }, [
         statusPill(challengeResult.comparisonLabel),
@@ -129,7 +134,7 @@ export function renderChallengePage({ appState, params }) {
             h('h2', { text: `Challenge ${challengeEntry.id}` }),
             h('p', {
               className: 'ns-page__summary',
-              text: 'Review the invite, sign in if needed, launch the scene, and compare your scored take against the benchmark.',
+              text: 'Review the invite, launch the scene, and compare your scored take against the benchmark.',
             }),
           ]),
           h('div', { className: 'ns-inline-list' }, [
@@ -153,11 +158,12 @@ export function renderChallengePage({ appState, params }) {
         ]),
         card({
           title: 'Challenge scene launch',
-          body: 'This challenge uses the same scene recording and analyze flow as regular practice, with challenge context preserved.',
+          body: 'Launch the linked scene with challenge context preserved.',
+          className: 'ns-challenge-launch-card',
           children: [
             h('div', { className: 'ns-inline-list' }, [
               statusPill(challengeEntry.sceneTitle),
-              statusPill(`/api/challenge/${challengeEntry.id}`),
+              statusPill('Challenge context saved'),
               buttonLink({
                 href: challengeSceneHref,
                 text: 'Open challenge scene',

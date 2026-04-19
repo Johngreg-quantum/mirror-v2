@@ -19,7 +19,7 @@ function getDetail(state, disabledReason) {
   }
 
   if (state.status === 'recorded') {
-    return 'Local audio is ready for playback. Analyze stays disabled for now.';
+    return 'Local audio is ready for playback and analysis.';
   }
 
   if (state.status === 'playing') {

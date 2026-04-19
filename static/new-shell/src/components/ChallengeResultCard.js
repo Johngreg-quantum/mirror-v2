@@ -3,11 +3,11 @@ import { statusPill } from './primitives.js';
 
 export function renderChallengeResultCard({ entry, result }) {
   if (!result) {
-    return h('section', { className: 'ns-result-card' }, [
+    return h('section', { className: 'ns-result-card ns-result-card--empty' }, [
       h('div', {}, [
         h('p', { className: 'ns-eyebrow', text: 'Challenge result' }),
         h('h3', { text: 'No scored take yet' }),
-        h('p', { text: 'Take the challenge scene and submit a scored take to compare against the current benchmark.' }),
+        h('p', { text: 'Record the challenge scene and submit a scored take to reveal the comparison.' }),
       ]),
       h('div', { className: 'ns-inline-list' }, [
         statusPill(entry?.targetScoreLabel || 'No benchmark'),
@@ -16,19 +16,21 @@ export function renderChallengeResultCard({ entry, result }) {
     ]);
   }
 
-  return h('section', { className: 'ns-result-card' }, [
-    h('div', {}, [
+  const isWin = result.outcome === 'won';
+
+  return h('section', { className: `ns-result-card ns-result-card--${isWin ? 'win' : 'loss'}` }, [
+    h('div', { className: 'ns-result-card__intro' }, [
       h('p', { className: 'ns-eyebrow', text: 'Challenge result' }),
-      h('h3', { text: `${result.title} against ${entry.challengerName}` }),
+      h('h3', { text: result.title }),
       h('p', { text: result.message }),
     ]),
     h('div', { className: 'ns-score-compare' }, [
-      h('div', {}, [
-        h('span', { text: 'You' }),
+      h('div', { className: 'ns-score-compare__item ns-score-compare__item--primary' }, [
+        h('span', { text: 'Your score' }),
         h('strong', { text: result.yourScore }),
       ]),
-      h('div', {}, [
-        h('span', { text: entry.challengerName }),
+      h('div', { className: 'ns-score-compare__item' }, [
+        h('span', { text: `${entry.challengerName}'s benchmark` }),
         h('strong', { text: result.opponentScore }),
       ]),
     ]),

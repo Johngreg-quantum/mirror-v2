@@ -78,8 +78,8 @@ export function adaptAnalyzeResult(rawResult) {
   }
 
   return {
-    title: 'Legacy analyze result',
-    detail: 'Returned from /api/submit.',
+    title: 'Analyze result',
+    detail: 'Your scored take is ready.',
     score: formatScore(rawResult.sync_score),
     scoreLabel: 'sync score',
     pills: buildResultPills(rawResult),
@@ -117,10 +117,10 @@ export function adaptAnalyzeViewModel(snapshot) {
   if (snapshot.status === 'submitting') {
     return {
       title: 'Submitting take',
-      detail: 'Uploading the current local take to /api/submit.',
+      detail: 'Uploading the current local take for scoring.',
       score: '--',
       scoreLabel: 'submitting',
-      pills: ['Submitting', '/api/submit'],
+      pills: ['Submitting', 'Scoring'],
       comparison: [],
       metrics: [],
       translation: '',
@@ -145,10 +145,10 @@ export function adaptAnalyzeViewModel(snapshot) {
   if (snapshot.status === 'idle') {
     return {
       title: 'Ready to analyze',
-      detail: 'The current local take is ready for /api/submit.',
+      detail: 'The current local take is ready for scoring.',
       score: '--',
       scoreLabel: 'ready',
-      pills: ['Take ready', '/api/submit'],
+      pills: ['Take ready', 'Scoring ready'],
       comparison: [],
       metrics: [],
       translation: '',

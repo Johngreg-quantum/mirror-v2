@@ -15,7 +15,7 @@ export function getSessionLabel(session) {
     return 'Session check failed';
   }
 
-  return 'Signed out';
+  return 'Guest mode';
 }
 
 export function renderSessionPrompt({
@@ -26,7 +26,7 @@ export function renderSessionPrompt({
 } = {}) {
   const isAuthenticated = session?.status === 'authenticated';
   const isError = session?.status === 'error';
-  let action = buttonLink({ href: createAppHref('/auth'), text: 'Open auth', variant: 'secondary' });
+  let action = buttonLink({ href: createAppHref('/auth'), text: 'Sign in', variant: 'secondary' });
 
   if (isAuthenticated) {
     action = onLogout
@@ -55,7 +55,7 @@ export function renderSessionPrompt({
     ? `Signed in as ${getSessionLabel(session)}`
     : isError ? 'Session refresh failed' : title;
   const promptBody = isAuthenticated
-    ? 'Personalized progress and streak data are active. Sign out clears this browser session.'
+    ? 'Progress, streaks, unlocks, and personal bests are active for this browser session.'
     : isError
       ? session.error?.message || 'Mirror could not refresh your session.'
       : body;
@@ -63,10 +63,11 @@ export function renderSessionPrompt({
   return card({
     title: promptTitle,
     body: promptBody,
+    className: `ns-session-card${isAuthenticated ? ' is-authenticated' : ' is-guest'}`,
     children: [
       h('div', { className: 'ns-inline-list' }, [
-        statusPill(session?.status || 'unknown'),
-        session?.hasToken ? statusPill('session saved') : statusPill('no session'),
+        statusPill(isAuthenticated ? 'Session active' : session?.status || 'Guest'),
+        session?.hasToken ? statusPill('Saved session') : statusPill('Local only'),
         session?.error?.rateLimited ? statusPill('Rate limited') : null,
         action,
       ]),

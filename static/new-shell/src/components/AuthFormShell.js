@@ -135,7 +135,7 @@ function renderRegisterForm({ actions, redirectPath }) {
 
         try {
           await getSessionAction(actions, 'registerWithLegacy')({ username, email, password });
-          setMessage(messageEl, 'Account created and session refreshed from /api/auth/me.', 'success');
+          setMessage(messageEl, 'Account created and session refreshed.', 'success');
           form.reset();
           redirectAfterAuth(actions, redirectPath);
         } catch (error) {
@@ -230,9 +230,9 @@ export function renderAuthFormShell({ session, actions, redirectPath = '' }) {
         text: 'Sign in or create an account to sync progress, streaks, unlocks, and challenge results.',
       }),
       h('div', { className: 'ns-inline-list' }, [
-        statusPill('/api/auth/login'),
-        statusPill('/api/auth/register'),
-        statusPill('/api/auth/me refresh'),
+        statusPill('Sign in'),
+        statusPill('Create account'),
+        statusPill('Session refresh'),
       ]),
     ]),
     h('div', { className: 'ns-auth-actions' }, [

@@ -62,7 +62,7 @@ function renderProgressSurface({ profile, progressSummary, personalBests, recent
         h('h2', { text: 'Progress dashboard' }),
         h('p', {
           className: 'ns-page__summary',
-          text: `${profile.displayName} is in ${profile.division} with ${profile.points.toLocaleString()} points. Progress, profile, and history are loaded read-only.`,
+          text: `${profile.displayName} is in ${profile.division} with ${profile.points.toLocaleString()} points.`,
         }),
       ]),
       statusPill('Synced'),
@@ -94,7 +94,7 @@ function renderProgressSurface({ profile, progressSummary, personalBests, recent
       }),
       card({
         title: 'Focus areas',
-        body: 'Coaching copy is derived locally until a live coaching endpoint is added.',
+        body: 'Patterns from recent scored takes, shaped into simple practice focus.',
         children: [
           h('ul', {}, focusAreas.map((area) => h('li', { text: area }))),
         ],

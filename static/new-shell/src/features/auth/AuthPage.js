@@ -31,7 +31,7 @@ export function renderAuthPage({ appState, actions, query = {} }) {
     renderSessionPrompt({
       session: appState.session,
       title: 'Account session',
-      body: 'Mirror verifies your session through /api/auth/me before loading personalized practice data.',
+      body: 'Sign in to unlock personalized progress, streaks, and challenge handoffs.',
       onLogout: actions.session?.logoutWithLegacy,
     }),
     renderAuthFormShell({ session: appState.session, actions, redirectPath }),

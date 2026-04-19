@@ -171,7 +171,7 @@ async function loadSceneDetailViewModel(sceneId, appState, query = {}) {
 }
 
 function renderMissingScene({ sceneId, scenes }) {
-  return h('article', { className: 'ns-page' }, [
+  return h('article', { className: 'ns-page ns-scene-page' }, [
     renderErrorState(new Error(`No scene exists for route id "${sceneId}".`), {
       title: 'Scene not found',
     }),
@@ -179,7 +179,7 @@ function renderMissingScene({ sceneId, scenes }) {
       title: 'Available scenes',
       body: scenes.length
         ? 'Choose a scene below to open its detail page.'
-        : 'The scene-config endpoint returned no scene records.',
+        : 'Scenes will appear here when the catalog is ready.',
       children: [
         scenes.length
           ? h('div', { className: 'ns-inline-list' }, scenes.slice(0, 8).map((item) => buttonLink({
@@ -222,6 +222,7 @@ function renderSceneDailyStateCard({ scene, daily, profile, profileError, refres
   return card({
     title: 'Daily state',
     body,
+    className: 'ns-context-card',
     children: [
       h('div', { className: 'ns-inline-list' }, [
         statusPill(isDailyScene ? 'Daily scene' : 'Not daily'),
@@ -232,7 +233,7 @@ function renderSceneDailyStateCard({ scene, daily, profile, profileError, refres
       refreshSnapshot.status === 'degraded'
         ? h('p', {
             className: 'ns-muted',
-            text: refreshSnapshot.error?.message || 'Some post-score surfaces are still showing older read data.',
+            text: refreshSnapshot.error?.message || 'Some related views are still catching up.',
           })
         : null,
     ],
@@ -245,7 +246,8 @@ function renderPostScoreAftermathCard({ analyzeSnapshot, refreshSnapshot }) {
   if (!result) {
     return card({
       title: 'Post-score aftermath',
-      body: 'After a successful analyze, nearby read-only surfaces refresh here.',
+      body: 'After a successful analyze, refreshed scene context appears here.',
+      className: 'ns-aftermath-card',
       children: [statusPill(getRefreshStatusLabel(refreshSnapshot))],
     });
   }
@@ -265,7 +267,7 @@ function renderPostScoreAftermathCard({ analyzeSnapshot, refreshSnapshot }) {
   if (refreshSnapshot.status === 'degraded') {
     children.push(h('p', {
       className: 'ns-muted',
-      text: refreshSnapshot.error?.message || 'The score was saved, but some related read-only surfaces did not refresh yet.',
+      text: refreshSnapshot.error?.message || 'The score was saved, but some related views did not refresh yet.',
     }));
   } else if (refreshSnapshot.status === 'success') {
     children.push(h('p', {
@@ -279,6 +281,7 @@ function renderPostScoreAftermathCard({ analyzeSnapshot, refreshSnapshot }) {
     body: result.is_new_pb
       ? 'This take set a new personal best and the app is reflecting the server aftermath.'
       : 'This take was scored by the server and the app is reflecting the returned aftermath.',
+    className: 'ns-aftermath-card ns-aftermath-card--scored',
     children,
   });
 }
@@ -330,6 +333,7 @@ function renderChallengeStateCard({ challengeId, challengeEntry, challengeResult
     return card({
       title: 'Challenge context unavailable',
       body: challengeError.message || 'The public challenge lookup did not load for this scene.',
+      className: 'ns-state-card ns-state-card--error',
       children: [
         h('div', { className: 'ns-inline-list' }, [
           statusPill('Partial state'),
@@ -351,6 +355,7 @@ function renderChallengeStateCard({ challengeId, challengeEntry, challengeResult
     return card({
       title: 'Challenge aftermath',
       body: challengeResult.message,
+      className: `ns-challenge-aftermath ns-challenge-aftermath--${challengeResult.outcome === 'won' ? 'win' : 'loss'}`,
       children: [
         h('div', { className: 'ns-inline-list' }, [
           statusPill(challengeResult.comparisonLabel),
@@ -370,6 +375,7 @@ function renderChallengeStateCard({ challengeId, challengeEntry, challengeResult
   return card({
     title: 'Challenge benchmark',
     body: `${challengeEntry.challengerName} set ${challengeEntry.targetScoreLabel} on this scene. Submit a scored take to compare against that benchmark.`,
+    className: 'ns-challenge-aftermath',
     children: [
       h('div', { className: 'ns-inline-list' }, [
         statusPill(challengeEntry.targetScoreLabel),
@@ -525,10 +531,10 @@ function renderSceneDetailSurface({
         h('p', {
           className: 'ns-page__summary',
           text: hasChallengeContext && currentViewModel.challengeEntry
-            ? `Scene id ${sceneId}. Entered from ${entryLabel}. Challenge benchmark ${currentViewModel.challengeEntry.targetScoreLabel} is attached to this scene.`
+            ? `Challenge benchmark ${currentViewModel.challengeEntry.targetScoreLabel} is attached to this scene. Record, analyze, then compare the result.`
             : hasChallengeContext
-              ? `Scene id ${sceneId}. Entered from ${entryLabel}. Challenge context is attached to this scene when invite data is available.`
-            : `Scene id ${sceneId}. Entered from ${entryLabel}. Record a local take, submit it for scoring, and review the refreshed progress data here.`,
+              ? 'Challenge context is attached to this scene when invite data is available.'
+              : 'Record a local take, submit it for scoring, and review the refreshed progress data here.',
         }),
       ]),
       h('div', { className: 'ns-inline-list' }, [
@@ -558,6 +564,7 @@ function renderSceneDetailSurface({
     card({
       title: 'After scoring',
       body: 'Progress, leaderboard, personal best, daily status, streak data, and challenge comparison refresh after a successful scored take.',
+      className: 'ns-context-card',
     }),
   ]);
 }

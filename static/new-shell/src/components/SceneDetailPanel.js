@@ -18,6 +18,7 @@ function renderPersonalizationPanel({ scene, session, progressError }) {
     return card({
       title: 'Personalization unavailable',
       body: progressError.message || 'Progress could not load for this scene.',
+      className: 'ns-state-card ns-state-card--error',
       children: [statusPill(progressError.rateLimited ? 'Rate limited' : 'Read-only fetch failed')],
     });
   }
@@ -26,9 +27,10 @@ function renderPersonalizationPanel({ scene, session, progressError }) {
     return card({
       title: 'Personalization needs auth',
       body: 'Sign in to verify unlock state, personal best, and scene progress here.',
+      className: 'ns-state-card ns-state-card--auth',
       children: [
         statusPill('Auth required'),
-        buttonLink({ href: createAppHref('/auth'), text: 'Open auth', variant: 'secondary' }),
+        buttonLink({ href: createAppHref('/auth'), text: 'Sign in', variant: 'secondary' }),
       ],
     });
   }
@@ -38,6 +40,7 @@ function renderPersonalizationPanel({ scene, session, progressError }) {
     body: scene.locked
       ? 'This scene is locked for your current session. It remains visible here, but recording and analyze stay disabled.'
       : 'This scene is available for your current session. Personal bests update from saved scoring data.',
+    className: 'ns-state-card ns-state-card--ready',
     children: [
       h('div', { className: 'ns-inline-list' }, [
         statusPill(scene.locked ? 'Locked' : 'Unlocked'),
@@ -110,17 +113,18 @@ function renderLocalRuntimePanel({ canRecord, disabledReason, runtime, onCleanup
   });
 
   return card({
-    title: 'Local take runtime',
+    title: 'Recording studio',
     body: canRecord
-      ? 'Record and play back a local audio take for this scene. Submit only when the current take is ready.'
+      ? 'Record, review, and reset a local take before submitting it for scoring.'
       : disabledReason,
+    className: `ns-runtime-card${canRecord ? ' is-ready' : ' is-disabled'}`,
     children: [
       status.root,
       waveform.root,
       controls.root,
       h('p', {
         className: 'ns-muted',
-        text: 'This local audio blob stays in the browser until analyze submit. Reset clears the take and any analyze result attached to it.',
+        text: 'Audio stays in this browser until analyze submit. Reset clears the take and its current result.',
       }),
     ],
   });
@@ -128,7 +132,7 @@ function renderLocalRuntimePanel({ canRecord, disabledReason, runtime, onCleanup
 
 function renderAnalyzePanel({ analyzeStore, onCleanup }) {
   const statePill = statusPill('Disabled');
-  const endpointPill = statusPill('/api/submit');
+  const endpointPill = statusPill('Scoring ready');
   const button = h('button', {
     className: 'ns-button',
     type: 'button',
@@ -138,7 +142,7 @@ function renderAnalyzePanel({ analyzeStore, onCleanup }) {
     },
   });
   const detailEl = h('p', { className: 'ns-muted' });
-  const authLink = buttonLink({ href: createAppHref('/auth'), text: 'Open auth', variant: 'secondary' });
+  const authLink = buttonLink({ href: createAppHref('/auth'), text: 'Sign in', variant: 'secondary' });
   authLink.hidden = true;
 
   const unsubscribe = analyzeStore.subscribe((snapshot) => {
@@ -155,7 +159,8 @@ function renderAnalyzePanel({ analyzeStore, onCleanup }) {
 
   return card({
     title: 'Analyze take',
-    body: 'Submit the current local take for scoring. Score ownership stays server-side.',
+    body: 'Send the current take for scoring when the recording feels ready.',
+    className: 'ns-analyze-card',
     children: [
       h('div', { className: 'ns-inline-list' }, [statePill, endpointPill]),
       detailEl,
@@ -217,7 +222,7 @@ export function createSceneDetailPanel({
     detailBody.replaceChildren(
       h('p', { className: 'ns-eyebrow', text: currentScene.levelName }),
       h('h2', { text: currentScene.title }),
-      h('p', { text: `${currentScene.film} (${currentScene.year})` }),
+      h('p', { className: 'ns-scene-detail__meta', text: `${currentScene.film} (${currentScene.year})` }),
       h('blockquote', { text: currentScene.quote }),
       h('div', { className: 'ns-inline-list' }, [
         statusPill(currentScene.difficulty),
@@ -271,10 +276,10 @@ export function createSceneDetailPanel({
 
   const root = h('div', { className: 'ns-scene-entry-stack' }, [
     h('section', { className: 'ns-scene-detail' }, [
-      imageEl,
+      h('div', { className: 'ns-scene-detail__media' }, [imageEl]),
       detailBody,
     ]),
-    h('div', { className: 'ns-grid ns-grid--three' }, [
+    h('div', { className: 'ns-grid ns-grid--three ns-scene-workflow' }, [
       personalizationSlot,
       runtimeCard,
       analyzeCard,

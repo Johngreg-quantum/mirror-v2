@@ -20,7 +20,7 @@ export function renderScorePanelShell({
   const translationBlock = h('section', { className: 'ns-score-panel__translation', hidden: true });
   const translationText = h('p');
   const intro = h('div', { className: 'ns-score-panel__intro' }, [
-    h('p', { className: 'ns-eyebrow', text: 'Analyze surface' }),
+    h('p', { className: 'ns-eyebrow', text: 'Scored take' }),
     titleEl,
     detailEl,
   ]);
@@ -105,7 +105,7 @@ export function renderScorePanelShell({
       detail,
       score: String(score),
       scoreLabel,
-      pills: ['phoneme slot', 'PB banner slot', 'points slot'],
+      pills: ['Awaiting take', 'Personal best', 'Points'],
       comparison: [],
       metrics: [],
       translation: '',

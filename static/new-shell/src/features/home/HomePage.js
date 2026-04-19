@@ -117,7 +117,7 @@ function renderHomeSurface({ appState, scenes, leaderboard, profile, progressSum
           }),
     ]),
     h('div', { className: 'ns-grid ns-grid--four' }, [
-      renderProgressStatCard({ label: 'Average', value: progressSummary.scoreAverage, detail: 'read-only progress' }),
+      renderProgressStatCard({ label: 'Average', value: progressSummary.scoreAverage, detail: 'practice average' }),
       renderProgressStatCard({ label: 'Completed', value: progressSummary.scenesCompleted, detail: 'scenes finished' }),
       renderProgressStatCard({ label: 'PBs', value: progressSummary.personalBests, detail: 'personal bests set' }),
       renderProgressStatCard({ label: 'Visible', value: progressSummary.unlockedScenes, detail: 'available scenes' }),
@@ -132,7 +132,7 @@ function renderHomeSurface({ appState, scenes, leaderboard, profile, progressSum
       ]),
       scenes.length
         ? h('div', { className: 'ns-scene-grid' }, scenes.map((scene) => renderSceneCard({ scene, entrySource: 'home' })))
-        : card({ title: 'No scenes found', body: 'The scene-config endpoint returned no scene records.' }),
+        : card({ title: 'No scenes found', body: 'Scenes will appear here when the catalog is ready.' }),
     ]),
     h('div', { className: 'ns-grid ns-grid--two' }, [
       leaderboard.rows.length

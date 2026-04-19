@@ -1,12 +1,21 @@
 .ns-card {
   display: grid;
-  gap: var(--ns-space-3);
+  gap: var(--ns-space-4);
   align-content: start;
+  min-width: 0;
   padding: var(--ns-space-5);
   background: var(--ns-color-surface);
   border: 1px solid var(--ns-color-line);
   border-radius: var(--ns-radius-md);
   box-shadow: var(--ns-shadow-soft);
+}
+
+.ns-card > * {
+  min-width: 0;
+}
+
+.ns-card h3 {
+  color: var(--ns-color-ink);
 }
 
 .ns-card p {
@@ -19,17 +28,23 @@
   justify-content: center;
   min-height: 2.75rem;
   width: fit-content;
-  padding: 0 var(--ns-space-4);
+  max-width: 100%;
+  padding: 0 var(--ns-space-5);
   color: #ffffff;
   background: var(--ns-color-primary);
   border: 1px solid var(--ns-color-primary);
   border-radius: var(--ns-radius-md);
-  font-weight: 700;
+  box-shadow: 0 10px 22px rgb(13 122 102 / 18%);
+  font-weight: 800;
   text-decoration: none;
+  transition: background 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
 }
 
 .ns-button:hover {
   background: var(--ns-color-primary-strong);
+  border-color: var(--ns-color-primary-strong);
+  box-shadow: 0 14px 28px rgb(13 122 102 / 22%);
+  transform: translateY(-1px);
 }
 
 .ns-button:disabled {
@@ -39,12 +54,15 @@
 
 .ns-button--secondary {
   color: var(--ns-color-primary-strong);
-  background: var(--ns-color-surface-alt);
+  background: rgb(255 255 255 / 72%);
   border-color: var(--ns-color-line);
+  box-shadow: none;
 }
 
 .ns-button--secondary:hover {
-  background: #ddebe2;
+  background: var(--ns-color-primary-soft);
+  border-color: #b8d7cb;
+  box-shadow: var(--ns-shadow-tight);
 }
 
 .ns-input {
@@ -69,9 +87,10 @@
   align-items: center;
   min-height: 1.75rem;
   width: fit-content;
+  max-width: 100%;
   padding: 0 var(--ns-space-3);
   color: var(--ns-color-primary-strong);
-  background: var(--ns-color-surface-alt);
+  background: rgb(238 245 239 / 82%);
   border: 1px solid var(--ns-color-line);
   border-radius: var(--ns-radius-md);
   font-size: var(--ns-font-size-sm);
@@ -94,6 +113,7 @@
 .ns-grid {
   display: grid;
   gap: var(--ns-space-5);
+  min-width: 0;
 }
 
 .ns-grid--two {
@@ -108,7 +128,8 @@
 .ns-eyebrow {
   color: var(--ns-color-accent);
   font-size: var(--ns-font-size-sm);
-  font-weight: 800;
+  font-weight: 900;
+  text-transform: uppercase;
 }
 
 .ns-list-block {
@@ -119,5 +140,26 @@
 @media (max-width: 760px) {
   .ns-grid--two {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 520px) {
+  .ns-card,
+  .ns-stat-card,
+  .ns-leaderboard,
+  .ns-level-card,
+  .ns-streak-card,
+  .ns-challenge-entry,
+  .ns-result-card,
+  .ns-score-panel {
+    padding: var(--ns-space-4);
+  }
+
+  .ns-button {
+    width: 100%;
+  }
+
+  .ns-pill {
+    white-space: normal;
   }
 }
