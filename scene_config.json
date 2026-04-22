@@ -113,11 +113,11 @@
       "actor": "Liam Neeson",
       "translation": "Te voy a encontrar y te voy a matar.",
       "ui": {
-        "youtube_id": "jZOywn1qArI",
-        "clip_start": 0,
-        "clip_end": 55,
+        "youtube_id": "",
+        "clip_start": 211,
+        "clip_end": 249,
         "card_color": "#3b82f6",
-        "poster_image": "/static/posters/taken.jpg"
+        "poster_image": ""
       }
     },
     "titanic": {
@@ -375,36 +375,6 @@
         "card_color": "#5a7d8c",
         "poster_image": "/static/posters/mystic_river.jpg"
       }
-    },
-    "the_blind_side": {
-      "movie": "The Blind Side",
-      "quote": "I kinda thought I already was.",
-      "year": 2009,
-      "difficulty": "Beginner",
-      "actor": "Sandra Bullock",
-      "translation": "Yo pensaba que ya lo era.",
-      "ui": {
-        "youtube_id": "j2seheIiApM",
-        "clip_start": 1,
-        "clip_end": 15,
-        "card_color": "#d4a843",
-        "poster_image": "/static/posters/the_blind_side.jpg"
-      }
-    },
-    "the_intern": {
-      "movie": "The Intern",
-      "quote": "Actually I have to go.",
-      "year": 2015,
-      "difficulty": "Beginner",
-      "actor": "Robert De Niro",
-      "translation": "En realidad, tengo que irme.",
-      "ui": {
-        "youtube_id": "6lCG9ScuuLA",
-        "clip_start": 77,
-        "clip_end": 83,
-        "card_color": "#4a7c8c",
-        "poster_image": "/static/posters/the_intern.jpg"
-      }
     }
   },
   "levels": [
@@ -428,9 +398,7 @@
         "men_in_black",
         "mrs_doubtfire",
         "fifth_element",
-        "mystic_river",
-        "the_blind_side",
-        "the_intern"
+        "mystic_river"
       ],
       "unlock_score": 0
     },
