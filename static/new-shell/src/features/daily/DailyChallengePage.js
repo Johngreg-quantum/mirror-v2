@@ -3,13 +3,14 @@ import { renderDailyChallengeCard } from '../../components/DailyChallengeCard.js
 import { renderSceneCard } from '../../components/SceneCard.js';
 import { renderSessionPrompt } from '../../components/SessionState.js';
 import { renderStreakCard } from '../../components/StreakCard.js';
-import { card, statusPill } from '../../components/primitives.js';
+import { buttonLink, card, statusPill } from '../../components/primitives.js';
 import { h } from '../../lib/helpers/dom.js';
 import { getFreshPostScoreReadCache } from '../../lib/api/post-score-refresh.js';
 import { fetchDailyChallenge, fetchProfile, fetchSceneConfig } from '../../lib/api/read-data.js';
 import { adaptDailyChallenge } from '../../lib/adapters/daily-adapter.js';
 import { adaptProfile } from '../../lib/adapters/progress-adapter.js';
 import { adaptSceneConfig } from '../../lib/adapters/scene-adapter.js';
+import { createAppHref } from '../../lib/routing/navigation.js';
 
 export function renderDailyChallengePage({ appState }) {
   const page = h('div', {}, [renderLoadingState('Loading daily challenge')]);
@@ -67,14 +68,18 @@ async function loadDailyViewModel(appState) {
 }
 
 function renderDailySurface({ daily, profile, profileError, session }) {
+  const isComplete = /completed|done/i.test(String(daily.status || ''));
+
   return h('article', { className: 'ns-page' }, [
     h('header', { className: 'ns-page__header' }, [
       h('div', {}, [
-        h('p', { className: 'ns-eyebrow', text: 'Daily challenge' }),
-        h('h2', { text: 'Daily challenge' }),
+        h('p', { className: 'ns-eyebrow', text: isComplete ? 'Daily complete' : 'Today only' }),
+        h('h2', { text: isComplete ? 'Nice work. Come back tomorrow.' : 'Keep today\'s streak alive' }),
         h('p', {
           className: 'ns-page__summary',
-          text: 'Practice today\'s scene and keep your streak moving when your session is active.',
+          text: isComplete
+            ? 'Today\'s scored take is banked. Use the rest of the day to chase a cleaner run or build progress on another scene.'
+            : 'One scored daily take keeps the habit visible, adds reward points, and gives you a clear reason to return tomorrow.',
         }),
       ]),
       statusPill(daily.resetLabel),
@@ -97,12 +102,20 @@ function renderDailySurface({ daily, profile, profileError, session }) {
     ]),
     h('div', { className: 'ns-grid ns-grid--two' }, [
       card({
-        title: 'Daily result summary',
-        body: 'Points, streak bonus, and reset timing update after a scored daily take.',
+        title: isComplete ? 'Daily reward banked' : 'Daily reward',
+        body: isComplete
+          ? `Your daily status is ${daily.status}. The next reset is already counting down.`
+          : `${daily.rewardPoints} points plus ${daily.streakBonus} are attached to the first scored completion.`,
+        children: [
+          h('div', { className: 'ns-action-row' }, [
+            buttonLink({ href: createAppHref('/progress'), text: 'Open Progress', variant: 'secondary' }),
+            buttonLink({ href: createAppHref('/'), text: 'Find another scene', variant: 'secondary' }),
+          ]),
+        ],
       }),
       card({
-        title: 'Daily sync',
-        body: 'Daily scene, streak status, profile points, and reset copy update from the current server data.',
+        title: 'Tomorrow hook',
+        body: 'The daily scene, streak status, profile points, and reset copy update from current server data so the next habit prompt stays honest.',
       }),
     ]),
   ]);

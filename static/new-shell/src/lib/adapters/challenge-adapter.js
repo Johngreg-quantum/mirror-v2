@@ -58,7 +58,7 @@ export function adaptChallengeResult({ challengeEntry, analyzeResult } = {}) {
   return {
     challengeId: challengeEntry.id,
     outcome,
-    title: outcome === 'won' ? 'You won the challenge' : 'So close',
+    title: outcome === 'won' ? 'You beat the benchmark' : 'The benchmark survived',
     message: outcome === 'won'
       ? `You scored ${formatScore(yourScore)} against ${formatScore(opponentScore)} and cleared the benchmark.`
       : `You scored ${formatScore(yourScore)}. ${formatScore(opponentScore)} is still the score to beat.`,

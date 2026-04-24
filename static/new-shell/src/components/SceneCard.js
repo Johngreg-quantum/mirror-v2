@@ -28,7 +28,7 @@ export function renderSceneCard({ scene, entrySource = 'home' }) {
       ]),
       buttonLink({
         href: sceneHref(scene.id, { from: entrySource }),
-        text: scene.locked ? 'View locked scene' : 'Enter scene',
+        text: scene.locked ? 'Preview locked scene' : scene.isDaily ? 'Start daily take' : 'Record this scene',
         variant: scene.locked ? 'secondary' : 'primary',
       }),
     ]),

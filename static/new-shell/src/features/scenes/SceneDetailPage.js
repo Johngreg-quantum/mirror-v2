@@ -213,6 +213,21 @@ function getRefreshStatusLabel(snapshot) {
   return 'Current page';
 }
 
+function findNextUnlockedScene(scene, scenes = []) {
+  if (!scene || !scenes.length) {
+    return null;
+  }
+
+  const currentIndex = scenes.findIndex((item) => item.id === scene.id);
+  const ordered = currentIndex >= 0
+    ? scenes.slice(currentIndex + 1).concat(scenes.slice(0, currentIndex))
+    : scenes;
+
+  return ordered.find((item) => item.id !== scene.id && !item.locked)
+    || ordered.find((item) => item.id !== scene.id)
+    || null;
+}
+
 function renderSceneDailyStateCard({ scene, daily, profile, profileError, refreshSnapshot }) {
   const isDailyScene = scene.isDaily;
   const streakLabel = profile ? `${profile.streakDays}-day streak` : 'Session auth';
@@ -244,18 +259,36 @@ function renderSceneDailyStateCard({ scene, daily, profile, profileError, refres
   });
 }
 
-function renderPostScoreAftermathCard({ analyzeSnapshot, refreshSnapshot }) {
+function renderPostScoreAftermathCard({
+  analyzeSnapshot,
+  refreshSnapshot,
+  scene,
+  scenes,
+  daily,
+  query,
+  challengeEntry,
+}) {
   const result = analyzeSnapshot.result;
 
   if (!result) {
     return card({
-      title: 'Post-score aftermath',
-      body: 'After a successful analyze, refreshed scene context appears here.',
+      title: 'Finish the first loop',
+      body: 'Record, analyze, then use this space to choose the next move while the score is still fresh.',
       className: 'ns-aftermath-card',
-      children: [statusPill(getRefreshStatusLabel(refreshSnapshot))],
+      children: [
+        h('div', { className: 'ns-inline-list' }, [
+          statusPill('Scene'),
+          statusPill('Record'),
+          statusPill('Analyze'),
+          statusPill('Next step'),
+          statusPill(getRefreshStatusLabel(refreshSnapshot)),
+        ]),
+      ],
     });
   }
 
+  const nextScene = findNextUnlockedScene(scene, scenes);
+  const canShowDailyAction = daily?.scene_id && daily.scene_id !== scene?.id;
   const children = [
     h('div', { className: 'ns-inline-list' }, [
       statusPill(getRefreshStatusLabel(refreshSnapshot)),
@@ -280,11 +313,30 @@ function renderPostScoreAftermathCard({ analyzeSnapshot, refreshSnapshot }) {
     }));
   }
 
+  children.push(h('div', { className: 'ns-action-row' }, [
+    buttonLink({ href: sceneHref(scene.id, query), text: 'Try again', variant: 'secondary' }),
+    nextScene
+      ? buttonLink({ href: sceneHref(nextScene.id, { from: 'home' }), text: 'Next scene', variant: 'secondary' })
+      : null,
+    canShowDailyAction
+      ? buttonLink({ href: sceneHref(daily.scene_id, { from: 'daily' }), text: 'Do today\'s challenge', variant: 'secondary' })
+      : null,
+    buttonLink({ href: createAppHref('/progress'), text: 'Open Progress', variant: 'secondary' }),
+    buttonLink({ href: createAppHref('/'), text: 'Return Home', variant: 'secondary' }),
+  ]));
+
+  children.push(h('p', {
+    className: 'ns-muted',
+    text: challengeEntry
+      ? 'Challenge a friend next: reopen the challenge aftermath and use the real invite link when the share flow is available.'
+      : 'Challenge a friend next: keep this score as the benchmark and send it through the challenge invite flow when sharing is available.',
+  }));
+
   return card({
-    title: 'Post-score aftermath',
+    title: 'Score saved. Pick the next move.',
     body: result.is_new_pb
-      ? 'This take set a new personal best and the app is reflecting the server aftermath.'
-      : 'This take was scored by the server and the app is reflecting the returned aftermath.',
+      ? 'New personal best. This is the perfect moment to repeat it, climb to the next scene, or anchor today\'s habit.'
+      : 'This take is scored and saved. Keep the loop moving before the session goes cold.',
     className: 'ns-aftermath-card ns-aftermath-card--scored',
     children,
   });
@@ -469,6 +521,11 @@ function renderSceneDetailSurface({
     aftermathSlot.replaceChildren(renderPostScoreAftermathCard({
       analyzeSnapshot: analyzeStore.getSnapshot(),
       refreshSnapshot: postScoreRefreshStore.getSnapshot(),
+      scene: currentViewModel.scene,
+      scenes: currentViewModel.scenes,
+      daily: currentViewModel.daily,
+      query,
+      challengeEntry: currentViewModel.challengeEntry,
     }));
   }
 
@@ -542,10 +599,10 @@ function renderSceneDetailSurface({
         h('p', {
           className: 'ns-page__summary',
           text: hasChallengeContext && currentViewModel.challengeEntry
-            ? `Challenge benchmark ${currentViewModel.challengeEntry.targetScoreLabel} is attached to this scene. Record, analyze, then compare the result.`
+            ? `Beat ${currentViewModel.challengeEntry.targetScoreLabel}, see the aftermath, then decide whether to retry, move on, or keep the streak alive.`
             : hasChallengeContext
               ? 'Challenge context is attached to this scene when invite data is available.'
-              : 'Record a local take, submit it for scoring, and review the refreshed progress data here.',
+              : 'Record a local take, submit it for scoring, and follow the next action after the result returns.',
         }),
       ]),
       h('div', { className: 'ns-inline-list' }, [
@@ -574,7 +631,7 @@ function renderSceneDetailSurface({
     hasChallengeContext ? h('section', { className: 'ns-stack' }, [dailyStateSlot]) : null,
     card({
       title: 'After scoring',
-      body: 'Progress, leaderboard, personal best, daily status, streak data, and challenge comparison refresh after a successful scored take.',
+      body: 'Progress, leaderboard, personal best, daily status, streak data, and challenge comparison refresh after a successful scored take. The next-step card above keeps the practice loop moving.',
       className: 'ns-context-card',
     }),
   ]);

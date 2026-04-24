@@ -6,8 +6,8 @@ export function renderChallengeResultCard({ entry, result }) {
     return h('section', { className: 'ns-result-card ns-result-card--empty' }, [
       h('div', {}, [
         h('p', { className: 'ns-eyebrow', text: 'Challenge result' }),
-        h('h3', { text: 'No scored take yet' }),
-        h('p', { text: 'Record the challenge scene and submit a scored take to reveal the comparison.' }),
+        h('h3', { text: 'Beat the benchmark' }),
+        h('p', { text: 'Record the challenge scene and submit one scored take to reveal the head-to-head comparison.' }),
       ]),
       h('div', { className: 'ns-inline-list' }, [
         statusPill(entry?.targetScoreLabel || 'No benchmark'),
@@ -22,7 +22,7 @@ export function renderChallengeResultCard({ entry, result }) {
     h('div', { className: 'ns-result-card__intro' }, [
       h('p', { className: 'ns-eyebrow', text: 'Challenge result' }),
       h('h3', { text: result.title }),
-      h('p', { text: result.message }),
+      h('p', { text: isWin ? `${result.message} Send the next benchmark while the win is fresh.` : `${result.message} One cleaner take can flip it.` }),
     ]),
     h('div', { className: 'ns-score-compare' }, [
       h('div', { className: 'ns-score-compare__item ns-score-compare__item--primary' }, [

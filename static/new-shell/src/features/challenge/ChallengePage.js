@@ -71,8 +71,8 @@ function renderChallengeEntryCard({ challengeEntry, isAuthenticated }) {
   return h('section', { className: 'ns-challenge-entry ns-challenge-entry--hero' }, [
     h('div', { className: 'ns-challenge-entry__copy' }, [
       h('p', { className: 'ns-eyebrow', text: 'Incoming challenge' }),
-      h('h3', { text: `${challengeEntry.challengerName} challenged you` }),
-      h('p', { text: `${challengeEntry.sceneTitle} from ${challengeEntry.film}` }),
+      h('h3', { text: `${challengeEntry.challengerName} put up a score to beat` }),
+      h('p', { text: `${challengeEntry.sceneTitle} from ${challengeEntry.film}. Record one take, then see the head-to-head aftermath.` }),
     ]),
     h('div', { className: 'ns-challenge-entry__benchmark' }, [
       h('span', { text: 'Score to beat' }),
@@ -85,7 +85,7 @@ function renderChallengeEntryCard({ challengeEntry, isAuthenticated }) {
     h('div', { className: 'ns-action-row' }, [
       buttonLink({
         href: primaryHref,
-        text: isAuthenticated ? 'Accept challenge' : 'Sign in to accept',
+        text: isAuthenticated ? 'Beat this score' : 'Sign in to accept',
       }),
       buttonLink({
         href: createAppHref(buildChallengeScenePath(challengeEntry)),
@@ -100,15 +100,17 @@ function renderChallengeResultSummary({ challengeResult }) {
   if (!challengeResult) {
     return card({
       title: 'Challenge aftermath',
-      body: 'Your result appears here after the scored take returns.',
+      body: 'Your win/loss state, points, and streak signal appear here after the scored take returns.',
       className: 'ns-challenge-aftermath',
       children: [statusPill('Awaiting scored take')],
     });
   }
 
   return card({
-    title: 'Challenge aftermath',
-    body: challengeResult.message,
+    title: challengeResult.outcome === 'won' ? 'Win secured' : 'Rematch target',
+    body: challengeResult.outcome === 'won'
+      ? `${challengeResult.message} This is the emotional payoff moment: send the next benchmark or keep climbing.`
+      : `${challengeResult.message} Try again from the same scene while the target is clear.`,
     className: `ns-challenge-aftermath ns-challenge-aftermath--${challengeResult.outcome === 'won' ? 'win' : 'loss'}`,
     children: [
       h('div', { className: 'ns-inline-list' }, [
@@ -149,10 +151,10 @@ export function renderChallengePage({ appState, params }) {
         h('header', { className: 'ns-page__header' }, [
           h('div', {}, [
             h('p', { className: 'ns-eyebrow', text: 'Challenge' }),
-            h('h2', { text: `Challenge ${challengeEntry.id}` }),
+            h('h2', { text: `Beat ${challengeEntry.targetScoreLabel}` }),
             h('p', {
               className: 'ns-page__summary',
-              text: 'Review the invite, launch the scene, and compare your scored take against the benchmark.',
+              text: 'Open the scene with challenge context, record a take, and find out immediately whether you cleared the benchmark.',
             }),
           ]),
           h('div', { className: 'ns-inline-list' }, [
@@ -166,7 +168,7 @@ export function renderChallengePage({ appState, params }) {
             ? `Signed in as ${appState.session.user?.displayName || 'performer'}`
             : 'Sign in to accept this challenge',
           body: isAuthenticated
-            ? 'Accepting this challenge launches the linked scene with challenge context preserved.'
+            ? 'Launching this challenge preserves the benchmark through the scene, score, and aftermath.'
             : 'After sign-in, Mirror sends you into the challenge scene to record your take.',
         }),
         renderChallengeEntryCard({ challengeEntry, isAuthenticated }),
@@ -175,16 +177,23 @@ export function renderChallengePage({ appState, params }) {
           renderChallengeResultSummary({ challengeResult }),
         ]),
         card({
-          title: 'Challenge scene launch',
-          body: 'Launch the linked scene with challenge context preserved.',
+          title: challengeResult ? 'Keep the challenge moving' : 'Challenge scene launch',
+          body: challengeResult
+            ? 'Retry the scene, send the next benchmark through the real challenge flow when sharing is available, or jump back to progress.'
+            : 'Launch the linked scene with challenge context preserved.',
           className: 'ns-challenge-launch-card',
           children: [
             h('div', { className: 'ns-inline-list' }, [
               statusPill(challengeEntry.sceneTitle),
-              statusPill('Challenge context saved'),
+              statusPill(challengeResult ? 'Share-worthy result' : 'Challenge context saved'),
               buttonLink({
                 href: challengeSceneHref,
-                text: 'Open challenge scene',
+                text: challengeResult ? 'Try again' : 'Open challenge scene',
+                variant: 'secondary',
+              }),
+              buttonLink({
+                href: createAppHref('/progress'),
+                text: 'Open Progress',
                 variant: 'secondary',
               }),
             ]),

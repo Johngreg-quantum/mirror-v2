@@ -1,6 +1,6 @@
 import { renderLoggedErrorState, renderLoadingState } from '../../components/AsyncState.js';
 import { renderProgressStatCard } from '../../components/ProgressStatCard.js';
-import { card, statusPill } from '../../components/primitives.js';
+import { buttonLink, card, statusPill } from '../../components/primitives.js';
 import { h } from '../../lib/helpers/dom.js';
 import { getFreshPostScoreReadCache } from '../../lib/api/post-score-refresh.js';
 import { fetchHistory, fetchProfile, fetchProgress, fetchSceneConfig } from '../../lib/api/read-data.js';
@@ -12,6 +12,7 @@ import {
   adaptRecentHistory,
 } from '../../lib/adapters/progress-adapter.js';
 import { adaptSceneConfig } from '../../lib/adapters/scene-adapter.js';
+import { createAppHref } from '../../lib/routing/navigation.js';
 
 export function renderProgressDashboardPage({ appState }) {
   const page = h('div', {}, [renderLoadingState('Loading progress dashboard')]);
@@ -58,6 +59,9 @@ async function loadProgressViewModel(appState) {
 }
 
 function renderProgressSurface({ profile, progressSummary, personalBests, recentHistory, focusAreas }) {
+  const hasPersonalBests = personalBests.length > 0;
+  const hasRecentHistory = recentHistory.length > 0;
+
   return h('article', { className: 'ns-page' }, [
     h('header', { className: 'ns-page__header' }, [
       h('div', {}, [
@@ -65,7 +69,9 @@ function renderProgressSurface({ profile, progressSummary, personalBests, recent
         h('h2', { text: 'Progress dashboard' }),
         h('p', {
           className: 'ns-page__summary',
-          text: `${profile.displayName} is in ${profile.division} with ${profile.points.toLocaleString()} points.`,
+          text: hasRecentHistory
+            ? `${profile.displayName} is in ${profile.division} with ${profile.points.toLocaleString()} points. Use the patterns below to choose the next take.`
+            : `${profile.displayName} is in ${profile.division}. Your next scored take starts the visible progress trail.`,
         }),
       ]),
       statusPill('Synced'),
@@ -79,33 +85,44 @@ function renderProgressSurface({ profile, progressSummary, personalBests, recent
     h('div', { className: 'ns-grid ns-grid--three' }, [
       card({
         title: 'Personal bests',
-        body: 'Best-scoring scenes from your saved progress data.',
+        body: hasPersonalBests
+          ? 'Best-scoring scenes from your saved progress data.'
+          : 'Your first personal best appears after one scored scene. Start anywhere unlocked.',
         children: [
-          personalBests.length
+          hasPersonalBests
             ? h('ul', {}, personalBests.map((best) => h('li', { text: `${best.sceneTitle} - ${best.score}` })))
-            : h('p', { className: 'ns-muted', text: 'Submit a scored take to fill this list.' }),
+            : h('div', { className: 'ns-action-row' }, [
+                buttonLink({ href: createAppHref('/'), text: 'Start a scene', variant: 'secondary' }),
+                buttonLink({ href: createAppHref('/daily'), text: 'Try Daily', variant: 'secondary' }),
+              ]),
         ],
       }),
       card({
         title: 'Recent history',
-        body: 'Recent scored takes from your saved history.',
+        body: hasRecentHistory
+          ? 'Recent scored takes from your saved history.'
+          : 'History becomes useful fast: one score gives you a baseline, the second gives you direction.',
         children: [
-          recentHistory.length
+          hasRecentHistory
             ? h('ul', {}, recentHistory.map((item) => h('li', { text: `${item.sceneTitle}: ${item.score} (${item.result})` })))
-            : h('p', { className: 'ns-muted', text: 'Recent scores will appear after scored submissions.' }),
+            : h('p', { className: 'ns-muted', text: 'Record, analyze, and return here to see the practice trail.' }),
         ],
       }),
       card({
         title: 'Focus areas',
-        body: 'Patterns from recent scored takes, shaped into simple practice focus.',
+        body: hasRecentHistory
+          ? 'Patterns from recent scored takes, shaped into simple practice focus.'
+          : 'Once scores exist, this turns into the next thing to improve instead of an empty report.',
         children: [
           h('ul', {}, focusAreas.map((area) => h('li', { text: area }))),
         ],
       }),
     ]),
     card({
-      title: 'Progress sync',
-      body: 'Personal bests, recent history, profile points, and focus areas refresh from your saved scoring data.',
+      title: hasRecentHistory ? 'Progress sync' : 'Why this matters',
+      body: hasRecentHistory
+        ? 'Personal bests, recent history, profile points, and focus areas refresh from your saved scoring data.'
+        : 'Progress makes repeat practice feel concrete: baselines, personal bests, and focus prompts all begin with the first scored take.',
     }),
   ]);
 }
