@@ -28,19 +28,21 @@ from dotenv import load_dotenv
 load_dotenv()
 
 app = FastAPI(title="MIRROR — Movie Scene Language Learning")
+APP_BASE_URL = os.getenv("APP_BASE_URL", "").rstrip("/")
 
 # ---------------------------------------------------------------------------
-# CORS — only the production domain and local dev origins are allowed.
-# The frontend is served from the same domain as the API, so these origins
-# matter only for external/cross-origin callers.
+# CORS — production is served same-origin. APP_BASE_URL can add the
+# Mirror v2 live origin when cross-origin access is intentionally needed.
 # ---------------------------------------------------------------------------
-_ALLOWED_ORIGINS = [
-    "https://mirror-app-z8wr.onrender.com",
+_ALLOWED_ORIGINS = []
+if APP_BASE_URL.startswith(("http://", "https://")):
+    _ALLOWED_ORIGINS.append(APP_BASE_URL)
+_ALLOWED_ORIGINS.extend([
     "http://localhost:8000",
     "http://127.0.0.1:8000",
     "http://localhost:3000",
     "http://localhost:3001",
-]
+])
 
 app.add_middleware(
     CORSMiddleware,
@@ -52,8 +54,12 @@ app.add_middleware(
 
 _APP_DIR = os.path.dirname(os.path.abspath(__file__))
 _STATIC_DIR = os.path.join(_APP_DIR, "static")
-_INDEX_HTML_PATH = os.path.join(_APP_DIR, "index.html")
+_LEGACY_INDEX_HTML_PATH = os.path.join(_APP_DIR, "index.html")
+# Render deploys this repo as-is; the promoted shell entry is expected at static/new-shell/index.html.
 _NEW_SHELL_INDEX_HTML_PATH = os.path.join(_STATIC_DIR, "new-shell", "index.html")
+_SHELL_HEADER = "X-Mirror-Shell"
+_SHELL_LEGACY = "legacy"
+_SHELL_NEW = "new-shell"
 _SCENE_CONFIG_PATH = os.path.join(_APP_DIR, "scene_config.json")
 if os.path.isdir(_STATIC_DIR):
     app.mount("/static", StaticFiles(directory=_STATIC_DIR), name="static")
@@ -129,7 +135,6 @@ DB_PATH   = "mirror.db"
 SECRET    = os.getenv("JWT_SECRET", "change-me-to-a-long-random-string-in-production")
 ALGORITHM = "HS256"
 TOKEN_TTL = 30  # days
-APP_BASE_URL = os.getenv("APP_BASE_URL", "").rstrip("/")
 
 
 def build_app_url(path: str) -> str:
@@ -378,6 +383,16 @@ async def startup():
     """Run DB initialisation when uvicorn is ready, not at import time.
     Errors here appear in the Render log with a full traceback instead of
     killing the process silently during module load."""
+    logger.info(
+        "[mirror-shell] legacy_index_path=%s exists=%s",
+        _LEGACY_INDEX_HTML_PATH,
+        os.path.isfile(_LEGACY_INDEX_HTML_PATH),
+    )
+    logger.info(
+        "[mirror-shell] new_shell_index_path=%s exists=%s",
+        _NEW_SHELL_INDEX_HTML_PATH,
+        os.path.isfile(_NEW_SHELL_INDEX_HTML_PATH),
+    )
     init_db()
 
 
@@ -452,12 +467,13 @@ def calc_points(score: float, is_first_attempt: bool) -> int:
 # Routes — frontend
 # ---------------------------------------------------------------------------
 
-def _read_html_file(path: str, missing_title: str):
+def _read_html_file(path: str, missing_title: str, shell: str):
+    headers = {_SHELL_HEADER: shell}
     try:
         with open(path, "r", encoding="utf-8") as f:
-            return f.read()
+            return HTMLResponse(f.read(), headers=headers)
     except FileNotFoundError:
-        return HTMLResponse(f"<h1>{missing_title}</h1>", status_code=404)
+        return HTMLResponse(f"<h1>{missing_title}</h1>", status_code=404, headers=headers)
 
 
 @app.get("/", response_class=HTMLResponse)
@@ -471,18 +487,18 @@ async def promoted_new_shell_entry(
     scene_id: Optional[str] = None,
     challenge_id: Optional[str] = None,
 ):
-    return _read_html_file(_NEW_SHELL_INDEX_HTML_PATH, "app index.html not found")
+    return _read_html_file(_NEW_SHELL_INDEX_HTML_PATH, "app index.html not found", _SHELL_NEW)
 
 
 @app.get("/legacy", response_class=HTMLResponse)
 async def legacy_app_entry():
-    return _read_html_file(_INDEX_HTML_PATH, "index.html not found")
+    return _read_html_file(_LEGACY_INDEX_HTML_PATH, "index.html not found", _SHELL_LEGACY)
 
 
 @app.get("/legacy/challenge/{challenge_id}", response_class=HTMLResponse)
 async def legacy_challenge_page(challenge_id: str):
     """Serve the SPA for challenge links so the JS can read the path and render the challenge screen."""
-    return _read_html_file(_INDEX_HTML_PATH, "index.html not found")
+    return _read_html_file(_LEGACY_INDEX_HTML_PATH, "index.html not found", _SHELL_LEGACY)
 
 
 # ---------------------------------------------------------------------------
@@ -956,3 +972,19 @@ async def get_profile(user: dict = Depends(current_user)):
         "daily_done_today":      daily_done_today,
         "daily_scene_id":        get_daily_scene_id(),
     }
+
+
+@app.get("/{spa_path:path}", response_class=HTMLResponse)
+async def new_shell_spa_fallback(spa_path: str, request: Request):
+    path = request.url.path
+    if (
+        path == "/api"
+        or path.startswith("/api/")
+        or path == "/static"
+        or path.startswith("/static/")
+        or path == "/legacy"
+        or path.startswith("/legacy/")
+    ):
+        raise HTTPException(404, "Not Found")
+
+    return _read_html_file(_NEW_SHELL_INDEX_HTML_PATH, "app index.html not found", _SHELL_NEW)
