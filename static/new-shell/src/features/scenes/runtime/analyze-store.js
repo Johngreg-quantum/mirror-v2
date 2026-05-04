@@ -1,11 +1,12 @@
 import { getAnalyzeAudioExtension, submitLegacyAnalyze } from '../../../lib/api/analyze.js';
+import { STATE_COPY } from '../../../lib/copy/ux-copy.js';
 import { trackEvent } from '../../../lib/observability.js';
 
 function createSnapshot(overrides = {}) {
   return {
     status: 'disabled',
     disabledCode: 'no-take',
-    disabledReason: 'Record a take before analyzing.',
+    disabledReason: STATE_COPY.recordBeforeScoring,
     canSubmit: false,
     result: null,
     error: null,
@@ -18,7 +19,7 @@ function deriveAvailability({ runtimeSnapshot, sessionStatus, sceneLocked }) {
     return {
       status: 'disabled',
       disabledCode: 'auth-required',
-      disabledReason: 'Sign in before analyzing a take.',
+      disabledReason: STATE_COPY.signInBeforeScoring,
       canSubmit: false,
     };
   }
@@ -27,7 +28,7 @@ function deriveAvailability({ runtimeSnapshot, sessionStatus, sceneLocked }) {
     return {
       status: 'disabled',
       disabledCode: 'locked',
-      disabledReason: 'This scene is locked for your current session.',
+      disabledReason: STATE_COPY.lockedForSession,
       canSubmit: false,
     };
   }
@@ -36,7 +37,7 @@ function deriveAvailability({ runtimeSnapshot, sessionStatus, sceneLocked }) {
     return {
       status: 'disabled',
       disabledCode: 'no-take',
-      disabledReason: 'Record a take before analyzing.',
+      disabledReason: STATE_COPY.recordBeforeScoring,
       canSubmit: false,
     };
   }
@@ -45,7 +46,7 @@ function deriveAvailability({ runtimeSnapshot, sessionStatus, sceneLocked }) {
     return {
       status: 'disabled',
       disabledCode: 'empty-take',
-      disabledReason: 'The current take is empty. Reset and record again before analyzing.',
+      disabledReason: 'The current take is empty. Reset and record again before scoring.',
       canSubmit: false,
     };
   }
@@ -56,7 +57,7 @@ function deriveAvailability({ runtimeSnapshot, sessionStatus, sceneLocked }) {
     return {
       status: 'disabled',
       disabledCode: 'unsupported',
-      disabledReason: error?.message || 'This take format is not supported for analysis.',
+      disabledReason: error?.message || 'This take format is not supported for scoring.',
       canSubmit: false,
     };
   }

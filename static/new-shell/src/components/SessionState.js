@@ -1,4 +1,5 @@
 import { h } from '../lib/helpers/dom.js';
+import { CTA_COPY } from '../lib/copy/ux-copy.js';
 import { createAppHref } from '../lib/routing/navigation.js';
 import { buttonLink, card, statusPill } from './primitives.js';
 
@@ -20,13 +21,16 @@ export function getSessionLabel(session) {
 
 export function renderSessionPrompt({
   session,
-  title = 'Sign in to Mirror',
-  body = 'Sign in to sync progress, streaks, unlocks, and personalized scene data.',
+  title = 'Sign in to keep your practice',
+  body = 'Sign in to save scores, streaks, unlock state, and challenge context.',
+  actionHref = createAppHref('/auth'),
+  actionText = CTA_COPY.signInToSaveProgress,
+  showAction = true,
   onLogout,
 } = {}) {
   const isAuthenticated = session?.status === 'authenticated';
   const isError = session?.status === 'error';
-  let action = buttonLink({ href: createAppHref('/auth'), text: 'Sign in', variant: 'secondary' });
+  let action = showAction ? buttonLink({ href: actionHref, text: actionText, variant: 'secondary' }) : null;
 
   if (isAuthenticated) {
     action = onLogout
@@ -55,7 +59,7 @@ export function renderSessionPrompt({
     ? `Signed in as ${getSessionLabel(session)}`
     : isError ? 'Session refresh failed' : title;
   const promptBody = isAuthenticated
-    ? 'Progress, streaks, unlocks, and personal bests are active for this browser session.'
+    ? 'Scores, streaks, unlock state, and personal bests are attached to this account session.'
     : isError
       ? session.error?.message || 'Mirror could not refresh your session.'
       : body;

@@ -32,7 +32,7 @@ export function createAppLayout({ routes, sessionActions = {} }) {
             attrs: {
               'data-route-id': route.id,
               title: route.protectedRead
-                ? 'Sign in to load this section'
+                ? 'Sign in to load your saved practice here'
                 : route.label,
             },
           },
@@ -64,7 +64,7 @@ export function createAppLayout({ routes, sessionActions = {} }) {
       ]),
       h('p', {
         className: 'ns-shell__tagline',
-        text: 'Cinematic scene practice with score-backed progress.',
+        text: 'Scene practice with local recording, scoring, and saved progress.',
       }),
       sessionSlot,
       nav,

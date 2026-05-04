@@ -1,12 +1,13 @@
 import { h } from '../lib/helpers/dom.js';
+import { STATUS_COPY } from '../lib/copy/ux-copy.js';
 import { formatElapsedTime } from '../features/scenes/runtime/runtime-timer.js';
 
 const STATUS_LABELS = {
-  idle: 'Ready',
-  recording: 'Recording',
-  recorded: 'Take recorded',
-  playing: 'Playing take',
-  error: 'Runtime error',
+  idle: STATUS_COPY.ready,
+  recording: STATUS_COPY.recording,
+  recorded: STATUS_COPY.takeRecorded,
+  playing: STATUS_COPY.playingTake,
+  error: STATUS_COPY.runtimeError,
 };
 
 function getDetail(state, disabledReason) {
@@ -19,7 +20,7 @@ function getDetail(state, disabledReason) {
   }
 
   if (state.status === 'recorded') {
-    return 'Local audio is ready for playback and analysis.';
+    return 'Local audio is ready for playback or scoring.';
   }
 
   if (state.status === 'playing') {

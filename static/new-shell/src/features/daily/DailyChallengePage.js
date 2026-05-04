@@ -4,6 +4,7 @@ import { renderSceneCard } from '../../components/SceneCard.js';
 import { renderSessionPrompt } from '../../components/SessionState.js';
 import { renderStreakCard } from '../../components/StreakCard.js';
 import { buttonLink, card, statusPill } from '../../components/primitives.js';
+import { CTA_COPY, STATUS_COPY } from '../../lib/copy/ux-copy.js';
 import { h } from '../../lib/helpers/dom.js';
 import { getFreshPostScoreReadCache } from '../../lib/api/post-score-refresh.js';
 import { fetchDailyChallenge, fetchProfile, fetchSceneConfig } from '../../lib/api/read-data.js';
@@ -69,20 +70,24 @@ async function loadDailyViewModel(appState) {
 
 function renderDailySurface({ daily, profile, profileError, session }) {
   const isComplete = /completed|done/i.test(String(daily.status || ''));
+  const isAuthenticated = session?.status === 'authenticated';
 
   return h('article', { className: 'ns-page' }, [
     h('header', { className: 'ns-page__header' }, [
       h('div', {}, [
         h('p', { className: 'ns-eyebrow', text: isComplete ? 'Daily complete' : 'Today only' }),
-        h('h2', { text: isComplete ? 'Nice work. Come back tomorrow.' : 'Keep today\'s streak alive' }),
+        h('h2', { text: isComplete ? 'Daily complete' : 'Today\'s daily' }),
         h('p', {
           className: 'ns-page__summary',
           text: isComplete
-            ? 'Today\'s scored take is banked. Use the rest of the day to chase a cleaner run or build progress on another scene.'
-            : 'One scored daily take keeps the habit visible, adds reward points, and gives you a clear reason to return tomorrow.',
+            ? 'Today\'s daily score is saved. The next daily appears after reset.'
+            : 'Score today\'s daily to update daily status, points, and streak data.',
         }),
       ]),
-      statusPill(daily.resetLabel),
+      h('div', { className: 'ns-inline-list ns-page__actions' }, [
+        statusPill(daily.status),
+        statusPill(daily.resetLabel),
+      ]),
     ]),
     renderSessionPrompt({
       session,
@@ -94,28 +99,33 @@ function renderDailySurface({ daily, profile, profileError, session }) {
       profile
         ? renderStreakCard({ profile })
         : card({
-            title: 'Streak data needs sign-in',
-            body: profileError?.message || 'Sign in to show streak status here.',
-            children: [statusPill(profileError?.rateLimited ? 'Rate limited' : 'Session')],
+            title: profileError ? STATUS_COPY.dailyStatusUnavailable : 'Streak data needs sign-in',
+            body: profileError?.message || (isAuthenticated
+              ? 'Account daily status will appear when profile data is available.'
+              : 'Sign in to show streak status here.'),
+            className: 'ns-state-card ns-state-card--auth',
+            children: [statusPill(profileError?.rateLimited ? STATUS_COPY.rateLimited : isAuthenticated ? 'Session active' : 'Session')],
           }),
       renderSceneCard({ scene: daily.scene, entrySource: 'daily' }),
     ]),
     h('div', { className: 'ns-grid ns-grid--two' }, [
       card({
-        title: isComplete ? 'Daily reward banked' : 'Daily reward',
+        title: isComplete ? 'Daily saved' : 'Daily reward',
         body: isComplete
-          ? `Your daily status is ${daily.status}. The next reset is already counting down.`
+          ? `Daily status: ${daily.status}. Next reset: ${daily.resetLabel}.`
           : `${daily.rewardPoints} points plus ${daily.streakBonus} are attached to the first scored completion.`,
         children: [
-          h('div', { className: 'ns-action-row' }, [
-            buttonLink({ href: createAppHref('/progress'), text: 'Open Progress', variant: 'secondary' }),
-            buttonLink({ href: createAppHref('/'), text: 'Find another scene', variant: 'secondary' }),
+          h('div', { className: 'ns-action-row ns-action-row--card' }, [
+            isAuthenticated
+              ? buttonLink({ href: createAppHref('/progress'), text: CTA_COPY.viewProgress, variant: 'secondary' })
+              : null,
+            buttonLink({ href: createAppHref('/'), text: CTA_COPY.backHome, variant: 'secondary' }),
           ]),
         ],
       }),
       card({
-        title: 'Tomorrow hook',
-        body: 'The daily scene, streak status, profile points, and reset copy update from current server data so the next habit prompt stays honest.',
+        title: 'Daily reset',
+        body: 'Daily scene, streak status, profile points, and reset text come from current server data.',
       }),
     ]),
   ]);

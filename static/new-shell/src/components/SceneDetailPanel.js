@@ -1,101 +1,62 @@
 import { createRecordingControls } from './RecordingControls.js';
 import { createRecordingStatus } from './RecordingStatus.js';
 import { createWaveformShell } from './WaveformShell.js';
+import { CTA_COPY, SECTION_COPY, STATUS_COPY, STATE_COPY, scoreSnapshotDetail, scoreSnapshotLabel } from '../lib/copy/ux-copy.js';
 import { h } from '../lib/helpers/dom.js';
 import { createAppHref } from '../lib/routing/navigation.js';
 import { buttonLink, card, statusPill } from './primitives.js';
 
 function getLockLabel({ scene, session }) {
   if (session?.status !== 'authenticated') {
-    return 'Unlock state needs auth';
+    return STATUS_COPY.signInNeeded;
   }
 
-  return scene.locked ? 'Locked' : 'Unlocked';
+  return scene.locked ? STATUS_COPY.locked : STATUS_COPY.unlocked;
 }
 
 function renderPersonalizationPanel({ scene, session, progressError }) {
   if (progressError) {
     return card({
-      title: 'Personalization unavailable',
-      body: progressError.message || 'Progress could not load for this scene.',
+      title: 'Scene status unavailable',
+      body: progressError.message || 'Scene progress could not load.',
       className: 'ns-state-card ns-state-card--error',
-      children: [statusPill(progressError.rateLimited ? 'Rate limited' : 'Read-only fetch failed')],
+      children: [statusPill(progressError.rateLimited ? STATUS_COPY.rateLimited : STATUS_COPY.readOnlyFetchFailed)],
     });
   }
 
   if (session?.status !== 'authenticated') {
     return card({
-      title: 'Personalization needs auth',
-      body: 'Sign in to verify unlock state, personal best, and scene progress here.',
+      title: 'Scene status needs sign-in',
+      body: 'Sign in to save scores, personal bests, and unlock state.',
       className: 'ns-state-card ns-state-card--auth',
       children: [
-        statusPill('Auth required'),
-        buttonLink({ href: createAppHref('/auth'), text: 'Sign in', variant: 'secondary' }),
+        statusPill(STATUS_COPY.authRequired),
+        buttonLink({ href: createAppHref('/auth'), text: CTA_COPY.signIn, variant: 'secondary' }),
       ],
     });
   }
 
   return card({
-    title: 'Personalization',
+    title: SECTION_COPY.sceneStatus,
     body: scene.locked
-      ? 'This scene is locked for your current session. It remains visible here, but recording and analyze stay disabled.'
-      : 'This scene is available for your current session. Personal bests update from saved scoring data.',
+      ? STATE_COPY.lockedRecordingAndScoring
+      : 'Unlocked for this session. Saved scores can update personal bests.',
     className: 'ns-state-card ns-state-card--ready',
     children: [
       h('div', { className: 'ns-inline-list' }, [
-        statusPill(scene.locked ? 'Locked' : 'Unlocked'),
-        statusPill(`PB ${scene.personalBest ?? '--'}`),
+        statusPill(scene.locked ? STATUS_COPY.locked : STATUS_COPY.unlocked),
+        statusPill(scene.personalBest === null ? STATUS_COPY.noPersonalBest : `PB ${scene.personalBest}`),
       ]),
     ],
   });
 }
 
 function getAnalyzeStatusLabel(snapshot) {
-  if (snapshot.status === 'idle') {
-    return 'Ready';
-  }
-
-  if (snapshot.status === 'submitting') {
-    return 'Submitting';
-  }
-
-  if (snapshot.status === 'success') {
-    return 'Scored';
-  }
-
-  if (snapshot.status === 'error') {
-    return snapshot.error?.authRequired ? 'Auth required' : 'Error';
-  }
-
-  if (snapshot.disabledCode === 'locked') {
-    return 'Locked';
-  }
-
-  if (snapshot.disabledCode === 'auth-required') {
-    return 'Auth required';
-  }
-
-  return 'Disabled';
+  return scoreSnapshotLabel(snapshot);
 }
 
 function getAnalyzeDetail(snapshot) {
-  if (snapshot.status === 'submitting') {
-    return 'Submitting the current local take for analysis.';
-  }
-
-  if (snapshot.status === 'success') {
-    return 'This take has a returned score in the score panel. Reset or record a new take to clear it.';
-  }
-
-  if (snapshot.status === 'error') {
-    return snapshot.error?.message || 'Analyze failed for the current take.';
-  }
-
-  if (snapshot.status === 'idle') {
-    return 'The current local take is ready for analyze submit.';
-  }
-
-  return snapshot.disabledReason || 'Record a take before analyzing.';
+  return scoreSnapshotDetail(snapshot);
 }
 
 function renderLocalRuntimePanel({ canRecord, disabledReason, runtime, onCleanup }) {
@@ -115,7 +76,7 @@ function renderLocalRuntimePanel({ canRecord, disabledReason, runtime, onCleanup
   return card({
     title: 'Recording studio',
     body: canRecord
-      ? 'Record, review, and reset a local take before submitting it for scoring.'
+      ? 'Record, play back, or reset before scoring.'
       : disabledReason,
     className: `ns-runtime-card${canRecord ? ' is-ready' : ' is-disabled'}`,
     children: [
@@ -124,62 +85,68 @@ function renderLocalRuntimePanel({ canRecord, disabledReason, runtime, onCleanup
       controls.root,
       h('p', {
         className: 'ns-muted',
-        text: 'Audio stays in this browser until analyze submit. Reset clears the take and its current result.',
+        text: 'Audio stays local until you submit it for scoring. Reset clears this take.',
       }),
     ],
   });
 }
 
 function renderAnalyzePanel({ analyzeStore, onCleanup }) {
-  const statePill = statusPill('Disabled');
-  const endpointPill = statusPill('Scoring ready');
+  const statePill = statusPill(STATUS_COPY.disabled);
+  const endpointPill = statusPill(STATUS_COPY.scoringReady);
   const button = h('button', {
     className: 'ns-button',
     type: 'button',
-    text: 'Analyze take',
+    text: CTA_COPY.getScore,
     on: {
       click: () => analyzeStore.submit(),
     },
   });
   const detailEl = h('p', { className: 'ns-muted' });
-  const authLink = buttonLink({ href: createAppHref('/auth'), text: 'Sign in', variant: 'secondary' });
+  const authLink = buttonLink({ href: createAppHref('/auth'), text: CTA_COPY.signIn, variant: 'secondary' });
   authLink.hidden = true;
+
+  const root = card({
+    title: 'Score take',
+    body: 'Submit the current take for scoring.',
+    className: 'ns-analyze-card',
+    children: [
+      h('div', { className: 'ns-inline-list ns-detail-pill-row' }, [statePill, endpointPill]),
+      detailEl,
+      h('div', { className: 'ns-action-row ns-action-row--card' }, [button, authLink]),
+    ],
+  });
 
   const unsubscribe = analyzeStore.subscribe((snapshot) => {
     statePill.textContent = getAnalyzeStatusLabel(snapshot);
     detailEl.textContent = getAnalyzeDetail(snapshot);
-    button.textContent = snapshot.status === 'submitting' ? 'Analyzing...' : 'Analyze take';
+    button.textContent = snapshot.status === 'submitting' ? CTA_COPY.scoring : CTA_COPY.getScore;
     button.disabled = !snapshot.canSubmit;
     authLink.hidden = !(snapshot.disabledCode === 'auth-required' || snapshot.error?.authRequired);
+    root.classList.toggle('is-ready', snapshot.status === 'idle' && snapshot.canSubmit);
+    root.classList.toggle('is-submitting', snapshot.status === 'submitting');
+    root.classList.toggle('is-scored', snapshot.status === 'success');
+    root.classList.toggle('is-error', snapshot.status === 'error');
   });
 
   onCleanup?.(() => {
     unsubscribe();
   });
 
-  return card({
-    title: 'Analyze take',
-    body: 'Send the current take for scoring when the recording feels ready.',
-    className: 'ns-analyze-card',
-    children: [
-      h('div', { className: 'ns-inline-list' }, [statePill, endpointPill]),
-      detailEl,
-      h('div', { className: 'ns-action-row' }, [button, authLink]),
-    ],
-  });
+  return root;
 }
 
 function getRuntimeDisabledReason({ scene, session, progressError }) {
   if (progressError) {
-    return 'Progress could not be verified, so recording stays disabled for this scene.';
+    return 'Scene access could not be verified, so recording is disabled.';
   }
 
   if (session?.status !== 'authenticated') {
-    return 'Sign in before recording a local take.';
+    return STATE_COPY.signInToRecordSentence;
   }
 
   if (scene.locked) {
-    return 'This scene is locked for your current session.';
+    return STATE_COPY.lockedForSession;
   }
 
   return '';
@@ -187,6 +154,7 @@ function getRuntimeDisabledReason({ scene, session, progressError }) {
 
 export function createSceneDetailPanel({
   scene,
+  journey = null,
   session,
   progressError,
   runtime,
@@ -195,6 +163,7 @@ export function createSceneDetailPanel({
   onCleanup,
 }) {
   let currentScene = scene;
+  let currentJourney = journey;
   let currentProgressError = progressError;
   let currentRuntimeDisabledReason = runtimeDisabledReason;
   const canRecord = !currentRuntimeDisabledReason;
@@ -216,29 +185,34 @@ export function createSceneDetailPanel({
   function renderDetailBody() {
     const lockLabel = getLockLabel({ scene: currentScene, session });
     const recordLabel = session?.status !== 'authenticated'
-      ? 'Sign in before recording later'
-      : currentScene.locked ? 'Recording locked for now' : 'Use local runtime below';
+      ? STATE_COPY.signInToRecord
+      : currentScene.locked ? 'Recording locked' : 'Ready to record';
 
     detailBody.replaceChildren(
       h('p', { className: 'ns-eyebrow', text: currentScene.levelName }),
       h('h2', { text: currentScene.title }),
       h('p', { className: 'ns-scene-detail__meta', text: `${currentScene.film} (${currentScene.year})` }),
       h('blockquote', { text: currentScene.quote }),
-      h('div', { className: 'ns-inline-list' }, [
+      h('div', { className: 'ns-inline-list ns-detail-pill-row' }, [
         statusPill(currentScene.difficulty),
         statusPill(currentScene.runtime),
         statusPill(`Target ${currentScene.targetScore}`),
+        currentJourney?.label ? statusPill(currentJourney.label) : null,
         statusPill(lockLabel),
         currentScene.isDaily ? statusPill('Daily scene') : statusPill('Standard scene'),
       ]),
-      h('div', { className: 'ns-inline-list' }, [
+      h('div', { className: 'ns-inline-list ns-detail-pill-row ns-detail-pill-row--quiet' }, [
         statusPill(recordLabel),
-        statusPill('Local playback below'),
-        statusPill(`Analyze ${getAnalyzeStatusLabel(analyzeStore.getSnapshot()).toLowerCase()}`),
+        statusPill('Local playback'),
+        statusPill(`Score ${getAnalyzeStatusLabel(analyzeStore.getSnapshot()).toLowerCase()}`),
       ]),
       h('p', {
-        className: 'ns-muted',
-        text: 'Record locally, play back your take, submit for analysis, and review refreshed progress after scoring.',
+        className: 'ns-muted ns-scene-detail__guidance',
+        text: currentJourney?.nextInLevel
+          ? `Current level: ${currentScene.levelName}. Next in level: ${currentJourney.nextInLevel.title}.`
+          : currentJourney?.nextUnlockedScene
+            ? `Score this scene, then choose between repeat and ${currentJourney.nextUnlockedScene.title}.`
+            : 'Record, score, then choose the next action.',
       }),
     );
   }
@@ -255,6 +229,7 @@ export function createSceneDetailPanel({
 
   function update(nextState = {}) {
     currentScene = nextState.scene || currentScene;
+    currentJourney = nextState.journey === undefined ? currentJourney : nextState.journey;
     currentProgressError = nextState.progressError === undefined ? currentProgressError : nextState.progressError;
     currentRuntimeDisabledReason = nextState.runtimeDisabledReason === undefined
       ? currentRuntimeDisabledReason
@@ -280,9 +255,9 @@ export function createSceneDetailPanel({
       detailBody,
     ]),
     h('div', { className: 'ns-grid ns-grid--three ns-scene-workflow' }, [
-      personalizationSlot,
       runtimeCard,
       analyzeCard,
+      personalizationSlot,
     ]),
   ]);
 

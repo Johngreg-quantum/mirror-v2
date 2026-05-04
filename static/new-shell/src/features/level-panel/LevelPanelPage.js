@@ -43,22 +43,22 @@ function renderLevelSurface({ levels, progressSummary }) {
         h('h2', { text: 'Levels' }),
         h('p', {
           className: 'ns-page__summary',
-          text: 'See which scenes are available now and what score target opens the next set.',
+          text: 'Levels show which scenes are available and the score target for the next set.',
         }),
       ]),
-      statusPill('Live levels'),
+      statusPill('Levels loaded'),
     ]),
     h('div', { className: 'ns-grid ns-grid--three' }, [
       renderProgressStatCard({ label: 'Unlocked', value: progressSummary.unlockedScenes, detail: 'scenes available' }),
       renderProgressStatCard({ label: 'Next target', value: progressSummary.nextUnlockScore || '--', detail: 'score to open more' }),
-      renderProgressStatCard({ label: 'PBs', value: progressSummary.personalBests, detail: 'best scores tracked' }),
+      renderProgressStatCard({ label: 'PBs', value: progressSummary.personalBests, detail: 'saved bests' }),
     ]),
     levels.length
       ? h('div', { className: 'ns-level-grid' }, levels.map((level) => renderLevelSummaryCard({ level })))
       : card({ title: 'No levels found', body: 'Levels will appear here when the catalog is ready.' }),
     card({
-      title: 'Level unlocks',
-      body: 'Level cards combine scene requirements with your authenticated progress so available practice stays clear.',
+      title: 'How to move through it',
+      body: 'Open the first available scene in the current level. Higher levels unlock from saved score targets.',
     }),
   ]);
 }

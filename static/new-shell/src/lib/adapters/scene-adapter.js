@@ -16,6 +16,23 @@ function buildLevelMap(levels = []) {
   }, {});
 }
 
+function buildLevelSceneMeta(levels = []) {
+  return levels.reduce((map, levelDef) => {
+    const sceneIds = levelDef.scenes || [];
+    const totalScenes = sceneIds.length;
+
+    sceneIds.forEach((sceneId, index) => {
+      map[sceneId] = {
+        levelSceneNumber: index + 1,
+        levelSceneCount: totalScenes,
+        nextLevelSceneId: sceneIds[index + 1] || '',
+      };
+    });
+
+    return map;
+  }, {});
+}
+
 function formatRuntime(scene) {
   const start = Number(scene?.ui?.clip_start || 0);
   const end = Number(scene?.ui?.clip_end || 0);
@@ -36,6 +53,7 @@ function posterFallback(level) {
 
 export function adaptSceneConfig(rawConfig, { progress = null, daily = null } = {}) {
   const levelMap = buildLevelMap(rawConfig?.levels || []);
+  const levelSceneMeta = buildLevelSceneMeta(rawConfig?.levels || []);
   const unlocked = new Set(progress?.unlocked_scenes || []);
   const hasProgress = !!progress;
 
@@ -58,6 +76,9 @@ export function adaptSceneConfig(rawConfig, { progress = null, daily = null } = 
       personalBest: personalBest ? Math.round(personalBest) : null,
       locked: hasProgress ? !unlocked.has(id) : false,
       isDaily: daily?.scene_id === id,
+      levelSceneNumber: levelSceneMeta[id]?.levelSceneNumber || 1,
+      levelSceneCount: levelSceneMeta[id]?.levelSceneCount || 1,
+      nextLevelSceneId: levelSceneMeta[id]?.nextLevelSceneId || '',
       tags: [scene.actor, scene.difficulty].filter(Boolean),
       imageUrl: scene?.ui?.poster_image || posterFallback(level),
       source: scene,
@@ -75,8 +96,10 @@ export function adaptSceneConfig(rawConfig, { progress = null, daily = null } = 
       level: levelDef.level,
       title: LEVEL_LABELS[levelDef.level] || `Level ${levelDef.level}`,
       description: levelDef.level === 1
-        ? 'Short, clear lines for building confidence.'
-        : 'Unlocked by stronger scores on earlier scenes.',
+        ? 'Start with the first available scenes.'
+        : levelDef.level === 2
+          ? 'Unlocked after the early scene path.'
+          : 'Higher-level scenes in the catalog.',
       status: hasProgress && unlockedScenes === 0 ? 'locked' : hasProgress && unlockedScenes === sceneIds.length ? 'complete' : 'active',
       unlockedScenes,
       totalScenes: sceneIds.length,

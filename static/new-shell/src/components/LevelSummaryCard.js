@@ -4,6 +4,11 @@ import { sceneHref } from '../lib/routing/scene-routes.js';
 
 export function renderLevelSummaryCard({ level }) {
   const progressLabel = `${level.unlockedScenes}/${level.totalScenes} scenes`;
+  const journeyLabel = level.status === 'complete'
+    ? 'Ready to revisit or move up'
+    : level.status === 'active'
+      ? 'Current path'
+      : 'Later step';
 
   return h('article', { className: `ns-level-card ns-level-card--${level.status}` }, [
     h('div', { className: 'ns-section-heading' }, [
@@ -24,10 +29,18 @@ export function renderLevelSummaryCard({ level }) {
     h('div', { className: 'ns-inline-list' }, [
       statusPill(progressLabel),
       statusPill(`Target ${level.requiredScore}+`),
+      statusPill(journeyLabel),
+      level.level === 1 && level.status !== 'locked' ? statusPill('Best place to start') : null,
     ]),
     buttonLink({
       href: sceneHref(level.firstUnlockedSceneId, { from: 'levels' }),
-      text: level.status === 'locked' ? 'View first locked scene' : 'Enter first scene',
+      text: level.status === 'locked'
+        ? 'Preview this level'
+        : level.level === 1
+          ? 'Start with beginner scene'
+          : level.status === 'complete'
+            ? 'Review this level'
+            : 'Continue this level',
       variant: level.status === 'locked' ? 'secondary' : 'primary',
     }),
   ]);

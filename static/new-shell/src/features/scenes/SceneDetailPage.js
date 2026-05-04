@@ -3,6 +3,7 @@ import { renderLeaderboardPanel } from '../../components/LeaderboardPanel.js';
 import { createSceneDetailPanel, getRuntimeDisabledReason } from '../../components/SceneDetailPanel.js';
 import { renderScorePanelShell } from '../../components/ScorePanelShell.js';
 import { buttonLink, card, statusPill } from '../../components/primitives.js';
+import { CTA_COPY, SECTION_COPY, STATUS_COPY, STATE_COPY } from '../../lib/copy/ux-copy.js';
 import { h } from '../../lib/helpers/dom.js';
 import { fetchChallengeEntry } from '../../lib/api/challenge.js';
 import { getFreshPostScoreReadCache } from '../../lib/api/post-score-refresh.js';
@@ -191,7 +192,7 @@ function renderMissingScene({ sceneId, scenes }) {
               text: item.title,
               variant: 'secondary',
             })))
-          : null,
+          : buttonLink({ href: createAppHref('/'), text: CTA_COPY.backHome, variant: 'secondary' }),
       ],
     }),
   ]);
@@ -199,18 +200,144 @@ function renderMissingScene({ sceneId, scenes }) {
 
 function getRefreshStatusLabel(snapshot) {
   if (snapshot.status === 'refreshing') {
-    return 'Refreshing related reads';
+    return 'Refreshing reads';
   }
 
   if (snapshot.status === 'success') {
-    return 'Related reads refreshed';
+    return 'Reads refreshed';
   }
 
   if (snapshot.status === 'degraded') {
-    return 'Refresh partial';
+    return 'Partial refresh';
   }
 
   return 'Current page';
+}
+
+function getAftermathTone(result) {
+  const score = Number(result?.sync_score || 0);
+
+  if (score >= 90 || result?.is_new_pb) {
+    return 'breakthrough';
+  }
+
+  if (score >= 80) {
+    return 'strong';
+  }
+
+  if (score >= 65) {
+    return 'promising';
+  }
+
+  return 'early';
+}
+
+function buildSceneJourney(scene, scenes = []) {
+  if (!scene) {
+    return null;
+  }
+
+  const sameLevelScenes = scenes
+    .filter((item) => item.level === scene.level)
+    .sort((left, right) => left.levelSceneNumber - right.levelSceneNumber);
+  const nextInLevel = sameLevelScenes.find((item) => item.levelSceneNumber === scene.levelSceneNumber + 1) || null;
+  const nextUnlockedScene = findNextUnlockedScene(scene, scenes);
+
+  return {
+    label: `${scene.levelName} scene ${scene.levelSceneNumber} of ${scene.levelSceneCount}`,
+    nextInLevel,
+    nextUnlockedScene,
+  };
+}
+
+function buildAftermathPlan({ result, scene, query, nextScene, daily }) {
+  const score = Number(result?.sync_score || 0);
+  const retryAction = {
+    href: sceneHref(scene.id, query),
+    text: CTA_COPY.repeatScene,
+    rationale: 'Repeat this scene while the last take is directly comparable.',
+  };
+  const nextSceneAction = nextScene
+    ? {
+        href: sceneHref(nextScene.id, { from: 'home' }),
+        text: CTA_COPY.openNextScene,
+        rationale: nextScene.level === scene.level
+          ? `Open ${nextScene.title}, the next scene in ${scene.levelName}.`
+          : `Open ${nextScene.title}.`,
+      }
+    : null;
+  const dailyAction = daily?.scene_id && daily.scene_id !== scene?.id
+    ? {
+        href: sceneHref(daily.scene_id, { from: 'daily' }),
+        text: CTA_COPY.openDaily,
+        rationale: 'Open today\'s daily scene from here.',
+      }
+    : null;
+  const progressAction = {
+    href: createAppHref('/progress'),
+    text: CTA_COPY.viewProgress,
+    rationale: 'See this saved score in context.',
+  };
+  const homeAction = {
+    href: createAppHref('/'),
+    text: CTA_COPY.backHome,
+  };
+
+  let primary = retryAction;
+
+  if (score >= 85 || result?.is_new_pb) {
+    primary = nextSceneAction || dailyAction || progressAction;
+  } else if (score >= 70 && dailyAction) {
+    primary = dailyAction;
+  }
+
+  const secondary = [retryAction, nextSceneAction, dailyAction, progressAction, homeAction]
+    .filter(Boolean)
+    .filter((action) => action.href !== primary.href || action.text !== primary.text);
+
+  return { primary, secondary };
+}
+
+function getPendingAftermathCopy(snapshot) {
+  if (snapshot?.status === 'submitting') {
+    return {
+      body: 'Scoring is in progress. The next action appears after the result returns.',
+      pills: [STATUS_COPY.submitting],
+    };
+  }
+
+  if (snapshot?.status === 'error') {
+    return {
+      body: snapshot.error?.message || 'Scoring did not finish. Use the score card to try again with this take.',
+      pills: [snapshot.error?.authRequired ? STATUS_COPY.authRequired : STATUS_COPY.error],
+    };
+  }
+
+  if (snapshot?.status === 'idle') {
+    return {
+      body: 'Score the recorded take; the next action will appear here.',
+      pills: [STATUS_COPY.takeReady],
+    };
+  }
+
+  if (snapshot?.disabledCode === 'auth-required') {
+    return {
+      body: 'Sign in before scoring. The next action appears after a saved score.',
+      pills: [STATUS_COPY.authRequired],
+    };
+  }
+
+  if (snapshot?.disabledCode === 'locked') {
+    return {
+      body: STATE_COPY.lockedRecordingAndScoring,
+      pills: [STATUS_COPY.locked],
+    };
+  }
+
+  return {
+    body: 'Record and score a take; the next action will appear here.',
+    pills: [STATUS_COPY.noScoresYet],
+  };
 }
 
 function findNextUnlockedScene(scene, scenes = []) {
@@ -228,20 +355,28 @@ function findNextUnlockedScene(scene, scenes = []) {
     || null;
 }
 
-function renderSceneDailyStateCard({ scene, daily, profile, profileError, refreshSnapshot }) {
+function renderSceneDailyStateCard({ scene, daily, profile, profileError, refreshSnapshot, session }) {
   const isDailyScene = scene.isDaily;
-  const streakLabel = profile ? `${profile.streakDays}-day streak` : 'Session auth';
-  const dailyStatus = profile?.dailyStatus || (isDailyScene ? 'Auth needed for daily status' : 'Daily scene elsewhere');
-  const body = isDailyScene
+  const streakLabel = profile ? `${profile.streakDays}-day streak` : profileError ? 'Profile unavailable' : 'No profile';
+  const dailyStatus = profileError
+    ? STATUS_COPY.dailyStatusUnavailable
+    : profile?.dailyStatus || (isDailyScene ? 'Sign in for daily status' : 'Daily elsewhere');
+  const body = profileError
+    ? profileError.message || 'Account daily status did not load. The public daily scene is still available.'
+    : isDailyScene
     ? profile
-      ? `${scene.title} is today's scene. ${profile.dailyStatus}. ${profile.streakDays}-day streak and ${profile.points.toLocaleString()} total points are now reflected here.`
-      : profileError?.message || 'This is the current daily scene. Sign in to show updated streak and completion status here.'
-    : `The current daily scene is ${daily?.scene_id || 'unavailable'}; this is a regular scene entry.`;
+      ? `${scene.title} is today's daily. Status: ${profile.dailyStatus}. Streak: ${profile.streakDays} days. Points: ${profile.points.toLocaleString()}.`
+      : session?.status === 'authenticated'
+        ? 'This is today\'s daily. Account daily status will appear when profile data is available.'
+        : 'This is today\'s daily. Sign in to show account daily status.'
+    : daily?.scene_id
+      ? 'Today\'s daily is a different scene.'
+      : 'Daily status appears when public scene data is available.';
 
   return card({
-    title: 'Daily state',
+    title: SECTION_COPY.daily,
     body,
-    className: 'ns-context-card',
+    className: 'ns-context-card ns-support-card',
     children: [
       h('div', { className: 'ns-inline-list' }, [
         statusPill(isDailyScene ? 'Daily scene' : 'Not daily'),
@@ -252,7 +387,7 @@ function renderSceneDailyStateCard({ scene, daily, profile, profileError, refres
       refreshSnapshot.status === 'degraded'
         ? h('p', {
             className: 'ns-muted',
-            text: refreshSnapshot.error?.message || 'Some related views are still catching up.',
+            text: refreshSnapshot.error?.message || 'The score saved, but one related read did not refresh.',
           })
         : null,
     ],
@@ -271,16 +406,18 @@ function renderPostScoreAftermathCard({
   const result = analyzeSnapshot.result;
 
   if (!result) {
+    const pending = getPendingAftermathCopy(analyzeSnapshot);
+
     return card({
-      title: 'Finish the first loop',
-      body: 'Record, analyze, then use this space to choose the next move while the score is still fresh.',
+      title: SECTION_COPY.nextUp,
+      body: pending.body,
       className: 'ns-aftermath-card',
       children: [
         h('div', { className: 'ns-inline-list' }, [
           statusPill('Scene'),
           statusPill('Record'),
-          statusPill('Analyze'),
-          statusPill('Next step'),
+          statusPill('Score'),
+          ...pending.pills.map((pill) => statusPill(pill)),
           statusPill(getRefreshStatusLabel(refreshSnapshot)),
         ]),
       ],
@@ -288,7 +425,15 @@ function renderPostScoreAftermathCard({
   }
 
   const nextScene = findNextUnlockedScene(scene, scenes);
-  const canShowDailyAction = daily?.scene_id && daily.scene_id !== scene?.id;
+  const score = Number(result.sync_score || 0);
+  const tone = getAftermathTone(result);
+  const plan = buildAftermathPlan({
+    result,
+    scene,
+    query,
+    nextScene,
+    daily,
+  });
   const children = [
     h('div', { className: 'ns-inline-list' }, [
       statusPill(getRefreshStatusLabel(refreshSnapshot)),
@@ -309,34 +454,36 @@ function renderPostScoreAftermathCard({
   } else if (refreshSnapshot.status === 'success') {
     children.push(h('p', {
       className: 'ns-muted',
-      text: 'Progress, leaderboard, scene PB visibility, and daily/streak reads were refreshed from the server after this score.',
+      text: 'Related reads refreshed after the score saved.',
     }));
   }
 
-  children.push(h('div', { className: 'ns-action-row' }, [
-    buttonLink({ href: sceneHref(scene.id, query), text: 'Try again', variant: 'secondary' }),
-    nextScene
-      ? buttonLink({ href: sceneHref(nextScene.id, { from: 'home' }), text: 'Next scene', variant: 'secondary' })
-      : null,
-    canShowDailyAction
-      ? buttonLink({ href: sceneHref(daily.scene_id, { from: 'daily' }), text: 'Do today\'s challenge', variant: 'secondary' })
-      : null,
-    buttonLink({ href: createAppHref('/progress'), text: 'Open Progress', variant: 'secondary' }),
-    buttonLink({ href: createAppHref('/'), text: 'Return Home', variant: 'secondary' }),
+  children.push(h('section', { className: 'ns-aftermath-card__cta' }, [
+    h('div', { className: 'ns-aftermath-card__cta-copy' }, [
+      h('p', { className: 'ns-eyebrow', text: SECTION_COPY.nextUp }),
+      h('h3', { text: plan.primary.text }),
+      h('p', { className: 'ns-muted', text: plan.primary.rationale }),
+    ]),
+    buttonLink({ href: plan.primary.href, text: plan.primary.text }),
   ]));
 
-  children.push(h('p', {
-    className: 'ns-muted',
-    text: challengeEntry
-      ? 'Challenge a friend next: reopen the challenge aftermath and use the real invite link when the share flow is available.'
-      : 'Challenge a friend next: keep this score as the benchmark and send it through the challenge invite flow when sharing is available.',
-  }));
+  if (plan.secondary.length) {
+    children.push(h('div', { className: 'ns-action-row ns-action-row--card ns-aftermath-card__secondary' }, plan.secondary.map((action) => buttonLink({
+      href: action.href,
+      text: action.text,
+      variant: 'secondary',
+    }))));
+  }
 
   return card({
-    title: 'Score saved. Pick the next move.',
-    body: result.is_new_pb
-      ? 'New personal best. This is the perfect moment to repeat it, climb to the next scene, or anchor today\'s habit.'
-      : 'This take is scored and saved. Keep the loop moving before the session goes cold.',
+    title: SECTION_COPY.nextUp,
+    body: tone === 'breakthrough'
+      ? `${STATE_COPY.scoreSaved}. The next scene is available.`
+      : tone === 'strong'
+        ? `${STATE_COPY.scoreSaved}. Open the next scene, or repeat while the take is directly comparable.`
+        : tone === 'promising'
+          ? `${STATE_COPY.scoreSaved}. One more pass gives the most direct comparison.`
+          : `${STATE_COPY.scoreSaved} at ${Math.round(score)}. Repeating the scene gives the most direct next read.`,
     className: 'ns-aftermath-card ns-aftermath-card--scored',
     children,
   });
@@ -388,7 +535,7 @@ function renderChallengeStateCard({ challengeId, challengeEntry, challengeResult
   if (!challengeEntry && challengeError) {
     return card({
       title: 'Challenge context unavailable',
-      body: challengeError.message || 'The public challenge lookup did not load for this scene.',
+      body: challengeError.message || 'Challenge details did not load for this scene.',
       className: 'ns-state-card ns-state-card--error',
       children: [
         h('div', { className: 'ns-inline-list' }, [
@@ -404,7 +551,21 @@ function renderChallengeStateCard({ challengeId, challengeEntry, challengeResult
   }
 
   if (!challengeEntry) {
-    return null;
+    return card({
+      title: 'Challenge context unavailable',
+      body: 'The scene is open, but challenge invite details are not available in this session.',
+      className: 'ns-state-card ns-state-card--empty',
+      children: [
+        h('div', { className: 'ns-inline-list' }, [
+          statusPill('Challenge context'),
+          buttonLink({
+            href: createAppHref(`/challenge/${encodeURIComponent(challengeId)}`),
+            text: 'Open challenge',
+            variant: 'secondary',
+          }),
+        ]),
+      ],
+    });
   }
 
   if (challengeResult) {
@@ -429,8 +590,8 @@ function renderChallengeStateCard({ challengeId, challengeEntry, challengeResult
   }
 
   return card({
-    title: 'Challenge benchmark',
-    body: `${challengeEntry.challengerName} set ${challengeEntry.targetScoreLabel} on this scene. Submit a scored take to compare against that benchmark.`,
+    title: 'Challenge target',
+    body: `${challengeEntry.challengerName} set ${challengeEntry.targetScoreLabel} on this scene. Submit a scored take to compare.`,
     className: 'ns-challenge-aftermath',
     children: [
       h('div', { className: 'ns-inline-list' }, [
@@ -487,6 +648,7 @@ function renderSceneDetailSurface({
   });
   const sceneDetailPanel = createSceneDetailPanel({
     scene: currentViewModel.scene,
+    journey: buildSceneJourney(currentViewModel.scene, currentViewModel.scenes),
     session,
     progressError: currentViewModel.progressError,
     runtime,
@@ -503,7 +665,12 @@ function renderSceneDetailSurface({
     leaderboardSlot.replaceChildren(
       currentViewModel.leaderboard.rows.length
         ? renderLeaderboardPanel({ leaderboard: currentViewModel.leaderboard, entrySource: 'leaderboard' })
-        : card({ title: 'Leaderboard is empty', body: 'This scene has no submitted scores yet.' }),
+        : card({
+            title: 'Leaderboard is empty',
+            body: 'This scene has no submitted scores yet.',
+            className: 'ns-support-card',
+            children: [statusPill(STATUS_COPY.noScoresYet)],
+          }),
     );
   }
 
@@ -514,6 +681,7 @@ function renderSceneDetailSurface({
       profile: currentViewModel.profile,
       profileError: currentViewModel.profileError,
       refreshSnapshot: postScoreRefreshStore.getSnapshot(),
+      session,
     }));
   }
 
@@ -569,6 +737,7 @@ function renderSceneDetailSurface({
       currentViewModel = mergeSceneDetailViewModel(currentViewModel, refreshSnapshot.bundle, sceneId);
       sceneDetailPanel.update({
         scene: currentViewModel.scene,
+        journey: buildSceneJourney(currentViewModel.scene, currentViewModel.scenes),
         progressError: currentViewModel.progressError,
       });
       renderLeaderboardSlot();
@@ -590,49 +759,47 @@ function renderSceneDetailSurface({
   renderDailyStateSlot();
   renderAftermathSlot();
   renderChallengeSlot();
+  const sceneJourney = buildSceneJourney(currentViewModel.scene, currentViewModel.scenes);
 
-  return h('article', { className: 'ns-page' }, [
-    h('header', { className: 'ns-page__header' }, [
+  return h('article', { className: 'ns-page ns-scene-page' }, [
+    h('header', { className: 'ns-page__header ns-page__header--scene' }, [
       h('div', {}, [
         h('p', { className: 'ns-eyebrow', text: 'Scene detail' }),
         h('h2', { text: currentViewModel.scene.title }),
         h('p', {
           className: 'ns-page__summary',
           text: hasChallengeContext && currentViewModel.challengeEntry
-            ? `Beat ${currentViewModel.challengeEntry.targetScoreLabel}, see the aftermath, then decide whether to retry, move on, or keep the streak alive.`
+            ? `Challenge target: ${currentViewModel.challengeEntry.targetScoreLabel}. Score a take to compare.`
             : hasChallengeContext
-              ? 'Challenge context is attached to this scene when invite data is available.'
-              : 'Record a local take, submit it for scoring, and follow the next action after the result returns.',
+              ? 'Challenge details appear here when invite data is available.'
+              : sceneJourney?.nextUnlockedScene
+                ? `${sceneJourney.label}. Record, score, then choose whether to repeat or open ${sceneJourney.nextUnlockedScene.title}.`
+                : `${sceneJourney?.label || currentViewModel.scene.levelName}. Record, score, then choose the next action.`,
         }),
       ]),
-      h('div', { className: 'ns-inline-list' }, [
+      h('div', { className: 'ns-inline-list ns-page__actions' }, [
         buttonLink({ href: getSceneBackHref(query), text: `Back to ${entryLabel}`, variant: 'secondary' }),
-        buttonLink({ href: createAppHref('/'), text: 'All scenes', variant: 'secondary' }),
+        buttonLink({ href: createAppHref('/'), text: 'Home', variant: 'secondary' }),
         statusPill(currentViewModel.scene.isDaily ? 'Daily scene' : 'Scene'),
         hasChallengeContext ? statusPill('Challenge context') : null,
       ]),
     ]),
     sceneDetailPanel.root,
-    h('div', { className: 'ns-grid ns-grid--two' }, [
+    h('div', { className: 'ns-grid ns-grid--two ns-scene-results-grid' }, [
       renderScorePanelShell({
-        title: 'Analyze result',
+        title: SECTION_COPY.scorecard,
         score: '--',
         scoreLabel: 'waiting',
-        detail: 'Submit a recorded take to render the returned analyze result here.',
+        detail: STATE_COPY.scoreDetailsAfterRecordedTake,
         analyzeStore,
         onCleanup,
       }),
       leaderboardSlot,
     ]),
-    h('div', { className: 'ns-grid ns-grid--two' }, [
+    h('div', { className: 'ns-grid ns-grid--two ns-scene-context-grid' }, [
       aftermathSlot,
       hasChallengeContext ? challengeSlot : dailyStateSlot,
     ]),
-    hasChallengeContext ? h('section', { className: 'ns-stack' }, [dailyStateSlot]) : null,
-    card({
-      title: 'After scoring',
-      body: 'Progress, leaderboard, personal best, daily status, streak data, and challenge comparison refresh after a successful scored take. The next-step card above keeps the practice loop moving.',
-      className: 'ns-context-card',
-    }),
+    hasChallengeContext ? h('section', { className: 'ns-stack ns-scene-support-stack' }, [dailyStateSlot]) : null,
   ]);
 }

@@ -1,15 +1,16 @@
 import { h } from '../lib/helpers/dom.js';
+import { STATUS_COPY } from '../lib/copy/ux-copy.js';
 import { card, statusPill } from './primitives.js';
 import { logFrontendError } from '../lib/observability.js';
 
 export function renderLoadingState(label = 'Loading Mirror') {
   return card({
     title: label,
-    body: 'Preparing the latest practice view.',
+    body: 'Loading the current view.',
     className: 'ns-state-card ns-state-card--loading',
     children: [
       h('span', { className: 'ns-loading-mark', attrs: { 'aria-hidden': 'true' } }),
-      statusPill('Loading'),
+      statusPill(STATUS_COPY.loading),
     ],
   });
 }
@@ -19,7 +20,7 @@ export function renderEmptyState({ title = 'No data yet', body = 'New activity w
     title,
     body,
     className: 'ns-state-card ns-state-card--empty',
-    children: [statusPill('Empty')],
+    children: [statusPill(STATUS_COPY.empty)],
   });
 }
 
@@ -29,7 +30,7 @@ export function renderErrorState(error, { title = 'Live data unavailable' } = {}
   return h('section', { className: 'ns-card ns-state-card ns-state-card--error' }, [
     h('p', {
       className: 'ns-eyebrow',
-      text: isRateLimited ? 'Rate limited' : error?.authRequired ? 'Auth required' : 'Read-only fetch failed',
+      text: isRateLimited ? STATUS_COPY.rateLimited : error?.authRequired ? STATUS_COPY.authRequired : STATUS_COPY.readOnlyFetchFailed,
     }),
     h('h3', { text: title }),
     h('p', { text: error?.message || 'Mirror could not load this view right now.' }),

@@ -1,4 +1,5 @@
 import { h } from '../lib/helpers/dom.js';
+import { CTA_COPY } from '../lib/copy/ux-copy.js';
 import { buttonShell, fieldShell, statusPill } from './primitives.js';
 import { getFailureKind, trackEvent } from '../lib/observability.js';
 
@@ -40,8 +41,8 @@ function renderLoginForm({ actions, redirectPath }) {
     className: 'ns-auth-message',
     attrs: { 'aria-live': 'polite' },
   });
-  const submitButton = buttonShell({ text: 'Sign in', disabled: false, type: 'submit' });
-  submitButton.dataset.defaultText = 'Sign in';
+  const submitButton = buttonShell({ text: 'Sign in and continue', disabled: false, type: 'submit' });
+  submitButton.dataset.defaultText = 'Sign in and continue';
 
   return h('form', {
     className: 'ns-auth-form',
@@ -60,7 +61,7 @@ function renderLoginForm({ actions, redirectPath }) {
             action: 'login',
             reason: 'validation',
           });
-          setMessage(messageEl, 'Email and password are required.');
+          setMessage(messageEl, 'Enter your email and password to continue.');
           return;
         }
 
@@ -72,7 +73,7 @@ function renderLoginForm({ actions, redirectPath }) {
             action: 'login',
             redirectPath: redirectPath || '',
           });
-          setMessage(messageEl, 'Signed in and session refreshed.', 'success');
+          setMessage(messageEl, 'Signed in. Loading saved practice.', 'success');
           form.reset();
           redirectAfterAuth(actions, redirectPath);
         } catch (error) {
@@ -81,14 +82,15 @@ function renderLoginForm({ actions, redirectPath }) {
             status: error?.status || 0,
             failureKind: getFailureKind(error),
           });
-          setMessage(messageEl, error.message || 'Login failed.');
+          setMessage(messageEl, error.message || 'Sign-in failed.');
         } finally {
           setSubmitting(submitButton, 'Signing in...', false);
         }
       },
     },
   }, [
-    h('h3', { text: 'Sign in' }),
+    h('h3', { text: 'Welcome back' }),
+    h('p', { className: 'ns-muted', text: 'Use the account tied to your saved scores and streak.' }),
     fieldShell({
       label: 'Email',
       placeholder: 'maya@example.com',
@@ -117,12 +119,12 @@ function renderRegisterForm({ actions, redirectPath }) {
     className: 'ns-auth-message',
     attrs: { 'aria-live': 'polite' },
   });
-  const submitButton = buttonShell({ text: 'Create account', disabled: false, type: 'submit' });
-  submitButton.dataset.defaultText = 'Create account';
+  const submitButton = buttonShell({ text: CTA_COPY.createAccount, disabled: false, type: 'submit' });
+  submitButton.dataset.defaultText = CTA_COPY.createAccount;
 
   return h('form', {
     className: 'ns-auth-form',
-    attrs: { 'aria-label': 'Create account' },
+    attrs: { 'aria-label': CTA_COPY.createAccount },
     on: {
       submit: async (event) => {
         event.preventDefault();
@@ -140,7 +142,7 @@ function renderRegisterForm({ actions, redirectPath }) {
             action: 'register',
             reason: 'validation',
           });
-          setMessage(messageEl, 'Username, email, password, and confirmation are required.');
+          setMessage(messageEl, 'Fill out username, email, and both password fields to create your account.');
           return;
         }
 
@@ -161,7 +163,7 @@ function renderRegisterForm({ actions, redirectPath }) {
             action: 'register',
             redirectPath: redirectPath || '',
           });
-          setMessage(messageEl, 'Account created and session refreshed.', 'success');
+          setMessage(messageEl, 'Account created. Scores can now save to this account.', 'success');
           form.reset();
           redirectAfterAuth(actions, redirectPath);
         } catch (error) {
@@ -170,14 +172,15 @@ function renderRegisterForm({ actions, redirectPath }) {
             status: error?.status || 0,
             failureKind: getFailureKind(error),
           });
-          setMessage(messageEl, error.message || 'Registration failed.');
+          setMessage(messageEl, error.message || 'Account creation failed.');
         } finally {
           setSubmitting(submitButton, 'Creating account...', false);
         }
       },
     },
   }, [
-    h('h3', { text: 'Create account' }),
+    h('h3', { text: 'Create your account' }),
+    h('p', { className: 'ns-muted', text: 'Save scores, streaks, unlock state, and personal bests.' }),
     fieldShell({
       label: 'Username',
       placeholder: 'maya',
@@ -234,7 +237,7 @@ function renderLogoutPanel({ actions, session }) {
 
     try {
       await getSessionAction(actions, 'logoutWithLegacy')();
-      setMessage(messageEl, 'Signed out and session refreshed.', 'success');
+      setMessage(messageEl, 'Signed out.', 'success');
     } catch (error) {
       setMessage(messageEl, error.message || 'Logout failed.');
     } finally {
@@ -244,7 +247,7 @@ function renderLogoutPanel({ actions, session }) {
 
   return h('div', { className: 'ns-auth-form' }, [
     h('h3', { text: `Signed in as ${session.user?.displayName || 'performer'}` }),
-    h('p', { text: 'Your session is verified and ready for personalized practice.' }),
+    h('p', { text: 'This browser session is using your saved account.' }),
     logoutButton,
     messageEl,
   ]);
@@ -256,14 +259,14 @@ export function renderAuthFormShell({ session, actions, redirectPath = '' }) {
   return h('section', { className: 'ns-auth-panel' }, [
     h('div', { className: 'ns-auth-panel__copy' }, [
       h('p', { className: 'ns-eyebrow', text: 'Account' }),
-      h('h2', { text: 'Practice picks up where you left off.' }),
+      h('h2', { text: 'Save this session.' }),
       h('p', {
-        text: 'Sign in or create an account to sync progress, streaks, unlocks, and challenge results.',
+        text: 'Sign in or create an account so scores, streaks, unlock state, and challenge context are saved.',
       }),
       h('div', { className: 'ns-inline-list' }, [
-        statusPill('Sign in'),
-        statusPill('Create account'),
-        statusPill('Session refresh'),
+        statusPill('Save scores'),
+        statusPill('Keep streak'),
+        statusPill('Account session'),
       ]),
     ]),
     h('div', { className: 'ns-auth-actions' }, [

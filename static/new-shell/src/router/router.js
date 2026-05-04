@@ -107,7 +107,7 @@ export function createRouter({ routes, outlet, appState, actions = {}, onRouteCh
       return renderSessionPrompt({
         session,
         title: `${route.label} needs sign-in`,
-        body: 'Sign in to load your personalized practice data, then return here.',
+        body: 'Sign in to load your saved progress here, then jump back in without losing the thread.',
         onLogout: actions.session?.logoutWithLegacy,
       });
     }
