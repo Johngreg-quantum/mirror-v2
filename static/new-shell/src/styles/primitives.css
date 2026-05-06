@@ -20,7 +20,7 @@
 }
 
 .ns-card p {
-  color: var(--ns-color-muted);
+  color: #3f4b44;
 }
 
 .ns-button {
@@ -124,9 +124,9 @@
   width: fit-content;
   max-width: 100%;
   padding: 0 var(--ns-space-3);
-  color: var(--ns-color-primary-strong);
-  background: rgb(238 245 239 / 82%);
-  border: 1px solid var(--ns-color-line);
+  color: #044c3f;
+  background: rgb(246 250 247 / 94%);
+  border: 1px solid #c4d2c8;
   border-radius: var(--ns-radius-md);
   font-size: var(--ns-font-size-sm);
   font-weight: 700;
@@ -162,7 +162,7 @@
 }
 
 .ns-eyebrow {
-  color: var(--ns-color-accent);
+  color: #95332d;
   font-size: var(--ns-font-size-sm);
   font-weight: 900;
   text-transform: uppercase;

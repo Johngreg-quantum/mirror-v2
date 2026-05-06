@@ -22,9 +22,9 @@
   align-items: stretch;
   padding: var(--ns-space-7);
   background:
-    linear-gradient(135deg, rgb(255 255 255 / 86%), rgb(220 239 232 / 56%)),
+    linear-gradient(135deg, rgb(255 255 255 / 95%), rgb(220 239 232 / 76%)),
     var(--ns-color-surface);
-  border-color: #c9d9cf;
+  border-color: #b9ccc0;
   box-shadow: var(--ns-shadow-lift);
   transition: border-color 180ms ease, box-shadow 180ms ease;
 }
@@ -63,8 +63,8 @@
 
 .ns-home-hero > .ns-card,
 .ns-home-hero > .ns-streak-card {
-  background: rgb(255 255 255 / 74%);
-  border-color: #d5e2d9;
+  background: rgb(255 255 255 / 90%);
+  border-color: #bfd1c6;
   box-shadow: none;
 }
 
@@ -84,6 +84,32 @@
 .ns-score-panel p,
 .ns-streak-card p {
   color: var(--ns-color-muted);
+}
+
+.ns-home-hero h2,
+.ns-home-hero h3,
+.ns-practice-card h3,
+.ns-support-card h3,
+.ns-session-card h3,
+.ns-streak-card h3 {
+  color: var(--ns-color-ink);
+}
+
+.ns-home-hero__copy > p:not(.ns-eyebrow),
+.ns-home-hero > .ns-card p,
+.ns-home-hero > .ns-streak-card p,
+.ns-practice-card p,
+.ns-support-card p,
+.ns-session-card p,
+.ns-state-card p {
+  color: #3f4b44;
+}
+
+.ns-home-hero .ns-eyebrow,
+.ns-practice-card .ns-eyebrow,
+.ns-support-card .ns-eyebrow,
+.ns-session-card .ns-eyebrow {
+  color: #8c2f2a;
 }
 
 .ns-auth-panel {
@@ -176,13 +202,13 @@
 }
 
 .ns-muted {
-  color: var(--ns-color-muted);
+  color: #4c5a52;
   font-size: var(--ns-font-size-sm);
 }
 
 .ns-support-card {
   background: linear-gradient(180deg, #ffffff, var(--ns-color-surface-strong));
-  border-color: #dfe6de;
+  border-color: #cbd8cf;
   box-shadow: var(--ns-shadow-tight);
 }
 
@@ -215,8 +241,8 @@
 
 .ns-practice-card--primary,
 .ns-progress-momentum-card {
-  background: linear-gradient(180deg, #ffffff, var(--ns-color-primary-soft));
-  border-color: #b8d7cb;
+  background: linear-gradient(180deg, #ffffff, #e6f4ee);
+  border-color: #9fcaba;
   box-shadow: var(--ns-shadow-lift);
 }
 
