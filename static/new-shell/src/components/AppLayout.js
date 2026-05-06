@@ -5,6 +5,7 @@ import { getSessionLabel, renderSessionPrompt } from './SessionState.js';
 
 export function createAppLayout({ routes, sessionActions = {} }) {
   const navLinks = new Map();
+  const protectedRouteLabels = new Map();
   const sessionSlot = h('div', { className: 'ns-shell__session' });
   const sessionBadge = h('span', {
     className: 'ns-pill ns-pill--accent',
@@ -44,6 +45,13 @@ export function createAppLayout({ routes, sessionActions = {} }) {
         );
 
         navLinks.set(route.id, link);
+        if (route.protectedRead) {
+          protectedRouteLabels.set(route.id, {
+            link,
+            label: route.label,
+            badge: link.querySelector('small:last-child'),
+          });
+        }
         return link;
       }),
   );
@@ -92,19 +100,26 @@ export function createAppLayout({ routes, sessionActions = {} }) {
   }
 
   function setSession(session) {
+    const isAuthenticated = session?.status === 'authenticated';
     sessionBadge.textContent = getSessionLabel(session);
-    sessionBadge.classList.toggle('ns-pill--accent', session?.status !== 'authenticated');
-    sessionBadge.classList.toggle('ns-pill--success', session?.status === 'authenticated');
+    sessionBadge.classList.toggle('ns-pill--accent', !isAuthenticated);
+    sessionBadge.classList.toggle('ns-pill--success', isAuthenticated);
     sessionSlot.replaceChildren(renderSessionPrompt({
       session,
       onLogout: sessionActions.logoutWithLegacy,
     }));
-    navLinks.forEach((link) => {
-      if (!link.classList.contains('is-protected-read')) {
-        return;
+    navLinks.get('auth')?.querySelector('span')?.replaceChildren(
+      document.createTextNode(isAuthenticated ? 'Account' : 'Sign in'),
+    );
+    navLinks.get('auth')?.setAttribute('title', isAuthenticated ? 'Account session' : 'Sign in');
+    protectedRouteLabels.forEach(({ link, label, badge }) => {
+      link.classList.toggle('needs-session', !isAuthenticated);
+      link.setAttribute('title', isAuthenticated
+        ? label
+        : 'Sign in to load your saved practice here');
+      if (badge) {
+        badge.hidden = isAuthenticated;
       }
-
-      link.classList.toggle('needs-session', session?.status !== 'authenticated');
     });
   }
 

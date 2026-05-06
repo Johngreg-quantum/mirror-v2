@@ -15,15 +15,18 @@ function normalizeRedirectPath(rawRedirect) {
 
 export function renderAuthPage({ appState, actions, query = {} }) {
   const redirectPath = normalizeRedirectPath(query.redirect);
+  const isAuthenticated = appState.session?.status === 'authenticated';
 
   return h('article', { className: 'ns-page' }, [
     h('header', { className: 'ns-page__header' }, [
       h('div', {}, [
         h('p', { className: 'ns-eyebrow', text: 'Account' }),
-        h('h2', { text: 'Sign in' }),
+        h('h2', { text: isAuthenticated ? 'Account' : 'Sign in' }),
         h('p', {
           className: 'ns-page__summary',
-          text: 'Save scores, streaks, unlock state, and challenge context to your account.',
+          text: isAuthenticated
+            ? 'Your scores, streaks, unlock state, personal bests, and challenge context are saved to this account.'
+            : 'Save scores, streaks, unlock state, and challenge context to your account.',
         }),
       ]),
       statusPill(appState.session.status),
@@ -37,14 +40,18 @@ export function renderAuthPage({ appState, actions, query = {} }) {
     renderAuthFormShell({ session: appState.session, actions, redirectPath }),
     h('div', { className: 'ns-grid ns-grid--two' }, [
       card({
-        title: 'Why sign in',
-        body: 'Signing in lets Mirror save scores, streaks, unlock state, personal bests, and challenge context.',
+        title: isAuthenticated ? 'Saved to this account' : 'Why sign in',
+        body: isAuthenticated
+          ? 'Mirror uses this account for saved scores, streaks, unlock state, personal bests, and challenge context.'
+          : 'Signing in lets Mirror save scores, streaks, unlock state, personal bests, and challenge context.',
       }),
       card({
-        title: 'After sign-in',
-        body: redirectPath
-          ? `After sign-in, Mirror returns to ${redirectPath}.`
-          : 'After sign-in, open a scene, daily, or progress from the new shell.',
+        title: isAuthenticated ? 'Session controls' : 'After sign-in',
+        body: isAuthenticated
+          ? 'Use Sign out when this browser should stop using the saved account session.'
+          : redirectPath
+            ? `After sign-in, Mirror returns to ${redirectPath}.`
+            : 'After sign-in, open a scene, daily, or progress from the new shell.',
       }),
     ]),
   ]);

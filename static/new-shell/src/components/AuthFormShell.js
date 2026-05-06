@@ -247,7 +247,7 @@ function renderLogoutPanel({ actions, session }) {
 
   return h('div', { className: 'ns-auth-form' }, [
     h('h3', { text: `Signed in as ${session.user?.displayName || 'performer'}` }),
-    h('p', { text: 'This browser session is using your saved account.' }),
+    h('p', { text: 'Your scores, streaks, unlock state, personal bests, and challenge context are saved to this account.' }),
     logoutButton,
     messageEl,
   ]);
@@ -259,14 +259,16 @@ export function renderAuthFormShell({ session, actions, redirectPath = '' }) {
   return h('section', { className: 'ns-auth-panel' }, [
     h('div', { className: 'ns-auth-panel__copy' }, [
       h('p', { className: 'ns-eyebrow', text: 'Account' }),
-      h('h2', { text: 'Save this session.' }),
+      h('h2', { text: isAuthenticated ? 'Session active.' : 'Save this session.' }),
       h('p', {
-        text: 'Sign in or create an account so scores, streaks, unlock state, and challenge context are saved.',
+        text: isAuthenticated
+          ? 'This browser is signed in. Scores, streaks, unlock state, personal bests, and challenge context stay attached to this account.'
+          : 'Sign in or create an account so scores, streaks, unlock state, and challenge context are saved.',
       }),
       h('div', { className: 'ns-inline-list' }, [
-        statusPill('Save scores'),
-        statusPill('Keep streak'),
-        statusPill('Account session'),
+        statusPill(isAuthenticated ? 'Scores saved' : 'Save scores'),
+        statusPill(isAuthenticated ? 'Streak saved' : 'Keep streak'),
+        statusPill(isAuthenticated ? 'Session active' : 'Account session'),
       ]),
     ]),
     h('div', { className: 'ns-auth-actions' }, [

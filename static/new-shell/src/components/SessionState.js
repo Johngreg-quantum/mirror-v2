@@ -59,7 +59,7 @@ export function renderSessionPrompt({
     ? `Signed in as ${getSessionLabel(session)}`
     : isError ? 'Session refresh failed' : title;
   const promptBody = isAuthenticated
-    ? 'Scores, streaks, unlock state, and personal bests are attached to this account session.'
+    ? 'Scores, streaks, unlock state, personal bests, and challenge context are attached to this account session.'
     : isError
       ? session.error?.message || 'Mirror could not refresh your session.'
       : body;
