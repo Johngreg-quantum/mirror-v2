@@ -256,6 +256,61 @@
   box-shadow: var(--ns-shadow-tight);
 }
 
+.ns-home-page .ns-home-hero,
+.ns-home-page .ns-practice-card,
+.ns-home-page .ns-support-card,
+.ns-shell__session .ns-session-card {
+  color: #111713;
+}
+
+.ns-home-page .ns-home-hero h2,
+.ns-home-page .ns-home-hero h3,
+.ns-home-page .ns-practice-card h3,
+.ns-home-page .ns-support-card h3,
+.ns-shell__session .ns-session-card h3 {
+  color: #0f1512;
+}
+
+.ns-home-page .ns-home-hero .ns-home-hero__copy h2 {
+  color: #080d0b;
+  font-weight: 900;
+}
+
+.ns-home-page .ns-home-hero p,
+.ns-home-page .ns-practice-card p,
+.ns-home-page .ns-support-card p,
+.ns-shell__session .ns-session-card p {
+  color: #26332c;
+}
+
+.ns-home-page .ns-home-hero .ns-home-hero__copy > p:not(.ns-eyebrow) {
+  color: #1f2b25;
+  font-weight: 650;
+}
+
+.ns-home-page .ns-home-hero .ns-eyebrow,
+.ns-home-page .ns-practice-card .ns-eyebrow,
+.ns-home-page .ns-support-card .ns-eyebrow,
+.ns-shell__session .ns-session-card .ns-eyebrow {
+  color: #6f241f;
+}
+
+.ns-home-page .ns-home-hero .ns-pill,
+.ns-home-page .ns-practice-card .ns-pill,
+.ns-home-page .ns-support-card .ns-pill,
+.ns-shell__session .ns-session-card .ns-pill {
+  color: #04372e;
+  background: #ffffff;
+  border-color: #92b0a1;
+}
+
+.ns-shell__session .ns-session-card.is-authenticated,
+.ns-home-page .ns-practice-card--primary,
+.ns-home-page .ns-state-card--auth {
+  background: linear-gradient(180deg, #ffffff, #eef8f3);
+  border-color: #8fbfaf;
+}
+
 .ns-stat-strip {
   gap: var(--ns-space-4);
 }
