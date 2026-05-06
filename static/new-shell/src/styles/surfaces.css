@@ -1097,8 +1097,39 @@
 }
 
 .ns-session-card.is-authenticated {
-  border-color: #b8d7cb;
-  background: linear-gradient(180deg, #ffffff, var(--ns-color-primary-soft));
+  color: #0f1512;
+  border-color: #8fbfaf;
+  background: linear-gradient(180deg, #ffffff, #eef8f3);
+}
+
+.ns-session-card.is-authenticated h3 {
+  color: #080d0b;
+  font-weight: 900;
+}
+
+.ns-session-card.is-authenticated p {
+  color: #223028;
+  font-weight: 650;
+}
+
+.ns-session-card.is-authenticated .ns-pill {
+  color: #04372e;
+  background: #ffffff;
+  border-color: #92b0a1;
+}
+
+.ns-session-card.is-authenticated .ns-button--secondary {
+  color: #04372e;
+  background: #ffffff;
+  border-color: #92b0a1;
+}
+
+.ns-auth-panel .ns-auth-form h3 {
+  color: #0f1512;
+}
+
+.ns-auth-panel .ns-auth-form p {
+  color: #26332c;
 }
 
 .ns-scene-workflow {
