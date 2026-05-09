@@ -71,6 +71,8 @@ async function loadDailyViewModel(appState) {
 function renderDailySurface({ daily, profile, profileError, session }) {
   const isComplete = /completed|done/i.test(String(daily.status || ''));
   const isAuthenticated = session?.status === 'authenticated';
+  const visibleDailyStatus = isAuthenticated ? daily.status : STATUS_COPY.authRequired;
+  const visibleDaily = { ...daily, status: visibleDailyStatus };
 
   return h('article', { className: 'ns-page' }, [
     h('header', { className: 'ns-page__header' }, [
@@ -81,11 +83,13 @@ function renderDailySurface({ daily, profile, profileError, session }) {
           className: 'ns-page__summary',
           text: isComplete
             ? 'Today\'s daily score is saved. The next daily appears after reset.'
-            : 'Score today\'s daily to update daily status, points, and streak data.',
+            : isAuthenticated
+              ? 'Score today\'s daily to update daily status, points, and streak data.'
+              : 'Open today\'s daily as a guest, then sign in to record a scored daily take.',
         }),
       ]),
       h('div', { className: 'ns-inline-list ns-page__actions' }, [
-        statusPill(daily.status),
+        statusPill(visibleDailyStatus),
         statusPill(daily.resetLabel),
       ]),
     ]),
@@ -94,7 +98,7 @@ function renderDailySurface({ daily, profile, profileError, session }) {
       title: 'Streak data needs sign-in',
       body: 'The daily scene is public. Streak status appears after your session is verified.',
     }),
-    renderDailyChallengeCard({ daily }),
+    renderDailyChallengeCard({ daily: visibleDaily }),
     h('div', { className: 'ns-grid ns-grid--two' }, [
       profile
         ? renderStreakCard({ profile })
@@ -113,7 +117,9 @@ function renderDailySurface({ daily, profile, profileError, session }) {
         title: isComplete ? 'Daily saved' : 'Daily reward',
         body: isComplete
           ? `Daily status: ${daily.status}. Next reset: ${daily.resetLabel}.`
-          : `${daily.rewardPoints} points plus ${daily.streakBonus} are attached to the first scored completion.`,
+          : isAuthenticated
+            ? `${daily.rewardPoints} points plus ${daily.streakBonus} are attached to the first scored completion.`
+            : 'Sign in before recording a daily take; the first scored completion can update points and streaks.',
         children: [
           h('div', { className: 'ns-action-row ns-action-row--card' }, [
             isAuthenticated
@@ -125,7 +131,7 @@ function renderDailySurface({ daily, profile, profileError, session }) {
       }),
       card({
         title: 'Daily reset',
-        body: 'Daily scene, streak status, profile points, and reset text come from current server data.',
+        body: 'Daily scene, streak status, points, and reset timing use the current daily data.',
       }),
     ]),
   ]);

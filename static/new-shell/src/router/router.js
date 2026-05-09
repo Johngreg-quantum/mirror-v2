@@ -119,10 +119,10 @@ export function createRouter({ routes, outlet, appState, actions = {}, onRouteCh
     const fallback = getRouteFallbackConfig(route, { params });
     const isLegacyOnly = fallback.status === ROUTE_PROMOTION_STATUS.LEGACY_ONLY;
     const routeStatusLabel = isLegacyOnly
-      ? 'Rollback'
+      ? 'Previous view'
       : fallback.status === ROUTE_PROMOTION_STATUS.PRIMARY
-        ? 'Rollback path'
-        : 'Fallback';
+        ? 'Previous path'
+        : 'Unavailable';
 
     return h('article', { className: 'ns-page' }, [
       card({
@@ -131,7 +131,7 @@ export function createRouter({ routes, outlet, appState, actions = {}, onRouteCh
         children: [
           h('div', { className: 'ns-inline-list' }, [
             statusPill(routeStatusLabel),
-            statusPill(route.id),
+            statusPill(route.label),
             statusPill(fallback.legacyPath),
             buttonLink({
               href: fallback.legacyPath,
@@ -141,7 +141,7 @@ export function createRouter({ routes, outlet, appState, actions = {}, onRouteCh
           ]),
           h('p', {
             className: 'ns-muted',
-            text: 'Use the rollback path below if this page is temporarily unavailable.',
+            text: 'Use the previous view below if this page is temporarily unavailable.',
           }),
         ],
       }),

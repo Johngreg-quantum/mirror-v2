@@ -1,5 +1,5 @@
 import { renderAuthFormShell } from '../../components/AuthFormShell.js';
-import { renderSessionPrompt } from '../../components/SessionState.js';
+import { getSessionStatusPillLabel, renderSessionPrompt } from '../../components/SessionState.js';
 import { card, statusPill } from '../../components/primitives.js';
 import { h } from '../../lib/helpers/dom.js';
 
@@ -29,12 +29,13 @@ export function renderAuthPage({ appState, actions, query = {} }) {
             : 'Save scores, streaks, unlock state, and challenge context to your account.',
         }),
       ]),
-      statusPill(appState.session.status),
+      statusPill(getSessionStatusPillLabel(appState.session)),
     ]),
     renderSessionPrompt({
       session: appState.session,
       title: 'Save your practice to Mirror',
       body: 'Sign in to keep scores, streaks, unlock state, and challenge context attached to your account.',
+      showAction: false,
       onLogout: actions.session?.logoutWithLegacy,
     }),
     renderAuthFormShell({ session: appState.session, actions, redirectPath }),

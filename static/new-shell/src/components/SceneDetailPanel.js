@@ -59,6 +59,14 @@ function getAnalyzeDetail(snapshot) {
   return scoreSnapshotDetail(snapshot);
 }
 
+function getScoreStatusPillText(snapshot) {
+  if (snapshot?.disabledCode === 'auth-required') {
+    return 'Scoring needs sign-in';
+  }
+
+  return `Score ${getAnalyzeStatusLabel(snapshot).toLowerCase()}`;
+}
+
 function renderLocalRuntimePanel({ canRecord, disabledReason, runtime, onCleanup }) {
   const controls = createRecordingControls({ runtime, canRecord });
   const status = createRecordingStatus({ disabledReason });
@@ -204,7 +212,7 @@ export function createSceneDetailPanel({
       h('div', { className: 'ns-inline-list ns-detail-pill-row ns-detail-pill-row--quiet' }, [
         statusPill(recordLabel),
         statusPill('Local playback'),
-        statusPill(`Score ${getAnalyzeStatusLabel(analyzeStore.getSnapshot()).toLowerCase()}`),
+        statusPill(getScoreStatusPillText(analyzeStore.getSnapshot())),
       ]),
       h('p', {
         className: 'ns-muted ns-scene-detail__guidance',

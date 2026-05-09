@@ -5,6 +5,7 @@
 .ns-shell {
   display: grid;
   grid-template-columns: minmax(14.5rem, 17.5rem) 1fr;
+  min-width: 0;
   min-height: 100vh;
 }
 
@@ -12,6 +13,7 @@
   display: grid;
   align-content: start;
   gap: var(--ns-space-5);
+  min-width: 0;
   padding: var(--ns-space-6) var(--ns-space-5);
   background: linear-gradient(180deg, #ffffff 0%, #fbfcf8 100%);
   border-right: 1px solid var(--ns-color-line);
@@ -65,6 +67,7 @@
 .ns-shell__nav {
   display: grid;
   gap: var(--ns-space-1);
+  min-width: 0;
 }
 
 .ns-shell__nav-link {
@@ -188,8 +191,45 @@
 }
 
 @media (max-width: 560px) {
+  .ns-shell {
+    overflow-x: hidden;
+  }
+
+  .ns-shell__rail {
+    gap: var(--ns-space-3);
+  }
+
   .ns-shell__nav {
-    grid-template-columns: 1fr;
+    display: flex;
+    gap: var(--ns-space-2);
+    max-width: 100%;
+    padding-bottom: var(--ns-space-1);
+    overflow-x: auto;
+    scrollbar-width: thin;
+  }
+
+  .ns-shell__nav-link {
+    flex: 0 0 auto;
+    min-height: 2.65rem;
+    padding: 0.65rem var(--ns-space-3);
+    white-space: nowrap;
+  }
+
+  .ns-shell__nav-link small {
+    display: none;
+  }
+
+  .ns-shell__nav-link.is-active::before {
+    top: auto;
+    right: var(--ns-space-3);
+    bottom: 0.25rem;
+    left: var(--ns-space-3);
+    width: auto;
+    height: 3px;
+  }
+
+  .ns-shell__session .ns-card {
+    gap: var(--ns-space-3);
   }
 
   .ns-shell__topbar,

@@ -1,6 +1,6 @@
 import { renderLoggedErrorState, renderLoadingState } from '../../components/AsyncState.js';
 import { renderChallengeResultCard } from '../../components/ChallengeResultCard.js';
-import { renderSessionPrompt } from '../../components/SessionState.js';
+import { getSessionStatusPillLabel, renderSessionPrompt } from '../../components/SessionState.js';
 import { buttonLink, card, statusPill } from '../../components/primitives.js';
 import { CTA_COPY, STATUS_COPY } from '../../lib/copy/ux-copy.js';
 import { h } from '../../lib/helpers/dom.js';
@@ -51,12 +51,12 @@ function renderChallengeRouteError(challengeId, error = null) {
       surface: 'challenge',
     }),
     card({
-      title: 'Challenge fallback',
-      body: 'Open the classic challenge route if this invite cannot load in the new shell.',
+      title: 'Challenge backup',
+      body: 'Open the previous challenge view if this invite cannot load here.',
       children: [
         buttonLink({
           href: `/legacy/challenge/${encodeURIComponent(challengeId)}`,
-          text: 'Open classic challenge',
+          text: 'Open previous challenge view',
           variant: 'secondary',
         }),
       ],
@@ -161,7 +161,7 @@ export function renderChallengePage({ appState, params }) {
             }),
           ]),
           h('div', { className: 'ns-inline-list' }, [
-            statusPill(appState.session.status),
+            statusPill(getSessionStatusPillLabel(appState.session)),
             statusPill(challengeEntry.targetScoreLabel),
           ]),
         ]),

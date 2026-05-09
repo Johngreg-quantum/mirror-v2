@@ -30,10 +30,10 @@ export const SECTION_COPY = Object.freeze({
 });
 
 export const STATUS_COPY = Object.freeze({
-  authRequired: 'Auth required',
+  authRequired: 'Sign-in needed',
   completedToday: 'Completed today',
   dailyStatusUnavailable: 'Daily status unavailable',
-  disabled: 'Disabled',
+  disabled: 'Not ready',
   empty: 'Empty',
   error: 'Error',
   loading: 'Loading',
@@ -42,10 +42,10 @@ export const STATUS_COPY = Object.freeze({
   noScoresYet: 'No scores yet',
   rateLimited: 'Rate limited',
   ready: 'Ready',
-  readOnlyFetchFailed: 'Read-only fetch failed',
+  readOnlyFetchFailed: 'Saved data unavailable',
   recording: 'Recording',
   playingTake: 'Playing take',
-  runtimeError: 'Runtime error',
+  runtimeError: 'Recording error',
   scored: 'Scored',
   scoring: 'Scoring',
   scoringReady: 'Scoring ready',

@@ -20,7 +20,7 @@ export function createRecordingControls({ runtime, canRecord }) {
     onClick: () => runtime.stopRecording(),
   });
   const playButton = controlButton({
-    text: 'Playback',
+    text: 'Play take',
     variant: 'secondary',
     onClick: () => runtime.playRecording(),
   });

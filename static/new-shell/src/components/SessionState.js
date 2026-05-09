@@ -19,6 +19,34 @@ export function getSessionLabel(session) {
   return 'Guest mode';
 }
 
+export function getSessionStatusPillLabel(session) {
+  if (session?.status === 'authenticated') {
+    return 'Session active';
+  }
+
+  if (session?.status === 'loading' || session?.status === 'unknown') {
+    return 'Checking session';
+  }
+
+  if (session?.status === 'error') {
+    return 'Session issue';
+  }
+
+  return 'Guest mode';
+}
+
+function getSessionStoragePillLabel(session) {
+  if (session?.hasToken) {
+    return 'Saved session';
+  }
+
+  if (session?.status === 'authenticated') {
+    return 'Account session';
+  }
+
+  return 'No account yet';
+}
+
 export function renderSessionPrompt({
   session,
   title = 'Sign in to keep your practice',
@@ -70,8 +98,8 @@ export function renderSessionPrompt({
     className: `ns-session-card${isAuthenticated ? ' is-authenticated' : ' is-guest'}`,
     children: [
       h('div', { className: 'ns-inline-list' }, [
-        statusPill(isAuthenticated ? 'Session active' : session?.status || 'Guest'),
-        session?.hasToken ? statusPill('Saved session') : statusPill('Local only'),
+        statusPill(getSessionStatusPillLabel(session)),
+        statusPill(getSessionStoragePillLabel(session)),
         session?.error?.rateLimited ? statusPill('Rate limited') : null,
         action,
       ]),

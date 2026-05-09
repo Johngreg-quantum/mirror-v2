@@ -28,7 +28,7 @@ function getDetail(state, disabledReason) {
   }
 
   if (state.status === 'error') {
-    return state.error?.message || 'The local scene runtime could not continue.';
+    return state.error?.message || 'The local recording session could not continue.';
   }
 
   return 'Start a local take when you are ready.';
@@ -52,7 +52,7 @@ export function createRecordingStatus({ disabledReason = '' } = {}) {
   return {
     root: h('div', { className: 'ns-recording-status' }, [
       h('div', {}, [
-        h('span', { text: 'Runtime state' }),
+        h('span', { text: 'Take state' }),
         statusEl,
       ]),
       h('div', {}, [

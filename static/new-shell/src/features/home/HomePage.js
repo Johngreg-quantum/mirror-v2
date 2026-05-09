@@ -264,7 +264,7 @@ function renderHomeSurface({ appState, scenes, leaderboard, profile, progressSum
         h('p', {
           text: isAuthenticated
             ? getSignedInHeroBody({ profile, recommendedScene: starterScene, latestTake, personalError })
-            : 'Choose a clip, record locally, submit for scoring, then review the result.',
+            : 'Open a scene as a guest to preview the line. Sign in when you are ready to record and save a score.',
         }),
         h('div', { className: 'ns-action-row ns-action-row--hero' }, [
           starterScene
@@ -402,7 +402,7 @@ function renderHomeSurface({ appState, scenes, leaderboard, profile, progressSum
         title: isAuthenticated ? 'Home summary' : 'The loop',
         body: isAuthenticated
           ? 'Home shows the recommended scene, daily status, and progress summary in one place.'
-          : 'Choose a scene, record locally, submit for scoring, then decide what to open next.',
+          : 'Open a scene, review the line, sign in to record a scored take, then choose what to practice next.',
         className: 'ns-support-card',
       }),
     ]),

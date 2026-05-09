@@ -280,7 +280,7 @@ export function adaptAnalyzeViewModel(snapshot) {
     title: STATE_COPY.scoringUnavailable,
     detail: snapshot.disabledReason || STATE_COPY.recordBeforeScoring,
     score: '--',
-    scoreLabel: snapshot.disabledCode === 'auth-required' ? 'auth required' : 'not ready',
+    scoreLabel: snapshot.disabledCode === 'auth-required' ? 'sign-in needed' : 'not ready',
     pills: [scoreDisabledPill(snapshot)],
     insights: [],
     comparison: [],
