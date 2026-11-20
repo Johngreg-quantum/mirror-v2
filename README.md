@@ -9,3 +9,5 @@ This branch holds only these files and is not part of the app.
 - `vanragedon-card.jpg`: its first frame, used as the poster
 - `cards/chambasuave-tarjeta-loop.mp4`: chambasuave card, 768x480, 10 s seamless loop, H.264, no audio
 - `cards/chambasuave-tarjeta.webp`: its first frame, 1280x800, used as the poster
+- `cards/vanragedon-glass-still.webp`: Vanragedon Circuit 3D crystal card, still picture shown while it loads and without WebGL, 1024x640
+- `cards/vanragedon-glass-board.webp`: the level picture drawn inside the crystal (texture), 1024x512
