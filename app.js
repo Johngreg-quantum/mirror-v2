@@ -146,7 +146,7 @@ const ACTS = ['knot', 'sphere', 'waves'];   /* hero, gallery + about, contact */
 screen width wide but never more than 184% of its height (so a wide laptop keeps the shape set on a squarer
 window), tilted 14 degrees. */
 const HERO = { x: 0.5, y: 0.5, w: 1.6, wMax: 1.84, h: 1.26, tilt: -14 * Math.PI / 180, z: 9 };
-const TINTS = [[240, 180, 106], [126, 150, 255], [92, 214, 180], [255, 143, 177]];   /* one per project card */
+const TINTS = [[240, 180, 106], [126, 150, 255], [92, 214, 180], [255, 143, 177], [214, 206, 190]];   /* one per project card */
 async function start3D() {
 const THREE = await import('three');
 let post = null;

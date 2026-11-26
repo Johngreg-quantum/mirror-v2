@@ -86,12 +86,24 @@ main,.site-footer{position:relative;z-index:1}
 .section{max-width:1480px;margin:0 auto;padding:clamp(72px,11vw,150px) var(--pad);scroll-margin-top:var(--head)}
 .section-head{margin-bottom:clamp(32px,5vw,64px)}
 .section h2{font-size:clamp(52px,8.4vw,120px);margin-top:20px}
-/* Design: what John designs, as an index — the name of each discipline in the serif, what it covers beside it. */
+/* Design: what John designs, as an index. Each discipline is folded: its name and what it covers, and a plus that opens its pieces. */
 .crafts{list-style:none;padding:0;border-bottom:1px solid var(--line)}
-.crafts li{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;padding:22px 0;border-top:1px solid var(--line)}
-.crafts h3{font-size:clamp(30px,3.4vw,48px);line-height:1.05}
-.crafts p{color:var(--soft);max-width:44ch}
-/* The frames where John's own pieces go, one row per discipline. A piece goes in as an <img> or <video> inside its .slot, and the frame's name moves under it as a caption. */
+.crafts li{border-top:1px solid var(--line)}
+.craft summary{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:20px;row-gap:6px;align-items:center;padding:22px 0;cursor:pointer;list-style:none}
+.craft summary::-webkit-details-marker{display:none}
+.crafts h3{grid-column:1;font-size:clamp(30px,3.4vw,48px);line-height:1.05;transition:color .3s}
+.crafts p{grid-column:1 / -1;color:var(--soft);max-width:44ch}
+.craft-toggle{grid-column:2;grid-row:1;display:flex;align-items:center;gap:14px;color:var(--dim);white-space:nowrap}
+.craft-toggle i{position:relative;flex:none;width:40px;height:40px;border:1px solid var(--line-2);border-radius:50%;transition:border-color .3s,transform .45s cubic-bezier(.2,.8,.2,1)}
+.craft-toggle i::before,.craft-toggle i::after{content:"";position:absolute;left:50%;top:50%;width:12px;height:1px;margin:-.5px 0 0 -6px;background:var(--ink)}
+.craft-toggle i::after{transform:rotate(90deg)}
+.craft summary:hover h3{color:var(--accent)}
+.craft summary:hover .craft-toggle i{border-color:var(--accent)}
+.craft[open] .craft-toggle i{transform:rotate(45deg);border-color:var(--accent)}
+.craft .slots{margin:0 0 30px}
+.craft[open] .slots{animation:craft-open .5s cubic-bezier(.2,.8,.2,1)}
+@keyframes craft-open{from{opacity:0;transform:translateY(-8px)}}
+@media(min-width:900px){.craft summary{grid-template-columns:minmax(0,.8fr) minmax(0,1.5fr) auto;column-gap:48px;padding:30px 0}.crafts p{grid-column:2;grid-row:1}.craft-toggle{grid-column:3}.craft .slots{margin-bottom:38px}}
 .slots{display:grid;grid-template-columns:repeat(var(--cols-s),minmax(0,1fr));gap:10px;margin-top:14px}
 .slot{position:relative;aspect-ratio:var(--ar);overflow:hidden;border:1px solid var(--line-2);border-radius:14px;background:rgba(13,16,21,.62)}
 .slot-kind{position:absolute;left:12px;right:12px;bottom:10px;color:var(--dim);font-size:10px;letter-spacing:.22em;line-height:1.4}
@@ -104,8 +116,6 @@ a.slot-open{cursor:pointer}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 .slot:has(img,video) .slot-kind{position:static;display:block;margin-top:10px}
 @media(min-width:600px){.slots{grid-template-columns:repeat(var(--cols),minmax(0,1fr));gap:12px}}
-/* On wide screens the name and what it covers sit on the left, and the pieces get the wider right column. */
-@media(min-width:900px){.crafts li{grid-template-columns:minmax(0,.8fr) minmax(0,1.5fr);grid-template-rows:auto 1fr;column-gap:48px;row-gap:0;align-items:start;padding:36px 0}.crafts h3,.crafts p{grid-column:1}.crafts p{padding-top:14px}.slots{grid-column:2;grid-row:1 / span 2;margin-top:0}}
 /* The large view of a piece. */
 .viewer{margin:auto;max-width:none;max-height:none;padding:0;border:0;background:none;overflow:visible}
 .viewer::backdrop{background:rgba(8,10,14,.9)}
@@ -113,11 +123,12 @@ a.slot-open{cursor:pointer}
 .viewer-close{position:absolute;right:0;bottom:calc(100% + 14px)}
 .cards{display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
 @media(min-width:640px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(min-width:1120px){.cards{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media(min-width:1120px){.cards{grid-template-columns:repeat(5,minmax(0,1fr))}}
 .card{--tint:240,180,106;display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--line);border-radius:20px;background:var(--glass);-webkit-backdrop-filter:var(--frost);backdrop-filter:var(--frost);transition:border-color .35s}
 .card.c2{--tint:126,150,255}
 .card.c3{--tint:92,214,180}
 .card.c4{--tint:255,143,177}
+.card.c5{--tint:214,206,190}
 a.card:hover{border-color:rgba(var(--tint),.6)}
 html:not(.fm) a.card{transition:transform .6s cubic-bezier(.2,.8,.2,1),border-color .35s}
 html:not(.fm) a.card:hover{transform:translateY(-6px)}
@@ -144,7 +155,7 @@ html:not(.fm) .card-link i{transition:transform .3s}
 a.card:hover .card-link{color:rgb(var(--tint))}
 html:not(.fm) a.card:hover .card-link i{transform:translateX(4px)}
 .orbit-count{display:none}
-.orbit .gallery{max-width:none;padding:0;height:calc((100vh - var(--head))*4.2);height:calc((100svh - var(--head))*4.2)}
+.orbit .gallery{max-width:none;padding:0;height:calc((100vh - var(--head))*5);height:calc((100svh - var(--head))*5)}
 .orbit .pin{position:sticky;top:var(--head);height:calc(100vh - var(--head));height:calc(100svh - var(--head));overflow:hidden;overflow:clip}
 .orbit .gallery .section-head{position:absolute;z-index:1;left:var(--pad);top:clamp(18px,4.5vh,52px);margin:0;pointer-events:none}
 .orbit .cards{position:absolute;z-index:2;left:50%;top:58%;width:0;height:0;display:block}
@@ -173,6 +184,7 @@ html:not(.fm) a.card:hover .card-link i{transform:translateX(4px)}
 .facts dt{margin-bottom:6px;color:var(--dim)}
 .contact h2{font-size:clamp(48px,6.6vw,104px)}
 .contact-copy p{margin-top:34px;max-width:40ch;color:var(--soft);font-size:clamp(17px,1.5vw,20px)}
+.inline-link{color:var(--accent);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:.2em}
 .text-link{display:inline-flex;gap:10px;margin-top:26px;color:var(--accent)}
 .text-link i{font-style:normal;letter-spacing:0}
 html:not(.fm) .text-link i{transition:transform .3s}
@@ -207,4 +219,5 @@ html:not(.fm) .text-link:hover i{transform:translateX(4px)}
 @media(prefers-reduced-motion:reduce){
 html{scroll-behavior:auto}
 *,*::before,*::after{transition:none!important}
+.craft[open] .slots{animation:none}
 }
