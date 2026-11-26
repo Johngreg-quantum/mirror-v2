@@ -1,4 +1,5 @@
-/* Project covers that move: videos (Mirror, Vanragedon before, chambasuave) and the 3D glass (Vanragedon).
+/* Project covers that move: videos (Mirror, Vanragedon before, chambasuave, and the sites and films in "Lo que diseño")
+and the 3D glass (Vanragedon).
 Everything loads when its card comes near, and only after the page itself (and the main 3D) has loaded.
 With reduced motion or data saver on, only the still picture is shown. */
 (function () {
@@ -19,7 +20,7 @@ els.forEach(el => near.observe(el));
 /* ---------- Videos. Clips with a loop attribute play while their picture is on screen (half of it, or the share
 in data-threshold) and pause otherwise. The others (Mirror) play once from the start each time the picture
 becomes half visible, and again on hover, then hold their last frame. A failed poster keeps the letter. ---------- */
-const vids = [].slice.call(document.querySelectorAll('video.cover-media[data-src]'));
+const vids = [].slice.call(document.querySelectorAll('video.cover-media[data-src], video.slot-media[data-src]'));
 const prepare = v => {
 if (v.__ready) return;
 v.__ready = true;

@@ -97,6 +97,19 @@ form.hidden = true;
 formDone.hidden = false;
 });
 $('#form-back').addEventListener('click', () => { formDone.hidden = true; form.hidden = false; });
+/* ---------- Design pieces: a click opens the piece large; a click anywhere, the close button or Esc closes it ---------- */
+const viewer = $('#viewer');
+if (viewer && viewer.showModal) {
+const big = viewer.querySelector('img');
+$$('button.slot-open').forEach(b => b.addEventListener('click', () => {
+const img = b.querySelector('img');
+big.src = b.dataset.full || img.src;
+big.alt = img.alt;
+viewer.showModal();
+}));
+viewer.addEventListener('click', () => viewer.close());
+viewer.addEventListener('close', () => { big.removeAttribute('src'); });
+}
 /* ---------- 3D world (Three.js): one fixed scene behind the whole page; the scroll is the camera ---------- */
 const root = document.documentElement;
 const world = $('#world');              /* fixed, full-viewport layer that holds the canvas */
