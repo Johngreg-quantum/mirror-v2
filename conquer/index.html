@@ -1,0 +1,594 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Conquer: branding, sitios web en 3D, contenido y redes en Miami</title>
+<meta name="description" content="Conquer es la agencia de John Greg, diseñador gráfico en Miami: branding, sitios web en 3D, contenido y redes. En español y en inglés, con precio fijo y plazo fijo.">
+<link rel="canonical" href="https://www.johngreg.com/conquer/">
+<meta name="theme-color" content="#0B0B0C">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://www.johngreg.com/conquer/">
+<meta property="og:title" content="Conquer: branding, sitios web en 3D, contenido y redes en Miami">
+<meta property="og:description" content="Branding, sitios web en 3D, contenido y redes para negocios de Miami. En español y en inglés, con precio fijo y plazo fijo.">
+<meta property="og:image" content="https://www.johngreg.com/conquer/og.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' fill='%230b0b0c'/%3E%3Ctext x='16' y='23' text-anchor='middle' font-family='Georgia,serif' font-weight='700' font-size='20' fill='%23e8e3d7'%3EC%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600&family=Bodoni+Moda:ital,opsz,wght@0,6..96,400..700;1,6..96,400..700&family=Playfair+Display:wght@900&display=swap">
+<script>document.documentElement.className='js'</script>
+<style>
+:root{--ink:#0B0B0C;--coal:#161617;--bone:#E8E3D7;--paper:#F2EFE8;--soft:#A9ABAE;--mist:#C9C7C0;--steel:#A9ABAE;--line:rgba(232,227,215,.22);--line-d:rgba(232,227,215,.24);--display:"Bodoni Moda","Playfair Display",Georgia,"Times New Roman",serif;--marca:"Playfair Display",Georgia,"Times New Roman",serif;--sans:Archivo,system-ui,-apple-system,"Segoe UI",sans-serif;--pad:clamp(20px,5vw,80px);--head:68px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:var(--head);background:var(--ink)}
+body{margin:0;background:var(--ink);color:var(--bone);font-family:var(--sans);font-size:17px;line-height:1.55;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+:focus-visible{outline:2px solid currentColor;outline-offset:4px}
+h1,h2,h3,h4,p,ul,ol,dl,dd{margin:0}
+h2,h3,.price,.amt,.menu .p,.statement{font-variant-numeric:lining-nums}
+ul,ol{padding:0;list-style:none}
+
+/* barra */
+.bar{position:fixed;z-index:20;top:0;left:0;right:0;height:var(--head);display:flex;align-items:center;justify-content:space-between;gap:20px;padding:0 var(--pad);background:rgba(11,11,12,.88);-webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);color:var(--bone)}
+.brand{display:flex;align-items:center;gap:12px;text-decoration:none;font-family:var(--marca);font-weight:900;font-size:22px;letter-spacing:.01em}
+.brand b{display:grid;place-items:center;width:30px;height:30px;border:1px solid var(--line-d);font:600 12px var(--sans);letter-spacing:.04em}
+.bar nav{display:flex;gap:30px;font-size:15px}
+.bar nav button{background:none;border:0;color:inherit;font:inherit;padding:12px 0;cursor:pointer}
+.bar nav button:hover{text-decoration:underline;text-underline-offset:6px}
+.right{display:flex;align-items:center;gap:18px}
+.lang{display:flex;align-items:center;gap:4px;font-size:13px;color:var(--steel)}
+.lang button{background:none;border:0;color:inherit;font:inherit;padding:10px 6px;cursor:pointer}
+.lang button[aria-pressed="true"]{color:var(--bone);font-weight:600}
+.btn{display:inline-block;border:1px solid currentColor;text-decoration:none;font-weight:600;font-size:15px;line-height:1.2;padding:15px 24px;text-align:center}
+.btn.fill{background:var(--bone);border-color:var(--bone);color:var(--ink)}
+.dark .btn.fill:hover{background:#fff;border-color:#fff}
+.btn.ink{background:var(--bone);border-color:var(--bone);color:var(--ink)}
+.bar .btn{padding:11px 18px;font-size:14px}
+
+/* portada */
+.hero{background:var(--ink);color:var(--bone);min-height:100vh;min-height:100svh;padding:calc(var(--head) + 18px) var(--pad) 44px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:clamp(18px,3vh,34px);overflow:hidden}
+.emblem{position:relative;width:min(88vw,calc((100vh - 330px)*.952),700px);width:min(88vw,calc((100svh - 330px)*.952),700px);min-width:240px;aspect-ratio:1000/1050;transition:transform .5s cubic-bezier(.2,.7,.2,1);will-change:transform}
+.emblem img{position:absolute;left:21%;top:19.43%;width:59.2%;height:auto;display:block}
+.emblem svg{position:absolute;inset:0;width:100%;height:100%;fill:var(--bone);overflow:visible}
+/* ELITE DESIGNS: letras de luz con rayos por dentro, dibujadas en un lienzo sobre la banda inferior del emblema */
+.emblem .elite{position:absolute;left:0;top:88.57%;width:100%;height:11.43%;display:block;filter:drop-shadow(0 0 9px rgba(255,204,120,.42))}
+.after{display:flex;flex-direction:column;align-items:center;gap:24px;text-align:center}
+.lede{max-width:500px;font-size:clamp(16px,1.35vw,19px);line-height:1.5;color:var(--mist);text-wrap:balance}
+.actions{display:flex;flex-wrap:wrap;justify-content:center;gap:12px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.js .emblem .base{clip-path:circle(0% at 52% 40%)}
+.js .emblem .full{clip-path:inset(0 0 100% 0)}
+.js .emblem .lt{opacity:0;transform:translateY(16px) scale(1.1);transform-box:fill-box;transform-origin:50% 50%}
+.js .emblem .elite{opacity:0}
+.js .after{opacity:0;transform:translateY(12px)}
+.js .go .base{animation:abrir .85s cubic-bezier(.2,.7,.2,1) .1s forwards}
+.js .go .full{animation:grabar 1.35s cubic-bezier(.55,0,.2,1) .5s forwards}
+.js .go .lt{animation:sello .5s cubic-bezier(.2,.8,.2,1) forwards;animation-delay:calc(1.25s + var(--i)*.075s)}
+.js .go .elite{animation:sello .35s ease-out 1.9s forwards}
+.js .go .after{animation:subir .8s ease 2.3s forwards}
+@keyframes abrir{to{clip-path:circle(85% at 52% 40%)}}
+@keyframes grabar{to{clip-path:inset(0 0 0 0)}}
+@keyframes sello{to{opacity:1;transform:none}}
+@keyframes subir{to{opacity:1;transform:none}}
+
+/* jardín */
+.garden{position:relative;height:650vh;background:#040405;color:var(--bone)}
+.stick{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
+.garden canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.gcopy{position:absolute;left:0;right:0;top:50%;transform:translateY(-58%);padding:0 var(--pad);text-align:center;pointer-events:none;opacity:calc(1 - var(--p,0)*2.6)}
+.gcopy::before{content:"";position:absolute;inset:-14% 6%;z-index:-1;background:radial-gradient(closest-side,rgba(4,4,5,.5),rgba(4,4,5,0))}
+.gcopy h2{font-size:clamp(32px,6vw,100px);line-height:1.02;font-variation-settings:"opsz" 40;text-shadow:0 2px 30px rgba(4,4,5,.55)}
+.gcopy p{margin:22px auto 0;max-width:460px;font-size:clamp(16px,1.3vw,19px);color:var(--bone);text-shadow:0 1px 16px rgba(4,4,5,.8)}
+.ghint,.gdown{position:absolute;bottom:26px;margin:0;font-size:13px;color:var(--mist);text-shadow:0 1px 10px rgba(4,4,5,.9);opacity:calc(1 - var(--p,0)*4)}
+.ghint{left:var(--pad)}.gdown{right:var(--pad)}
+.ghint .dedo{display:none}
+@media (hover:none){.ghint .raton{display:none}.ghint .dedo{display:inline}}
+.garden.nogl canvas{display:none}
+
+h2{text-wrap:balance;font-family:var(--display);font-weight:500;font-size:clamp(34px,4.7vw,70px);line-height:1.03;letter-spacing:-.012em}
+h2 span,h2 em{display:block}
+h2 em{font-weight:400}
+
+/* ramas del jardín: una por parada */
+.rama{position:absolute;left:0;top:0;z-index:3;opacity:0;pointer-events:none;background:none;border:0;padding:14px 10px;width:max-content;max-width:min(86vw,440px);color:var(--bone);font-family:var(--sans);text-align:left;cursor:pointer;text-shadow:0 2px 18px rgba(4,4,5,.95),0 0 4px rgba(4,4,5,.8);will-change:transform,opacity}
+.rama::before{content:"";position:absolute;inset:-36px -48px;z-index:-1;background:radial-gradient(closest-side,rgba(4,4,5,.58),rgba(4,4,5,0));pointer-events:none}
+.rama[data-lado="i"]{text-align:right}
+.rama[data-lado="i"] .rd{margin-left:auto}
+.rama strong{font-variation-settings:"opsz" 40;display:block;white-space:nowrap;font-family:var(--display);font-weight:500;font-size:clamp(34px,3.7vw,58px);line-height:1;letter-spacing:-.012em}
+.rama .rd{display:block;max-width:31ch;margin-top:12px;font-size:clamp(15px,1.15vw,17px);line-height:1.45}
+.rama .rv{display:inline-block;margin-top:14px;font-weight:600;font-size:15px;border-bottom:1px solid rgba(232,227,215,.6);padding-bottom:4px}
+.rama:hover .rv,.rama:focus-visible .rv{border-bottom-color:#fff;color:#fff}
+@media (max-aspect-ratio:85/100){.rama{text-align:right}.rama .rd{margin-left:auto}.rama[data-lado="i"]{text-align:left}.rama[data-lado="i"] .rd{margin-left:0}.rama strong{font-size:36px}}
+.atajos{opacity:calc(1 - var(--f,0)*2.4);position:absolute;left:0;right:0;bottom:22px;z-index:3;display:flex;flex-wrap:wrap;justify-content:center;gap:4px 18px;padding:0 var(--pad)}
+.atajos button{background:none;border:0;color:var(--steel);font:500 14px var(--sans);padding:12px 4px;cursor:pointer;text-shadow:0 1px 10px rgba(4,4,5,.95);transition:color .3s}
+.atajos button:hover,.atajos button.on{color:#fff}
+@media (max-width:480px){.atajos{gap:2px 10px}.atajos button{font-size:13px;padding:12px 3px}}
+.garden.nogl{height:100vh;height:100svh}
+.garden.nogl .atajos{opacity:1}
+/* cierre: el campo entero se enciende y queda una sola invitación */
+.final{position:absolute;left:0;right:0;top:calc(var(--head) + 6vh);z-index:4;padding:0 var(--pad);text-align:center;opacity:calc((var(--f,0) - .5)*3.2);transform:translateY(calc((1 - var(--f,0))*26px));pointer-events:none}
+.garden.fin .final{pointer-events:auto}
+.garden.fin .atajos{pointer-events:none}
+.final::before{content:"";position:absolute;inset:-18% 4%;z-index:-1;background:radial-gradient(closest-side,rgba(4,4,5,.62),rgba(4,4,5,0))}
+.final h2{font-size:clamp(34px,6.2vw,104px);line-height:1.02;font-variation-settings:"opsz" 40;text-shadow:0 2px 30px rgba(4,4,5,.7)}
+.final h2 span,.final h2 em{display:block}
+.final p{margin:22px auto 0;max-width:470px;font-size:clamp(16px,1.3vw,19px);text-shadow:0 1px 16px rgba(4,4,5,.9)}
+.final .actions{margin-top:28px}
+.garden.nogl .final{position:relative;top:auto;opacity:1;transform:none;pointer-events:auto;padding-top:calc(var(--head) + 40px)}
+.garden.nogl .rama{display:none}
+.gcopy .pista{margin-top:14px;font-family:var(--display);font-style:italic;font-size:17px;color:var(--mist)}
+.pista .dedo{display:none}
+@media (hover:none){.pista .raton{display:none}.pista .dedo{display:inline}}
+
+/* paneles */
+dialog.panel{position:fixed;inset:0;width:100%;height:100%;max-width:none;max-height:none;margin:0;padding:0;border:0;background:rgba(6,6,7,.8);-webkit-backdrop-filter:blur(18px);backdrop-filter:blur(18px);color:var(--bone);overflow-y:auto;overscroll-behavior:contain}
+dialog.panel::backdrop{background:transparent}
+dialog.panel[open]{animation:entra .35s ease}
+@keyframes entra{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.pbar{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px var(--pad);background:rgba(6,6,7,.86)}
+.pbar button{display:inline-flex;align-items:center;gap:10px;background:none;border:1px solid var(--line);color:var(--bone);font:500 14px var(--sans);padding:11px 16px;cursor:pointer}
+.pbar button:hover{border-color:var(--bone)}
+.pbar svg{width:16px;height:16px;flex:none}
+.pbar .btn{padding:11px 18px;font-size:14px}
+.pbody{max-width:1040px;margin:0 auto;padding:clamp(28px,5vw,64px) var(--pad) 96px}
+.view[hidden]{display:none}
+.view h2{font-size:clamp(38px,5.6vw,84px);margin-bottom:14px}
+.view .intro{max-width:600px;color:var(--mist);font-size:18px;margin-bottom:clamp(28px,4vw,48px)}
+.miga{font-family:var(--display);font-style:italic;font-size:19px;color:var(--steel);margin-bottom:10px}
+.elige{border-top:1px solid var(--line)}
+.elige button{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 24px;align-items:baseline;width:100%;background:none;border:0;border-bottom:1px solid var(--line);color:inherit;text-align:left;padding:26px 0;cursor:pointer;font-family:var(--sans)}
+.elige b{font-family:var(--display);font-weight:500;font-size:clamp(28px,3.6vw,50px);line-height:1.05}
+.elige i{font-style:normal;color:var(--mist);font-size:16px;grid-column:1}
+.elige em{font-style:normal;color:var(--steel);font-size:15px;grid-row:1/3;grid-column:2;align-self:center;text-align:right}
+.elige button:hover b{color:#fff}
+.oferta{border-top:1px solid var(--line)}
+.oferta>li,.oferta summary{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 24px;align-items:baseline;padding:22px 0}
+.oferta>li{border-bottom:1px solid var(--line)}
+.oferta details{border:0;border-bottom:1px solid var(--line)}
+.oferta summary{cursor:pointer;list-style:none;font-weight:400}
+.oferta summary::-webkit-details-marker{display:none}
+.oferta h3{font-family:var(--display);font-weight:500;font-size:clamp(22px,2.3vw,30px);line-height:1.12}
+.oferta .d{grid-column:1;color:var(--mist);font-size:16px}
+.oferta .p{grid-row:1/4;grid-column:2;align-self:center;text-align:right;font-family:var(--display);font-weight:500;font-size:clamp(26px,3vw,40px);line-height:1;font-variant-numeric:lining-nums}
+.oferta .p small{display:block;font:400 13px var(--sans);color:var(--steel);margin-top:7px}
+.oferta .quiero{grid-column:1;justify-self:start;display:inline-block;margin-top:10px;font-size:14px;font-weight:600;color:var(--bone);text-decoration:none;border-bottom:1px solid rgba(232,227,215,.6);padding-bottom:3px}
+.oferta .quiero:hover{color:#fff;border-bottom-color:#fff}
+.oferta details>.quiero{margin:0 0 24px}
+.oferta .pq{grid-column:1;color:var(--steel);font-size:14.5px;font-style:italic;font-family:var(--display);letter-spacing:.01em;margin-top:2px}
+.oferta .ver{grid-column:1;font-size:13px;color:var(--steel);text-decoration:underline;text-underline-offset:4px}
+.oferta details[open] .ver{display:none}
+.mas{padding:0 0 26px;max-width:640px}
+.mas li{padding:11px 0;border-top:1px solid var(--line);font-size:16px;color:var(--bone)}
+.mas div{padding:11px 0;border-top:1px solid var(--line)}
+.mas dt{font-size:13px;color:var(--steel)}
+.mas dd{font-size:16px}
+.cierre{margin-top:40px;display:flex;flex-wrap:wrap;align-items:center;gap:14px 28px}
+button.btn{background:none;color:inherit;cursor:pointer;font-family:var(--sans)}
+.obra{margin-bottom:clamp(48px,7vw,88px)}
+.obra .screen{display:block;background:#000;border:1px solid var(--line);padding:10px;aspect-ratio:16/9;margin-bottom:22px}
+.obra video{display:block;width:100%;height:100%;object-fit:cover}
+.obra .fila{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px 40px}
+.obra h3{font-family:var(--display);font-weight:500;font-size:clamp(32px,4.4vw,60px);line-height:1}
+.obra p{color:var(--mist);max-width:560px;margin-top:10px}
+.steps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(150px,100%),1fr));gap:32px 26px;counter-reset:paso;margin-bottom:clamp(44px,6vw,72px)}
+.steps li{counter-increment:paso;border-top:1px solid var(--bone);padding-top:16px}
+.steps li::before{content:counter(paso) ".";display:block;font-family:var(--display);font-style:italic;font-size:32px;line-height:1;margin-bottom:12px}
+.steps h3{font-size:17px;font-weight:600;margin-bottom:6px}
+.steps p{font-size:15px;color:var(--mist)}
+.grupo{margin-bottom:clamp(40px,6vw,72px)}
+.grupo .intro{margin-bottom:0}
+.solo-conceptos>.intro,.solo-conceptos .grupo h4{display:none}
+.solo-conceptos .grupo{margin-bottom:clamp(28px,4vw,48px)}
+.piezas{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.piezas.ancho{grid-template-columns:repeat(2,minmax(0,1fr))}
+.pieza{margin:0}
+.marco{aspect-ratio:1;border:1px solid var(--line);background:rgba(232,227,215,.035);display:grid;place-items:center;overflow:hidden}
+.piezas.post .marco{aspect-ratio:4/5}
+.piezas.ancho .marco{aspect-ratio:16/10}
+.marco img{width:100%;height:100%;object-fit:cover;display:block}
+.marco:empty::after{content:attr(data-v-es);font-family:var(--display);font-style:italic;font-size:15px;color:var(--steel)}
+html[lang="en"] .marco:empty::after{content:attr(data-v-en)}
+@media (max-width:640px){.piezas{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.piezas.ancho{grid-template-columns:1fr}}
+.view h4{font-family:var(--display);font-weight:500;font-size:clamp(24px,2.6vw,34px);margin-bottom:14px}
+.faq details{border-top:1px solid var(--line)}
+.faq details:last-of-type{border-bottom:1px solid var(--line)}
+.faq summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;gap:20px;padding:18px 0;font-weight:600}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";font:400 24px/1 var(--sans);flex:none}
+.mas{font-family:var(--sans);font-style:normal;font-weight:400;font-size:.8em}
+.faq details[open] summary::after{content:"\2212"}
+.faq p{padding:0 40px 20px 0;color:var(--mist);font-size:16px}
+.quien{font-family:var(--display);font-weight:500;font-size:clamp(22px,2.4vw,32px);line-height:1.25;max-width:760px;margin-bottom:clamp(36px,5vw,60px)}
+.quien em{font-weight:400}
+.contact{margin-top:30px;display:flex;flex-wrap:wrap;gap:8px 32px;color:var(--steel);font-size:15px}
+footer nav{display:flex;flex-wrap:wrap;gap:6px 22px}
+footer button{background:none;border:0;color:inherit;font:inherit;padding:0;cursor:pointer}
+footer button:hover,footer a:hover{color:var(--bone)}
+.legal{max-width:720px}
+.legal h2{margin-bottom:10px}
+.legal p{color:var(--mist);margin-bottom:14px}
+.legal h4{margin-top:30px}
+footer{background:#040405;color:var(--steel);border-top:1px solid var(--line);padding:22px var(--pad);display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px 24px;font-size:14px}
+
+@media (max-width:860px){
+  .bar nav{display:none}
+}
+@media (max-width:480px){
+  .brand b{display:none}
+  .lang{display:none}
+  .hero .btn{width:100%}
+  .hero .actions{width:100%}
+  .oferta .p{font-size:26px}
+  .pbar .btn{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .js .emblem .base,.js .emblem .full{clip-path:none}
+  .js .emblem .lt,.js .after,.js .emblem .elite{opacity:1;transform:none}
+  .js .go .base,.js .go .full,.js .go .lt,.js .go .after{animation:none}
+  .emblem{transition:none}
+  dialog.panel[open]{animation:none}
+}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <a class="brand" href="/" aria-label="John Greg, inicio"><b>JG</b><span>Conquer</span></a>
+  <nav aria-label="Conquer">
+    <button type="button" data-open="servicios" data-en="What I do">Qué hago</button>
+    <button type="button" data-open="trabajos" data-en="Work">Trabajos</button>
+    <button type="button" data-open="proceso" data-en="How I work">Cómo trabajo</button>
+  </nav>
+  <div class="right">
+    <div class="lang" role="group" aria-label="Idioma / Language">
+      <button type="button" data-lang="es" aria-pressed="true">ES</button><span aria-hidden="true">/</span><button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+    <a class="btn" href="https://wa.me/19709143216" data-en="Message me">Consultar</a>
+  </div>
+</header>
+
+<main>
+<section class="hero dark" id="inicio">
+  <h1 class="sr">Conquer. Elite Designs.</h1>
+  <div class="emblem" id="emblem" aria-hidden="true">
+    <img class="base" src="perro-base.webp" alt="" width="1184" height="1424">
+    <img class="full" src="perro.webp" alt="" width="1184" height="1424">
+    <svg viewBox="100 130 1000 1050"><path class="lt" style="--i:0" d="M237 181.8Q247.5 181.8 254.2 184.9Q260.9 188 266.1 192.1Q269.3 194.4 271 192.6Q272.6 190.8 273.3 184H276.9Q276.6 190.3 276.4 199.4Q276.3 208.5 276.3 223.5H272.6Q272 216 270.6 210Q269.1 204.1 266.3 199.5Q263.4 194.9 258.1 191.4Q254.7 189.2 251 188Q247.3 186.7 243.4 186.7Q234.3 186.7 228.5 191.7Q222.6 196.7 219.4 204.6Q216.1 212.6 214.9 222Q213.6 231.5 213.6 240.3Q213.6 249.2 214.9 258.6Q216.1 268 219.4 276Q222.6 284 228.5 289Q234.3 293.9 243.4 293.9Q247.3 293.9 251 292.6Q254.7 291.3 258.1 289.2Q266 284.3 268.7 276.1Q271.5 267.8 272.6 254.9H276.3Q276.3 270.4 276.4 279.9Q276.6 289.5 276.9 296H273.3Q272.6 289.2 271.1 287.5Q269.6 285.7 266.1 287.9Q260.3 292 253.7 295.1Q247.2 298.2 236.9 298.2Q219 298.2 205.5 291.4Q192.1 284.6 184.7 271.8Q177.2 259 177.2 240.9Q177.2 223.2 184.9 209.9Q192.6 196.7 206 189.2Q219.5 181.8 237 181.8Z"/><path class="lt" style="--i:1" d="M354.4 181.8Q372.3 181.8 385.7 188.6Q399.2 195.4 406.6 208.1Q414 220.9 414 239.1Q414 256.8 406.5 270.1Q398.9 283.3 385.3 290.8Q371.8 298.2 354.2 298.2Q336.4 298.2 322.9 291.4Q309.5 284.6 302 271.8Q294.6 259 294.6 240.9Q294.6 223.2 302.3 209.9Q310 196.7 323.4 189.2Q336.8 181.8 354.4 181.8ZM353.8 184.6Q345.9 184.6 340 191.8Q334.2 198.9 331 211.4Q327.8 223.9 327.8 240.3Q327.8 257.1 331.5 269.5Q335.1 281.9 341.3 288.6Q347.4 295.4 354.9 295.4Q362.8 295.4 368.6 288.2Q374.5 281.1 377.7 268.6Q380.8 256 380.8 239.7Q380.8 222.8 377.2 210.4Q373.5 198.1 367.4 191.4Q361.2 184.6 353.8 184.6Z"/><path class="lt" style="--i:2" d="M538.9 184V187.2Q534.1 188.1 531.7 190.5Q529.2 192.9 528.4 197.8Q527.6 202.8 527.6 211.8V296Q525.3 295.7 522.5 295.7Q519.7 295.7 516.6 296L446.5 219.4V265Q446.5 275.6 447.3 281.2Q448.2 286.8 451.6 289.3Q455 291.7 462.5 292.8V296Q459.3 295.7 454.2 295.6Q449.2 295.5 444.7 295.5Q441.3 295.5 437.6 295.6Q434 295.7 431.6 296V292.8Q436.5 291.7 438.9 289.4Q441.3 287.1 442 282.1Q442.8 277 442.8 268.2V200.8Q442.8 194.9 442 192.1Q441.3 189.4 438.8 188.4Q436.4 187.3 431.6 187.2V184Q434 184.2 437.6 184.3Q441.3 184.5 444.7 184.5Q448.7 184.5 452.5 184.3Q456.3 184.2 459.3 184L524 252.3V215Q524 204.4 523.1 198.8Q522.2 193.2 518.9 190.6Q515.6 188.1 508 187.2V184Q511.2 184.2 516.2 184.3Q521.3 184.5 525.7 184.5Q529.4 184.5 532.9 184.3Q536.5 184.2 538.9 184Z"/><path class="lt" style="--i:3" d="M672.4 290.3 675.4 291.1Q674.6 301.2 671.7 308.8Q668.9 316.4 663.8 320.2Q660.4 322.9 655 324.3Q649.6 325.7 644.1 325.7Q635.2 325.7 626.6 323.1Q618 320.5 609.3 316.6Q600.7 312.8 591.5 309Q590.6 308.7 589.5 308.3Q588.4 307.9 587.7 307.9Q584.7 309.6 581.2 310.7Q577.6 311.8 574.5 311.8Q571.3 311.8 569.2 310.7Q567 309.6 567 307.1Q567 302.2 575.7 302.2Q581.3 302.2 587.7 305Q593.8 303.4 598.1 301.5Q602.5 299.5 607 297.7Q611.6 296 618.1 295.5L618.3 298.1Q613.2 298.5 609.5 299.9Q605.8 301.2 602.1 302.8Q598.3 304.4 593.3 305.8Q606.9 306.1 616.8 306.4Q626.7 306.6 634.5 306.1Q642.3 305.6 649.4 304.2Q658.1 302.3 663.3 299.3Q668.4 296.3 672.4 290.3ZM615.3 181.8Q633.1 181.8 646.6 188.6Q660 195.4 667.5 208.1Q674.9 220.9 674.9 239.1Q674.9 256.8 667.3 270.1Q659.7 283.3 646.2 290.8Q632.7 298.2 615.1 298.2Q597.2 298.2 583.8 291.4Q570.3 284.6 562.9 271.8Q555.5 259 555.5 240.9Q555.5 223.2 563.1 209.9Q570.8 196.7 584.3 189.2Q597.7 181.8 615.3 181.8ZM614.6 184.6Q606.7 184.6 600.9 191.8Q595 198.9 591.9 211.4Q588.7 223.9 588.7 240.3Q588.7 257.1 592.3 269.5Q596 281.9 602.1 288.6Q608.3 295.4 615.7 295.4Q623.6 295.4 629.5 288.2Q635.4 281.1 638.5 268.6Q641.7 256 641.7 239.7Q641.7 222.8 638 210.4Q634.4 198.1 628.2 191.4Q622.1 184.6 614.6 184.6Z"/><path class="lt" style="--i:4" d="M795.4 184V187.2Q790.7 188.1 788.2 190.5Q785.8 192.9 785 197.8Q784.2 202.8 784.2 211.8V250Q784.2 259.8 782.9 268.5Q781.5 277.2 777.7 283.5Q773.6 290.3 765.5 294.3Q757.3 298.2 743.7 298.2Q736.4 298.2 728.4 296.6Q720.3 295.1 714 290.6Q708.6 286.7 705.8 281Q702.9 275.3 702 267.7Q701 260.1 701 250.4V200.8Q701 194.9 700.2 192.1Q699.4 189.4 697.1 188.4Q694.7 187.3 689.8 187.2V184Q694.4 184.2 701.9 184.3Q709.4 184.5 717.6 184.5Q725.8 184.5 733.4 184.3Q741 184.2 745.9 184V187.2Q740.6 187.3 737.8 188.4Q735 189.4 734.1 192.1Q733.1 194.9 733.1 200.8V265.3Q733.1 273.1 734.4 278.4Q735.6 283.7 738.1 286.8Q740.6 290 744.3 291.3Q748 292.7 752.9 292.7Q763.5 292.7 769.5 287.5Q775.5 282.4 778 273.1Q780.6 263.9 780.6 251.7V215Q780.6 204.4 779.7 198.8Q778.8 193.2 775.5 190.6Q772.2 188.1 764.6 187.2V184Q767.8 184.2 772.8 184.3Q777.9 184.5 782.3 184.5Q786 184.5 789.5 184.3Q793.1 184.2 795.4 184Z"/><path class="lt" style="--i:5" d="M897.3 184Q896.7 191.9 896.5 199.3Q896.2 206.6 896.2 210.6Q896.2 213.9 896.4 216.9Q896.5 219.9 896.7 222H893.1Q891.2 208.8 886.7 201.3Q882.3 193.8 876.4 190.7Q870.4 187.6 863.9 187.6H861.9Q857.8 187.6 855.7 188.4Q853.7 189.1 852.9 191.1Q852.2 193.2 852.2 197.6V282.4Q852.2 286.7 852.9 288.8Q853.7 290.9 855.7 291.6Q857.8 292.4 861.9 292.4H867.1Q872.3 292.4 878.1 289Q883.9 285.6 888.8 277.3Q893.7 269.1 896.2 254.9H899.9Q899.4 260.6 899.4 269.4Q899.4 273.4 899.5 280.7Q899.7 288.1 900.5 296Q892.4 295.7 882.3 295.6Q872.2 295.5 864.3 295.5Q860 295.5 853.4 295.5Q846.9 295.5 839.2 295.6Q831.5 295.7 823.7 295.8Q815.9 295.8 808.9 296V292.8Q813.8 292.5 816.2 291.6Q818.5 290.6 819.3 287.8Q820.1 284.9 820.1 279.2V200.8Q820.1 194.9 819.3 192.1Q818.5 189.4 816.1 188.4Q813.6 187.3 808.9 187.2V184Q815.9 184.2 823.7 184.2Q831.5 184.3 839.2 184.4Q846.9 184.5 853.4 184.5Q860 184.5 864.3 184.5Q871.5 184.5 880.8 184.4Q890 184.3 897.3 184ZM874.4 238.1Q874.4 238.1 874.4 239.7Q874.4 241.3 874.4 241.3H847.5Q847.5 241.3 847.5 239.7Q847.5 238.1 847.5 238.1ZM879 217.2Q878.3 226.2 878.4 231Q878.5 235.7 878.5 239.7Q878.5 243.6 878.7 248.4Q878.8 253.1 879.4 262.1H875.8Q874.9 256.3 871.9 251.5Q869 246.8 864.4 244Q859.8 241.3 853.8 241.3V238.1Q858.2 238.1 861.9 236.2Q865.5 234.3 868.3 231.1Q871.1 228 872.9 224.3Q874.7 220.7 875.3 217.2Z"/><path class="lt" style="--i:6" d="M918.8 184Q923.4 184.2 930.9 184.3Q938.5 184.5 946 184.5Q954 184.5 961.2 184.3Q968.5 184.2 971.5 184.2Q987.6 184.2 998.2 187.2Q1008.7 190.2 1013.9 196.3Q1019.1 202.4 1019.1 211.7Q1019.1 217.5 1016.8 223.1Q1014.4 228.6 1008.7 233.1Q1003 237.6 993.1 240.2Q983.2 242.8 968 242.8H952.8V239.7H966.5Q974.5 239.7 978.7 236.1Q982.9 232.6 984.4 226.6Q985.9 220.7 985.9 213.4Q985.9 200.9 982.5 194Q979.1 187.2 970.7 187.2Q965.3 187.2 963.8 189.9Q962.2 192.5 962.2 200.8V279.2Q962.2 284.9 963.1 287.8Q963.9 290.6 966.3 291.6Q968.7 292.5 973.4 292.8V296Q968.8 295.7 961.6 295.6Q954.4 295.5 947 295.5Q938.5 295.5 930.9 295.6Q923.4 295.7 918.8 296V292.8Q923.7 292.5 926.1 291.6Q928.5 290.6 929.3 287.8Q930.1 284.9 930.1 279.2V200.8Q930.1 194.9 929.3 192.1Q928.5 189.4 926 188.4Q923.6 187.3 918.8 187.2ZM951.9 240.2Q957.6 240.3 962.7 240.8Q967.7 241.3 972 241.7Q976.3 242.1 979.3 242.2Q996.2 243 1004.7 248.1Q1013.1 253.1 1015 262.9L1018.3 279.4Q1019.6 285.2 1021.2 287.5Q1022.8 289.7 1025.5 289.7Q1027 289.7 1028.1 289.2Q1029.3 288.7 1030.4 287.6L1032.4 289.7Q1027.5 294.6 1021.7 296.4Q1016 298.2 1008.7 298.2Q998.4 298.2 992.1 294.5Q985.8 290.8 984.3 281.1L982 265.3Q981 258.8 979.6 253.8Q978.2 248.7 975.8 245.8Q973.4 242.8 969.3 242.8H952.2Z"/></svg>
+    <canvas class="elite" id="elite"></canvas>
+  </div>
+  <div class="after">
+    <p class="lede" data-en="Branding, 3D websites, content and social media for Miami businesses. In Spanish and English, with a fixed deadline.">Branding, sitios web en 3D, contenido y redes para negocios de Miami. En español y en inglés, con plazo fijo.</p>
+    <div class="actions">
+      <a class="btn fill" href="https://wa.me/19709143216" data-en="Message me on WhatsApp">Escríbeme por WhatsApp</a>
+      <button type="button" class="btn" data-open="trabajos" data-en="See the work">Ver los trabajos</button>
+    </div>
+  </div>
+</section>
+
+<section class="garden dark" id="jardin">
+  <div class="stick">
+    <canvas aria-hidden="true"></canvas>
+    <div class="gcopy">
+      <h2 data-en="&lt;span&gt;First impressions&lt;/span&gt;&lt;em&gt;can be conquered too.&lt;/em&gt;"><span>La primera impresión</span><em>también se conquista.</em></h2>
+      <p data-en="Scroll down and walk through what I do, stop by stop.">Baja y recorre lo que hago, parada por parada.</p>
+      <p class="pista"><span class="raton" data-en="Move the cursor and the field lights up.">Mueve el cursor y el campo se enciende.</span><span class="dedo" data-en="Slide your finger and the field lights up.">Pasa el dedo y el campo se enciende.</span></p>
+    </div>
+    <button type="button" class="rama" data-open="servicios"><strong data-en="What I do">Qué hago</strong><span class="rd" data-en="Branding, websites, content and social media. Each one with its price.">Branding, sitios web, contenido y redes. Cada cosa con su precio.</span><span class="rv" data-en="See services and prices">Ver servicios y precios</span></button>
+    <button type="button" class="rama" data-open="trabajos"><strong data-en="Work">Trabajos</strong><span class="rd" data-en="Three sites you can open right now.">Tres sitios que puedes abrir ahora.</span><span class="rv" data-en="See the work">Ver los trabajos</span></button>
+    <button type="button" class="rama" data-open="proceso"><strong data-en="How I work">Cómo trabajo</strong><span class="rd" data-en="Five steps, ten business days.">Cinco pasos, diez días hábiles.</span><span class="rv" data-en="See the process">Ver el proceso</span></button>
+    <button type="button" class="rama" data-open="hablemos"><strong data-en="Let's talk">Hablemos</strong><span class="rd" data-en="I'll record a 90-second video with what I would change on your site.">Te grabo un video de 90 segundos con lo que cambiaría en tu sitio.</span><span class="rv" data-en="Ask for the video">Pedir el video</span></button>
+    <div class="final">
+      <h2 data-en="&lt;span&gt;The field is already lit.&lt;/span&gt;&lt;em&gt;Your business is next.&lt;/em&gt;"><span>El campo ya está encendido.</span><em>Falta tu negocio.</em></h2>
+      <p data-en="Message me and I'll record a 90-second video with what I would change on your site.">Escríbeme y te grabo un video de 90 segundos con lo que cambiaría en tu sitio.</p>
+      <div class="actions">
+        <a class="btn fill" href="https://wa.me/19709143216" data-en="Message me on WhatsApp">Escríbeme por WhatsApp</a>
+        <button type="button" class="btn" data-open="servicios" data-en="See services and prices">Ver servicios y precios</button>
+      </div>
+    </div>
+    <div class="atajos">
+      <button type="button" data-open="servicios" data-en="What I do">Qué hago</button>
+      <button type="button" data-open="trabajos" data-en="Work">Trabajos</button>
+      <button type="button" data-open="proceso" data-en="How I work">Cómo trabajo</button>
+      <button type="button" data-open="hablemos" data-en="Let's talk">Hablemos</button>
+    </div>
+  </div>
+</section>
+</main>
+
+<dialog class="panel" id="panel" aria-label="Conquer">
+  <div class="pbar">
+    <button type="button" id="atras"><svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg><span id="atras-t">Volver</span></button>
+    <a class="btn fill" href="https://wa.me/19709143216" data-en="Message me on WhatsApp">Escríbeme por WhatsApp</a>
+  </div>
+  <div class="pbody">
+
+    <section class="view" data-view="servicios" hidden>
+      <h2 data-en="What I do">Qué hago</h2>
+      <p class="intro" data-en="Four things. Pick one and you'll see only that, with its price.">Cuatro cosas. Elige una y ves solo eso, con su precio.</p>
+      <div class="elige">
+        <button type="button" data-go="marca"><b data-en="Branding">Branding</b><i data-en="Logo, brand identity and graphic design for social media and print.">Logo, identidad de marca y diseño gráfico para redes e impresos.</i><em data-en="from $120">desde $120</em></button>
+        <button type="button" data-go="web"><b data-en="Websites">Sitios web</b><i data-en="From a single page to a site built around a 3D scene.">Desde una sola página hasta un sitio alrededor de una escena 3D.</i><em data-en="from $1,200">desde $1,200</em></button>
+        <button type="button" data-go="contenido"><b data-en="Content">Contenido</b><i data-en="Reels, photos and event coverage, filmed by me or by you.">Reels, fotos y cobertura de eventos, grabado por mí o por ti.</i><em data-en="from $60">desde $60</em></button>
+        <button type="button" data-go="redes"><b data-en="Social media">Redes</b><i data-en="Someone running your accounts every month.">Alguien que lleva tus cuentas cada mes.</i><em data-en="from $250">desde $250</em></button>
+      </div>
+    </section>
+
+    <section class="view" data-view="marca" data-parent="servicios" hidden>
+      <p class="miga" data-en="What I do">Qué hago</p>
+      <h2 data-en="Branding">Branding</h2>
+      <p class="intro" data-en="Graphic design is where I started. Prices are starting points.">El diseño gráfico es de donde vengo. Los precios son de partida.</p>
+      <ul class="oferta">
+        <li><h3 data-en="Logo">Logo</h3><span class="d" data-en="Main logo, secondary version and icon, delivered as vectors.">Logo principal, versión secundaria e ícono, entregados en vector.</span><span class="pq" data-en="For businesses that are opening or using a logo made in a hurry.">Para negocios que abren o que usan un logo hecho a la carrera.</span><span class="p">$450<small data-en="one-time payment">pago único</small></span><a class="quiero" href="https://wa.me/19709143216" target="_blank" rel="noopener" data-quiero data-en="I want this">Lo quiero</a></li>
+        <li><h3 data-en="Brand identity">Identidad de marca</h3><span class="d" data-en="Logo, color palette, typefaces and a usage guide so everything looks the same.">Logo, paleta de color, tipografías y una guía de uso para que todo se vea igual.</span><span class="pq" data-en="For brands that already sell and look different everywhere.">Para marcas que ya venden y se ven distintas en cada lugar.</span><span class="p">$950<small data-en="one-time payment">pago único</small></span><a class="quiero" href="https://wa.me/19709143216" target="_blank" rel="noopener" data-quiero data-en="I want this">Lo quiero</a></li>
+        <li><h3 data-en="Social media design">Diseño para redes</h3><span class="d" data-en="10 posts designed with your brand, ready to publish.">10 publicaciones diseñadas con tu marca, listas para subir.</span><span class="pq" data-en="For people who post often and want their profile to look like one brand.">Para quien publica seguido y quiere que su perfil se vea de una sola marca.</span><span class="p">$250<small data-en="per pack">por paquete</small></span><a class="quiero" href="https://wa.me/19709143216" target="_blank" rel="noopener" data-quiero data-en="I want this">Lo quiero</a></li>
+        <li><h3 data-en="Visual design">Diseño visual</h3><span class="d" data-en="Flyers, menus, cards, packaging and product mockups.">Flyers, menús, tarjetas, empaques y mockups de producto.</span><span class="pq" data-en="For a single piece that has to come out right the first time.">Para una pieza suelta que tiene que salir bien a la primera.</span><span class="p">$120<small data-en="per piece, from">por pieza, desde</small></span><a class="quiero" href="https://wa.me/19709143216" target="_blank" rel="noopener" data-quiero data-en="I want this">Lo quiero</a></li>
+      </ul>
+    </section>
+
+    <section class="view" data-view="web" data-parent="servicios" hidden>
+      <p class="miga" data-en="What I do">Qué hago</p>
+      <h2 data-en="Websites">Sitios web</h2>
+      <p class="intro" data-en="One fixed price for each kind of site. I write the copy after a 15-minute call, and you approve the home page first.">Un precio fijo para cada tipo de sitio. Los textos los escribo yo a partir de una llamada de 15 minutos, y apruebas primero la portada.</p>
+      <div class="oferta">
+        <details><summary><h3>Signature 3D</h3><span class="d" data-en="A site built around a 3D scene made for your business.">Un sitio alrededor de una escena 3D hecha para tu negocio.</span><span class="pq" data-en="For brands that sell on image and want their site to be what people talk about.">Para marcas que venden por imagen y quieren que su sitio sea lo que la gente comenta.</span><span class="p">$6,500<small data-en="from">desde</small></span><span class="ver" data-en="See what it includes">Ver qué incluye</span></summary>
+          <ul class="mas"><li data-en="A 3D model of your product or your work, made in Blender">Modelo 3D de tu producto o de tu trabajo, hecho en Blender</li><li data-en="Animation tied to the scroll, on desktop and phone">Animación ligada al scroll, en escritorio y celular</li><li data-en="Spanish and English, tap to call and WhatsApp">Español e inglés, clic para llamar y WhatsApp</li></ul></details>
+        <details><summary><h3 data-en="Conquer Site">Sitio Conquer</h3><span class="d" data-en="A business with several services.">Un negocio con varios servicios.</span><span class="pq" data-en="For businesses with several services that rely on Instagram or an old site today.">Para negocios con varios servicios que hoy dependen de Instagram o de un sitio viejo.</span><span class="p">$2,800<small data-en="founder price: $1,800">precio de fundador: $1,800</small></span><span class="ver" data-en="See what it includes">Ver qué incluye</span></summary>
+          <dl class="mas"><div><dt data-en="Includes">Incluye</dt><dd data-en="Up to 6 pages, one page per main service, optimized Google Business Profile.">Hasta 6 páginas, una por servicio principal, Google Business Profile optimizado.</dd></div><div><dt data-en="Delivery">Entrega</dt><dd data-en="10 business days">10 días hábiles</dd></div><div><dt data-en="Revisions">Revisiones</dt><dd data-en="2 rounds">2 rondas</dd></div></dl><a class="quiero" href="https://wa.me/19709143216" target="_blank" rel="noopener" data-quiero data-en="I want this">Lo quiero</a></details>
+        <details><summary><h3>Landing Conquer</h3><span class="d" data-en="One service or one campaign.">Un servicio o una campaña.</span><span class="pq" data-en="For launching one service, a promotion or an ad campaign.">Para lanzar un servicio, una promoción o una campaña de anuncios.</span><span class="p">$1,200<small data-en="founder price: $750">precio de fundador: $750</small></span><span class="ver" data-en="See what it includes">Ver qué incluye</span></summary>
+          <dl class="mas"><div><dt data-en="Includes">Incluye</dt><dd data-en="One long page, tap to call and WhatsApp, form, Spanish and English, analytics.">Una página larga, clic para llamar y WhatsApp, formulario, español e inglés, analítica.</dd></div><div><dt data-en="Delivery">Entrega</dt><dd data-en="5 business days">5 días hábiles</dd></div><div><dt data-en="Revisions">Revisiones</dt><dd data-en="1 round">1 ronda</dd></div></dl><a class="quiero" href="https://wa.me/19709143216" target="_blank" rel="noopener" data-quiero data-en="I want this">Lo quiero</a></details>
+        <details><summary><h3 data-en="Site &lt;i class=&quot;mas&quot;&gt;+&lt;/i&gt; Growth">Sitio <i class="mas">+</i> Crecimiento</h3><span class="d" data-en="Someone handles it every month.">Alguien se encarga cada mes.</span><span class="pq" data-en="For owners who don't want to touch the site again after launch.">Para dueños que no quieren volver a tocar el sitio después de lanzarlo.</span><span class="p">$2,800<small data-en="+ $397 a month">+ $397 al mes</small></span><span class="ver" data-en="See what it includes">Ver qué incluye</span></summary>
+          <dl class="mas"><div><dt data-en="Includes">Incluye</dt><dd data-en="The Conquer Site plus monthly changes, an automatic reply to every lead, review requests and a monthly report.">El Sitio Conquer más cambios cada mes, respuesta automática a cada solicitud, pedidos de reseñas y reporte mensual.</dd></div><div><dt data-en="Delivery">Entrega</dt><dd data-en="10 business days, then monthly">10 días hábiles, luego mensual</dd></div><div><dt data-en="Revisions">Revisiones</dt><dd data-en="2 rounds, plus 2 hours of changes a month">2 rondas, más 2 horas de cambios al mes</dd></div></dl><a class="quiero" href="https://wa.me/19709143216" target="_blank" rel="noopener" data-quiero data-en="I want this">Lo quiero</a></details>
+        <details><summary><h3 data-en="Site care">Mantenimiento de sitio</h3><span class="d" data-en="You already have a site. I keep it up to date.">Ya tienes sitio. Yo lo mantengo al día.</span><span class="pq" data-en="For businesses that already have a site and nobody to update it.">Para negocios que ya tienen sitio y nadie que lo actualice.</span><span class="p">$397<small data-en="a month">al mes</small></span><span class="ver" data-en="See what it includes">Ver qué incluye</span></summary>
+          <dl class="mas"><div><dt data-en="Includes">Incluye</dt><dd data-en="Monthly changes, an automatic reply to every lead, review requests and a monthly report.">Cambios cada mes, respuesta automática a cada solicitud, pedidos de reseñas y reporte mensual.</dd></div><div><dt data-en="Changes">Cambios</dt><dd data-en="2 hours a month">2 horas al mes</dd></div><div><dt data-en="If I didn't build it">Si no lo hice yo</dt><dd data-en="I review your site first and tell you if I can take it on.">Primero reviso tu sitio y te digo si lo puedo tomar.</dd></div></dl><a class="quiero" href="https://wa.me/19709143216" target="_blank" rel="noopener" data-quiero data-en="I want this">Lo quiero</a></details>
+      </div>
+      <div class="cierre"><a class="btn fill" href="https://wa.me/19709143216" data-en="Message me on WhatsApp">Escríbeme por WhatsApp</a><button type="button" class="btn" data-open="trabajos" data-en="See three sites I built">Ver tres sitios hechos</button></div>
+    </section>
+
+    <section class="view" data-view="contenido" data-parent="servicios" hidden>
+      <p class="miga" data-en="What I do">Qué hago</p>
+      <h2 data-en="Content">Contenido</h2>
+      <p class="intro" data-en="Prices are starting points; the final one depends on how much we film.">Los precios son de partida; el final depende de cuánto grabemos.</p>
+      <ul class="oferta">
+        <li><h3 data-en="Monthly content">Contenido mensual</h3><span class="d" data-en="One shoot a month, 8 reels and 15 edited photos.">Una sesión de grabación al mes, 8 reels y 15 fotos editadas.</span><span class="pq" data-en="For businesses with a location that need a month of content from one shoot.">Para negocios con local que necesitan un mes de contenido en una sola grabación.</span><span class="p">$1,200<small data-en="a month">al mes</small></span><a class="quiero" href="https://wa.me/19709143216" target="_blank" rel="noopener" data-quiero data-en="I want this">Lo quiero</a></li>
+        <li><h3 data-en="Personal brand">Marca personal</h3><span class="d" data-en="A lifestyle shoot, 6 reels and the month's content guide.">Sesión de estilo de vida, 6 reels y la guía de contenido del mes.</span><span class="pq" data-en="For professionals who are the face of their business: realtors, coaches, stylists.">Para profesionales que son la cara de su negocio: realtors, coaches, estilistas.</span><span class="p">$900<small data-en="a month">al mes</small></span><a class="quiero" href="https://wa.me/19709143216" target="_blank" rel="noopener" data-quiero data-en="I want this">Lo quiero</a></li>
+        <li><h3 data-en="Remote content">Contenido remoto</h3><span class="d" data-en="You film. I bring the ideas, the scripts and the editing for 8 videos.">Tú grabas. Yo pongo las ideas, los guiones y la edición de 8 videos.</span><span class="pq" data-en="For people who already film on their phone and have no time to edit.">Para quien ya graba con su teléfono y no tiene tiempo de editar.</span><span class="p">$600<small data-en="a month">al mes</small></span><a class="quiero" href="https://wa.me/19709143216" target="_blank" rel="noopener" data-quiero data-en="I want this">Lo quiero</a></li>
+        <li><h3 data-en="Event coverage">Cobertura de eventos</h3><span class="d" data-en="Photo and video for up to 3 hours, a recap reel and an edited gallery.">Foto y video hasta 3 horas, un reel resumen y galería editada.</span><span class="pq" data-en="For openings, launches and events that only happen once.">Para inauguraciones, lanzamientos y eventos que solo pasan una vez.</span><span class="p">$450<small data-en="per event">por evento</small></span><a class="quiero" href="https://wa.me/19709143216" target="_blank" rel="noopener" data-quiero data-en="I want this">Lo quiero</a></li>
+        <li><h3 data-en="Video editing">Edición de video</h3><span class="d" data-en="A short video with captions, music and cover.">Video corto con subtítulos, música y portada.</span><span class="pq" data-en="For people with saved footage who want it published properly.">Para quien tiene videos guardados y quiere publicarlos bien.</span><span class="p">$60<small data-en="per video">por video</small></span><a class="quiero" href="https://wa.me/19709143216" target="_blank" rel="noopener" data-quiero data-en="I want this">Lo quiero</a></li>
+      </ul>
+      <div class="cierre"><a class="btn fill" href="https://wa.me/19709143216" data-en="Message me on WhatsApp">Escríbeme por WhatsApp</a></div>
+    </section>
+
+    <section class="view" data-view="redes" data-parent="servicios" hidden>
+      <p class="miga" data-en="What I do">Qué hago</p>
+      <h2 data-en="Social media">Redes</h2>
+      <p class="intro" data-en="Prices are starting points.">Los precios son de partida.</p>
+      <ul class="oferta">
+        <li><h3 data-en="Social media management">Gestión de redes</h3><span class="d" data-en="Calendar, 12 posts, stories, replies to comments and messages, monthly report.">Calendario, 12 publicaciones, historias, respuesta a comentarios y mensajes, reporte mensual.</span><span class="pq" data-en="For owners who want to be on social media without posting themselves.">Para dueños que quieren estar en redes sin publicar ellos mismos.</span><span class="p">$750<small data-en="a month">al mes</small></span><a class="quiero" href="https://wa.me/19709143216" target="_blank" rel="noopener" data-quiero data-en="I want this">Lo quiero</a></li>
+        <li><h3 data-en="Creative direction">Dirección creativa</h3><span class="d" data-en="Concept, moodboard and visual guide for a launch or a campaign.">Concepto, moodboard y guía visual para un lanzamiento o una campaña.</span><span class="pq" data-en="For brands about to launch something that need everything to look like one piece.">Para marcas que van a lanzar algo y necesitan que todo se vea de una sola pieza.</span><span class="p">$500<small data-en="per project">por proyecto</small></span><a class="quiero" href="https://wa.me/19709143216" target="_blank" rel="noopener" data-quiero data-en="I want this">Lo quiero</a></li>
+        <li><h3 data-en="Instagram optimization">Optimización de Instagram</h3><span class="d" data-en="Bio, highlights, link and 9 templates.">Bio, destacados, enlace y 9 plantillas.</span><span class="pq" data-en="For profiles that get visits but no messages.">Para perfiles que reciben visitas pero no mensajes.</span><span class="p">$250<small data-en="one time">pago único</small></span><a class="quiero" href="https://wa.me/19709143216" target="_blank" rel="noopener" data-quiero data-en="I want this">Lo quiero</a></li>
+      </ul>
+      <div class="cierre"><a class="btn fill" href="https://wa.me/19709143216" data-en="Message me on WhatsApp">Escríbeme por WhatsApp</a></div>
+    </section>
+
+    <section class="view" data-view="trabajos" hidden>
+      <h2 data-en="Work">Trabajos</h2>
+      <p class="intro" data-en="Branding, social media and websites made for businesses, plus three concept sites you can open right now.">Branding, redes y sitios hechos para negocios, y tres sitios de concepto que puedes abrir ahora.</p>
+      <div class="grupo"><h4 data-en="Branding and logos">Branding y logos</h4><div class="piezas"><figure class="pieza"><div class="marco" data-v-es="Logo 01" data-v-en="Logo 01"></div></figure><figure class="pieza"><div class="marco" data-v-es="Logo 02" data-v-en="Logo 02"></div></figure><figure class="pieza"><div class="marco" data-v-es="Logo 03" data-v-en="Logo 03"></div></figure><figure class="pieza"><div class="marco" data-v-es="Logo 04" data-v-en="Logo 04"></div></figure><figure class="pieza"><div class="marco" data-v-es="Logo 05" data-v-en="Logo 05"></div></figure><figure class="pieza"><div class="marco" data-v-es="Logo 06" data-v-en="Logo 06"></div></figure></div></div>
+      <div class="grupo"><h4 data-en="Social media posts">Publicaciones para redes</h4><div class="piezas post"><figure class="pieza"><div class="marco" data-v-es="Publicación 01" data-v-en="Post 01"></div></figure><figure class="pieza"><div class="marco" data-v-es="Publicación 02" data-v-en="Post 02"></div></figure><figure class="pieza"><div class="marco" data-v-es="Publicación 03" data-v-en="Post 03"></div></figure><figure class="pieza"><div class="marco" data-v-es="Publicación 04" data-v-en="Post 04"></div></figure><figure class="pieza"><div class="marco" data-v-es="Publicación 05" data-v-en="Post 05"></div></figure><figure class="pieza"><div class="marco" data-v-es="Publicación 06" data-v-en="Post 06"></div></figure></div></div>
+      <div class="grupo"><h4 data-en="Websites and visual design">Sitios y diseño visual</h4><div class="piezas ancho"><figure class="pieza"><div class="marco" data-v-es="Pieza 01" data-v-en="Piece 01"></div></figure><figure class="pieza"><div class="marco" data-v-es="Pieza 02" data-v-en="Piece 02"></div></figure><figure class="pieza"><div class="marco" data-v-es="Pieza 03" data-v-en="Piece 03"></div></figure><figure class="pieza"><div class="marco" data-v-es="Pieza 04" data-v-en="Piece 04"></div></figure></div></div>
+      <div class="grupo"><h4 data-en="Concepts">Conceptos</h4>
+      <p class="intro" data-en="Three sites you can open right now. They are concepts with sample brands; the 3D, the speed and the two languages are real.">Tres sitios que puedes abrir ahora. Son conceptos con marcas de ejemplo; el 3D, la velocidad y los dos idiomas son reales.</p></div>
+      <article class="obra">
+        <a class="screen" href="/alero/" data-demo="alero" aria-label="Abrir el sitio de Alero Techos"><video muted loop playsinline preload="none" poster="demo-alero.jpg" src="demo-alero.mp4"></video></a>
+        <div class="fila"><div><h3>Alero Techos</h3><p data-en="For contractors. A house modeled in Blender whose roof comes apart layer by layer as you scroll.">Para contratistas. Una casa modelada en Blender cuyo techo se separa capa por capa al bajar.</p></div><a class="btn fill" href="/alero/" data-demo="alero" data-en="Open the site">Abrir el sitio</a></div>
+      </article>
+      <article class="obra">
+        <a class="screen" href="/aurea/" data-demo="aurea" aria-label="Abrir el sitio de Áurea Joyería"><video muted loop playsinline preload="none" poster="demo-aurea.jpg" src="demo-aurea.mp4"></video></a>
+        <div class="fila"><div><h3>Áurea Joyería</h3><p data-en="For image-driven brands. The scroll plays a film: down and it moves forward, up and it rewinds.">Para marcas de imagen. El scroll mueve una película: bajas y avanza, subes y retrocede.</p></div><a class="btn fill" href="/aurea/" data-demo="aurea" data-en="Open the site">Abrir el sitio</a></div>
+      </article>
+      <article class="obra">
+        <a class="screen" href="/ribera-alba/" data-demo="mundo" aria-label="Abrir el sitio de Ribera Alba"><video muted loop playsinline preload="none" poster="demo-mundo.jpg" src="demo-mundo.mp4"></video></a>
+        <div class="fila"><div><h3>Ribera Alba</h3><p data-en="For developers and lot sales. One flight with no cuts over the land in miniature, with a stop for each zone.">Para desarrolladoras y venta de lotes. Un vuelo sin cortes sobre el terreno en miniatura, con una parada por cada zona.</p></div><a class="btn fill" href="/ribera-alba/" data-demo="mundo" data-en="Open the site">Abrir el sitio</a></div>
+      </article>
+    </section>
+
+    <section class="view" data-view="proceso" hidden>
+      <h2 data-en="How I work">Cómo trabajo</h2>
+      <p class="intro" data-en="Five steps, ten business days. This is the Conquer Site schedule; a Landing takes five days and a Signature 3D gets its own calendar in the agreement.">Cinco pasos, diez días hábiles. Es el calendario del Sitio Conquer; una Landing toma cinco días y un Signature 3D lleva su propio calendario en el acuerdo.</p>
+      <ol class="steps">
+        <li><h3 data-en="Agreement and deposit">Acuerdo y anticipo</h3><p data-en="One page, signed. 50% to start.">Una página, firmada. 50% para empezar.</p></li>
+        <li><h3 data-en="15-minute call">Llamada de 15 minutos</h3><p data-en="Eight questions. I write the copy from your answers.">Ocho preguntas. Con tus respuestas escribo los textos.</p></li>
+        <li><h3 data-en="Home page first">Portada primero</h3><p data-en="You see it on phone and desktop, and approve it in writing.">La ves en celular y escritorio, y la apruebas por escrito.</p></li>
+        <li><h3 data-en="Build and review">Construcción y revisión</h3><p data-en="You send one list of changes within 48 hours.">Mandas una sola lista de cambios en 48 horas.</p></li>
+        <li><h3 data-en="Launch">Lanzamiento</h3><p data-en="Forms tested, speed measured, domain connected.">Formularios probados, velocidad medida, dominio conectado.</p></li>
+      </ol>
+      <p class="quien" data-en="I'm John Greg, a graphic designer in Miami: branding, social media and visual design. I design and build every site myself. &lt;em&gt;You talk to the person doing the work.&lt;/em&gt;">Soy John Greg, diseñador gráfico en Miami: branding, redes y diseño visual. Diseño y construyo cada sitio yo mismo. <em>Hablas con quien hace el trabajo.</em></p>
+      <h4 data-en="Questions">Preguntas</h4>
+      <div class="faq">
+        <details><summary data-en="When does the deadline start?">¿Desde cuándo corre el plazo?</summary><p data-en="From the day I have the call, your photos, your logo and access to your domain.">Desde el día en que tengo la llamada, tus fotos, tu logo y el acceso a tu dominio.</p></details>
+        <details><summary data-en="What do you guarantee?">¿Qué garantizas?</summary><p data-en="The deadline, a fast site on mobile and forms that work on launch day. I don't promise a number of calls or a Google position, because nobody controls those.">El plazo, un sitio rápido en celular y formularios que funcionan el día del lanzamiento. No prometo un número de llamadas ni una posición en Google, porque eso nadie lo controla.</p></details>
+        <details><summary data-en="How do I pay?">¿Cómo se paga?</summary><p data-en="50% to start and 50% before publishing, by card through a payment link. Monthly plans are charged automatically on the 1st.">50% para empezar y 50% antes de publicar, con tarjeta por enlace de pago. Los planes mensuales se cobran solos el día 1.</p></details>
+        <details><summary data-en="I already have a site. Do you start over?">Ya tengo un sitio. ¿Empiezas de cero?</summary><p data-en="I keep your domain, your reviews and whatever already ranks on Google. I rebuild the rest.">Conservo tu dominio, tus reseñas y lo que ya posiciona en Google. Lo demás lo rehago.</p></details>
+        <details><summary data-en="Is the site mine?">¿El sitio es mío?</summary><p data-en="Yes. Once the balance is paid, the site, the copy and the images are yours.">Sí. Al pagar el saldo, el sitio, los textos y las imágenes son tuyos.</p></details>
+      </div>
+    </section>
+
+    <section class="view" data-view="hablemos" hidden>
+      <h2 data-en="&lt;span&gt;I'll record a 90-second video&lt;/span&gt;&lt;em&gt;of what I'd change on your site.&lt;/em&gt;"><span>Te grabo un video de 90 segundos</span><em>con lo que cambiaría en tu sitio.</em></h2>
+      <div class="cierre">
+        <a class="btn fill" href="https://wa.me/19709143216" data-en="Ask for it on WhatsApp">Pedirlo por WhatsApp</a>
+        <a class="btn" href="mailto:ijohngreg@icloud.com" data-en="Write by email">Escribir por correo</a>
+      </div>
+      <p class="contact"><span>WhatsApp +1 (970) 914-3216</span><span>ijohngreg@icloud.com</span></p>
+    </section>
+
+    <section class="view legal" data-view="privacidad" hidden>
+      <h2 data-en="Privacy policy">Política de privacidad</h2>
+      <p data-en="In effect since November 26, 2026.">Vigente desde el 26 de noviembre de 2026.</p>
+      <h4 data-en="Who is responsible">Quién responde</h4>
+      <p data-en="Conquer is the trade name of John Greg, in Miami, Florida. For any privacy matter write to ijohngreg@icloud.com.">Conquer es el nombre comercial de John Greg, en Miami, Florida. Para cualquier asunto de privacidad escribe a ijohngreg@icloud.com.</p>
+      <h4 data-en="What this page stores">Qué guarda esta página</h4>
+      <p data-en="This page has no forms, accounts or ads, and uses no tracking cookies. The only thing it stores in your browser is the language you chose.">Esta página no tiene formularios, cuentas ni anuncios, y no usa cookies de seguimiento. Lo único que guarda en tu navegador es el idioma que elegiste.</p>
+      <h4 data-en="When you write to me">Cuando me escribes</h4>
+      <p data-en="If you contact me by WhatsApp or email, I receive what you send me: your name, your number or email, and what you tell me about your business. I use it to reply and, if we work together, to do the work and bill it.">Si me contactas por WhatsApp o por correo, recibo lo que tú me mandes: tu nombre, tu número o tu correo y lo que me cuentes de tu negocio. Lo uso para responderte y, si trabajamos juntos, para hacer el trabajo y cobrarlo.</p>
+      <h4 data-en="Other companies' services">Servicios de otros</h4>
+      <p data-en="The page loads fonts from Google Fonts and a library from Cloudflare, and is hosted on Vercel. Those services receive your IP address when it loads, as with any website. WhatsApp belongs to Meta and applies its own policy. Payments go through a payment processor's link; I never see or store your card number.">La página carga tipografías de Google Fonts y una librería desde Cloudflare, y está alojada en Vercel. Esos servicios reciben tu dirección IP al cargarla, como pasa con cualquier sitio. WhatsApp pertenece a Meta y aplica su propia política. Los pagos se hacen por un enlace de un procesador de pagos; yo no veo ni guardo el número de tu tarjeta.</p>
+      <h4 data-en="What I don't do">Lo que no hago</h4>
+      <p data-en="I don't sell your data or share it with anyone for advertising.">No vendo tus datos ni los comparto con nadie para publicidad.</p>
+      <h4 data-en="How long I keep it">Cuánto tiempo los guardo</h4>
+      <p data-en="I keep a project's conversations and files while the work lasts and for as long as the law requires for accounting records. I delete the rest if you ask.">Conservo las conversaciones y los archivos de un proyecto mientras dura el trabajo y el tiempo que la ley pida para los registros contables. Lo demás lo borro si me lo pides.</p>
+      <h4 data-en="Your data is yours">Tus datos son tuyos</h4>
+      <p data-en="Write to ijohngreg@icloud.com to see, correct or delete what I have about you. If this policy changes, the new date will appear here.">Escríbeme a ijohngreg@icloud.com para ver, corregir o borrar lo que tengo de ti. Si esta política cambia, aquí aparecerá la fecha nueva.</p>
+    </section>
+
+    <section class="view legal" data-view="terminos" hidden>
+      <h2 data-en="Terms">Términos</h2>
+      <p data-en="In effect since November 26, 2026.">Vigentes desde el 26 de noviembre de 2026.</p>
+      <h4 data-en="What this page is">Qué es esta página</h4>
+      <p data-en="This page presents the services of Conquer, the trade name of John Greg in Miami, Florida. Reading it or writing to me does not create a contract.">Aquí se presentan los servicios de Conquer, el nombre comercial de John Greg en Miami, Florida. Leerla o escribirme no crea un contrato.</p>
+      <h4 data-en="The agreement governs">El acuerdo manda</h4>
+      <p data-en="Every project is done under a signed service agreement. If anything on this page differs from the agreement, the agreement prevails.">Cada proyecto se hace con un acuerdo de servicio firmado. Si algo de esta página no coincide con el acuerdo, vale el acuerdo.</p>
+      <h4 data-en="Prices">Precios</h4>
+      <p data-en="Prices are in US dollars. Where it says “from”, that is the starting price. Published prices can change; the one that counts is the one in the agreement we sign.">Los precios están en dólares de Estados Unidos. Donde dice “desde”, es el precio de partida. Los precios publicados pueden cambiar; el que vale es el del acuerdo que firmamos.</p>
+      <h4 data-en="Payments and deadlines">Pagos y plazos</h4>
+      <p data-en="Projects are paid 50% to start and 50% before publishing. Monthly plans are charged on the 1st. The deadline runs from the day I have the call, your photos, your logo and access to your domain.">Los proyectos se pagan 50% para empezar y 50% antes de publicar. Los planes mensuales se cobran el día 1. El plazo corre desde el día en que tengo la llamada, tus fotos, tu logo y el acceso a tu dominio.</p>
+      <h4 data-en="What I don't promise">Lo que no prometo</h4>
+      <p data-en="I don't promise a number of calls or sales, or a position on Google, because that doesn't depend on the site alone.">No prometo un número de llamadas, de ventas ni una posición en Google, porque eso no depende solo del sitio.</p>
+      <h4 data-en="Who owns the work">De quién es el trabajo</h4>
+      <p data-en="Once the balance is paid, your project's site, texts and images are yours.">Al pagar el saldo, el sitio, los textos y las imágenes de tu proyecto son tuyos.</p>
+      <h4 data-en="The work shown here">Los trabajos que se muestran</h4>
+      <p data-en="Alero Techos, Áurea Joyería and Ribera Alba are concepts with sample brands. They are not real businesses, and their prices and phone numbers are not offers.">Alero Techos, Áurea Joyería y Ribera Alba son conceptos con marcas de ejemplo. No son negocios reales y sus precios y teléfonos no son ofertas.</p>
+      <h4 data-en="This page">Esta página</h4>
+      <p data-en="The design, logo and texts of this page belong to Conquer and may not be copied without permission.">El diseño, el logo y los textos de esta página son de Conquer y no se pueden copiar sin permiso.</p>
+      <h4 data-en="Law and contact">Ley y contacto</h4>
+      <p data-en="These terms are governed by the laws of the State of Florida. For any question write to ijohngreg@icloud.com.">Estos términos se rigen por las leyes del estado de Florida. Para cualquier duda escribe a ijohngreg@icloud.com.</p>
+    </section>
+
+  </div>
+</dialog>
+
+<footer>
+  <span>© 2026 Conquer, John Greg, Miami, FL</span>
+  <nav aria-label="Legal">
+    <button type="button" data-open="privacidad" data-en="Privacy">Privacidad</button>
+    <button type="button" data-open="terminos" data-en="Terms">Términos</button>
+    <a href="/">johngreg.com</a>
+  </nav>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="jardin.js"></script>
+<script>
+(function(){
+  /* idioma: mismo interruptor que johngreg.com */
+  var KEY='jg-lang', nodes=[].slice.call(document.querySelectorAll('[data-en]')), lang='es';
+  nodes.forEach(function(n){ n.setAttribute('data-es',n.innerHTML); });
+  function setLang(l){
+    lang=l; nodes.forEach(function(n){ n.innerHTML=n.getAttribute(l==='en'?'data-en':'data-es'); });
+    document.documentElement.lang=l;
+    [].forEach.call(document.querySelectorAll('[data-lang]'),function(b){ b.setAttribute('aria-pressed',String(b.getAttribute('data-lang')===l)); });
+    try{ localStorage.setItem(KEY,l); }catch(e){}
+    titulo();
+  }
+  [].forEach.call(document.querySelectorAll('[data-lang]'),function(b){ b.addEventListener('click',function(){ setLang(b.getAttribute('data-lang')); }); });
+
+  /* las demos: en johngreg.com viven en /alero/ y /aurea/; en esta vista previa abren sus vistas privadas */
+  var PREVIEW={alero:'https://claude.ai/artifact/46dT7nRMNMMXMjz9YAxjjU',aurea:'https://claude.ai/artifact/EoMbjccuV1RYxbdAHXGEwE',mundo:'https://claude.ai/artifact/UufCwK7bfZc8vunA1yhC5h'};
+  if(!/johngreg\.com$/.test(location.hostname)){
+    [].forEach.call(document.querySelectorAll('[data-demo]'),function(a){ a.href=PREVIEW[a.getAttribute('data-demo')]; a.target='_blank'; a.rel='noopener'; });
+  }
+
+  /* portada: el emblema se revela una sola vez */
+  var hero=document.getElementById('inicio'), emblem=document.getElementById('emblem'), started=false;
+  function go(){ if(started) return; started=true; hero.classList.add('go'); }
+  var imgs=[].slice.call(emblem.querySelectorAll('img')), left=imgs.length;
+  imgs.forEach(function(im){ if(im.complete) left--; else { im.addEventListener('load',function(){ if(--left<=0) go(); }); im.addEventListener('error',go); } });
+  if(left<=0) go(); setTimeout(go,2200);
+  if(matchMedia('(hover: hover) and (pointer: fine)').matches && !matchMedia('(prefers-reduced-motion: reduce)').matches){
+    hero.addEventListener('pointermove',function(e){
+      var r=hero.getBoundingClientRect(), x=(e.clientX-r.left)/r.width-.5, y=(e.clientY-r.top)/r.height-.5;
+      emblem.style.transform='perspective(1100px) rotateY('+(x*7).toFixed(2)+'deg) rotateX('+(-y*6).toFixed(2)+'deg)';
+    });
+    hero.addEventListener('pointerleave',function(){ emblem.style.transform=''; });
+  }
+
+  /* ELITE DESIGNS: el texto es luz cálida y por dentro corren rayos que se renuevan con cada golpe */
+  (function(){
+    var c=document.getElementById('elite'); if(!c||!window.Path2D||!c.getContext) return;
+    var g=c.getContext('2d'), P=new Path2D("M239.7 1088Q239.4 1092.5 239.2 1096.7Q239.1 1100.9 239.1 1103.2Q239.1 1105.1 239.2 1106.8Q239.3 1108.5 239.4 1109.7H237.3Q236.2 1102.2 233.7 1097.9Q231.1 1093.6 227.8 1091.8Q224.4 1090.1 220.7 1090.1H219.5Q217.1 1090.1 216 1090.5Q214.8 1090.9 214.4 1092.1Q214 1093.2 214 1095.8V1144.2Q214 1146.7 214.4 1147.9Q214.8 1149.1 216 1149.5Q217.1 1149.9 219.5 1149.9H222.5Q225.4 1149.9 228.7 1148Q232 1146 234.8 1141.3Q237.6 1136.6 239.1 1128.5H241.2Q240.9 1131.8 240.9 1136.8Q240.9 1139.1 241 1143.3Q241.1 1147.5 241.5 1152Q236.9 1151.8 231.1 1151.8Q225.4 1151.7 220.8 1151.7Q218.4 1151.7 214.6 1151.7Q210.9 1151.7 206.5 1151.8Q202.1 1151.8 197.6 1151.9Q193.2 1151.9 189.2 1152V1150.2Q192 1150 193.4 1149.5Q194.7 1148.9 195.2 1147.3Q195.6 1145.7 195.6 1142.4V1097.6Q195.6 1094.2 195.2 1092.7Q194.7 1091.1 193.3 1090.5Q191.9 1089.9 189.2 1089.8V1088Q193.2 1088.1 197.6 1088.1Q202.1 1088.2 206.5 1088.2Q210.9 1088.3 214.6 1088.3Q218.4 1088.3 220.8 1088.3Q225 1088.3 230.3 1088.2Q235.6 1088.2 239.7 1088ZM226.6 1118.9Q226.6 1118.9 226.6 1119.8Q226.6 1120.7 226.6 1120.7H211.3Q211.3 1120.7 211.3 1119.8Q211.3 1118.9 211.3 1118.9ZM229.2 1107Q228.9 1112.1 228.9 1114.8Q229 1117.6 229 1119.8Q229 1122.1 229.1 1124.8Q229.2 1127.5 229.5 1132.7H227.4Q226.9 1129.3 225.2 1126.6Q223.5 1123.9 220.9 1122.3Q218.3 1120.7 214.9 1120.7V1118.9Q217.4 1118.9 219.5 1117.8Q221.6 1116.7 223.1 1114.9Q224.7 1113.1 225.8 1111.1Q226.8 1109 227.2 1107ZM290 1088V1089.8Q286.9 1089.9 285.3 1090.5Q283.8 1091.1 283.2 1092.7Q282.7 1094.2 282.7 1097.6V1144.2Q282.7 1146.7 283 1147.9Q283.4 1149.1 284.4 1149.5Q285.4 1149.9 287.3 1149.9H290.3Q292.6 1149.9 295.3 1148.1Q298 1146.3 300.6 1143.1Q303.2 1140 305.1 1136Q307 1131.9 307.8 1127.6H309.9Q309.6 1130.8 309.6 1135.9Q309.6 1138.3 309.7 1142.7Q309.8 1147.2 310.2 1152Q305.6 1151.8 299.8 1151.8Q294.1 1151.7 289.5 1151.7Q287.1 1151.7 283.3 1151.7Q279.6 1151.7 275.2 1151.8Q270.8 1151.8 266.4 1151.9Q261.9 1151.9 257.9 1152V1150.2Q260.7 1150 262.1 1149.5Q263.4 1148.9 263.9 1147.3Q264.3 1145.7 264.3 1142.4V1097.6Q264.3 1094.2 263.9 1092.7Q263.4 1091.1 262 1090.5Q260.6 1089.9 257.9 1089.8V1088Q260.5 1088.1 264.8 1088.2Q269.1 1088.3 274 1088.3Q278.5 1088.3 282.8 1088.2Q287.2 1088.1 290 1088ZM355.6 1088V1089.8Q352.9 1089.9 351.5 1090.5Q350.1 1091.1 349.6 1092.7Q349.2 1094.2 349.2 1097.6V1142.4Q349.2 1145.7 349.7 1147.3Q350.2 1148.9 351.5 1149.5Q352.9 1150 355.6 1150.2V1152Q353 1151.8 348.9 1151.8Q344.8 1151.7 340.5 1151.7Q335.6 1151.7 331.3 1151.8Q327.1 1151.8 324.4 1152V1150.2Q327.2 1150 328.6 1149.5Q329.9 1148.9 330.4 1147.3Q330.8 1145.7 330.8 1142.4V1097.6Q330.8 1094.2 330.4 1092.7Q329.9 1091.1 328.5 1090.5Q327.1 1089.9 324.4 1089.8V1088Q327.1 1088.1 331.3 1088.2Q335.6 1088.3 340.5 1088.3Q344.8 1088.3 348.9 1088.2Q353 1088.1 355.6 1088ZM429.2 1088Q428.8 1093.3 428.7 1098.3Q428.6 1103.3 428.6 1105.9Q428.6 1107.8 428.7 1109.5Q428.7 1111.2 428.8 1112.4H426.8Q424.7 1103.9 421.7 1099Q418.8 1094.1 415.5 1092.1Q412.2 1090.1 408.9 1090.1H408.9V1141.8Q408.9 1145.5 409.6 1147.3Q410.4 1149.1 412.6 1149.6Q414.7 1150.2 418.9 1150.2V1152Q415.7 1151.9 410.4 1151.8Q405 1151.7 399.1 1151.7Q393.5 1151.7 388.5 1151.8Q383.5 1151.9 380.5 1152V1150.2Q384.6 1150.2 386.8 1149.6Q389 1149.1 389.7 1147.3Q390.5 1145.5 390.5 1141.8V1090.1H390.4Q387.2 1090.1 383.9 1092.1Q380.6 1094.1 377.7 1099Q374.8 1103.8 372.6 1112.4H370.5Q370.7 1111.2 370.8 1109.5Q370.8 1107.8 370.8 1105.9Q370.8 1103.3 370.7 1098.3Q370.5 1093.3 370.2 1088Q374.5 1088.1 379.8 1088.2Q385 1088.3 390.2 1088.3Q395.5 1088.3 399.7 1088.3Q404 1088.3 409.2 1088.3Q414.5 1088.3 419.7 1088.2Q424.9 1088.1 429.2 1088ZM494.3 1088Q493.9 1092.5 493.8 1096.7Q493.6 1100.9 493.6 1103.2Q493.6 1105.1 493.7 1106.8Q493.8 1108.5 493.9 1109.7H491.8Q490.8 1102.2 488.2 1097.9Q485.7 1093.6 482.3 1091.8Q478.9 1090.1 475.2 1090.1H474Q471.7 1090.1 470.5 1090.5Q469.3 1090.9 468.9 1092.1Q468.5 1093.2 468.5 1095.8V1144.2Q468.5 1146.7 468.9 1147.9Q469.3 1149.1 470.5 1149.5Q471.7 1149.9 474 1149.9H477Q480 1149.9 483.3 1148Q486.6 1146 489.4 1141.3Q492.2 1136.6 493.6 1128.5H495.7Q495.5 1131.8 495.5 1136.8Q495.5 1139.1 495.5 1143.3Q495.6 1147.5 496.1 1152Q491.5 1151.8 485.7 1151.8Q479.9 1151.7 475.4 1151.7Q472.9 1151.7 469.2 1151.7Q465.4 1151.7 461.1 1151.8Q456.7 1151.8 452.2 1151.9Q447.7 1151.9 443.8 1152V1150.2Q446.6 1150 447.9 1149.5Q449.3 1148.9 449.7 1147.3Q450.2 1145.7 450.2 1142.4V1097.6Q450.2 1094.2 449.7 1092.7Q449.3 1091.1 447.9 1090.5Q446.5 1089.9 443.8 1089.8V1088Q447.7 1088.1 452.2 1088.1Q456.7 1088.2 461.1 1088.2Q465.4 1088.3 469.2 1088.3Q472.9 1088.3 475.4 1088.3Q479.5 1088.3 484.8 1088.2Q490.1 1088.2 494.3 1088ZM481.2 1118.9Q481.2 1118.9 481.2 1119.8Q481.2 1120.7 481.2 1120.7H465.8Q465.8 1120.7 465.8 1119.8Q465.8 1118.9 465.8 1118.9ZM483.8 1107Q483.4 1112.1 483.5 1114.8Q483.5 1117.6 483.5 1119.8Q483.5 1122.1 483.6 1124.8Q483.7 1127.5 484.1 1132.7H482Q481.4 1129.3 479.8 1126.6Q478.1 1123.9 475.5 1122.3Q472.9 1120.7 469.4 1120.7V1118.9Q472 1118.9 474 1117.8Q476.1 1116.7 477.7 1114.9Q479.3 1113.1 480.3 1111.1Q481.4 1109 481.7 1107ZM572.7 1088Q591.6 1088 600.8 1096.1Q610 1104.2 610 1119.3Q610 1129.1 605.5 1136.5Q600.9 1143.9 592.4 1147.9Q583.9 1152 571.8 1152Q570.4 1152 568 1151.9Q565.6 1151.8 563 1151.8Q560.4 1151.7 558.3 1151.7Q553.8 1151.7 549.5 1151.8Q545.2 1151.8 542.6 1152V1150.2Q545.4 1150 546.7 1149.5Q548.1 1148.9 548.5 1147.3Q549 1145.7 549 1142.4V1097.6Q549 1094.2 548.5 1092.7Q548.1 1091.1 546.7 1090.5Q545.3 1089.9 542.6 1089.8V1088Q545.2 1088.1 549.5 1088.2Q553.8 1088.4 558.1 1088.3Q561.4 1088.2 565.6 1088.1Q569.9 1088 572.7 1088ZM574 1089.6Q569.9 1089.6 568.6 1091.2Q567.3 1092.7 567.3 1097.4V1142.6Q567.3 1147.3 568.6 1148.8Q569.9 1150.4 574.1 1150.4Q580.2 1150.4 584 1146.8Q587.7 1143.2 589.3 1136.4Q591 1129.5 591 1119.6Q591 1109.5 589.2 1102.9Q587.5 1096.2 583.7 1092.9Q580 1089.6 574 1089.6ZM676.3 1088Q676 1092.5 675.8 1096.7Q675.7 1100.9 675.7 1103.2Q675.7 1105.1 675.8 1106.8Q675.9 1108.5 676 1109.7H673.9Q672.8 1102.2 670.3 1097.9Q667.8 1093.6 664.4 1091.8Q661 1090.1 657.3 1090.1H656.1Q653.7 1090.1 652.6 1090.5Q651.4 1090.9 651 1092.1Q650.6 1093.2 650.6 1095.8V1144.2Q650.6 1146.7 651 1147.9Q651.4 1149.1 652.6 1149.5Q653.7 1149.9 656.1 1149.9H659.1Q662.1 1149.9 665.4 1148Q668.7 1146 671.5 1141.3Q674.3 1136.6 675.7 1128.5H677.8Q677.5 1131.8 677.5 1136.8Q677.5 1139.1 677.6 1143.3Q677.7 1147.5 678.1 1152Q673.5 1151.8 667.8 1151.8Q662 1151.7 657.4 1151.7Q655 1151.7 651.3 1151.7Q647.5 1151.7 643.1 1151.8Q638.7 1151.8 634.3 1151.9Q629.8 1151.9 625.8 1152V1150.2Q628.6 1150 630 1149.5Q631.3 1148.9 631.8 1147.3Q632.2 1145.7 632.2 1142.4V1097.6Q632.2 1094.2 631.8 1092.7Q631.3 1091.1 629.9 1090.5Q628.5 1089.9 625.8 1089.8V1088Q629.8 1088.1 634.3 1088.1Q638.7 1088.2 643.1 1088.2Q647.5 1088.3 651.3 1088.3Q655 1088.3 657.4 1088.3Q661.6 1088.3 666.9 1088.2Q672.2 1088.2 676.3 1088ZM663.2 1118.9Q663.2 1118.9 663.2 1119.8Q663.2 1120.7 663.2 1120.7H647.9Q647.9 1120.7 647.9 1119.8Q647.9 1118.9 647.9 1118.9ZM665.9 1107Q665.5 1112.1 665.5 1114.8Q665.6 1117.6 665.6 1119.8Q665.6 1122.1 665.7 1124.8Q665.8 1127.5 666.1 1132.7H664Q663.5 1129.3 661.8 1126.6Q660.2 1123.9 657.5 1122.3Q654.9 1120.7 651.5 1120.7V1118.9Q654 1118.9 656.1 1117.8Q658.2 1116.7 659.8 1114.9Q661.3 1113.1 662.4 1111.1Q663.4 1109 663.8 1107ZM719.3 1086.7Q725.2 1086.7 728.4 1087.9Q731.7 1089.1 733.9 1090.4Q735 1091 735.7 1091.3Q736.4 1091.6 737 1091.6Q737.9 1091.6 738.3 1090.6Q738.7 1089.6 739 1087.6H741.1Q741 1089.5 740.8 1092.1Q740.7 1094.6 740.7 1098.8Q740.6 1102.9 740.6 1109.7H738.5Q738.2 1104.7 736.2 1100Q734.3 1095.3 730.9 1092.2Q727.5 1089.2 722.8 1089.2Q718.8 1089.2 716.2 1091.3Q713.6 1093.5 713.6 1097.6Q713.6 1100.9 715.2 1103.3Q716.8 1105.7 720.3 1108.3Q723.8 1111 729.5 1114.9Q733.6 1117.7 736.9 1120.5Q740.2 1123.3 742.1 1126.9Q744.1 1130.4 744.1 1135.4Q744.1 1141.4 740.7 1145.4Q737.4 1149.4 731.8 1151.3Q726.1 1153.3 719.5 1153.3Q713.4 1153.3 709.7 1152.2Q706.1 1151.1 703.5 1149.9Q701.6 1148.7 700.5 1148.7Q699.6 1148.7 699.2 1149.6Q698.8 1150.6 698.5 1152.6H696.4Q696.6 1150.3 696.6 1147.2Q696.7 1144 696.7 1139.1Q696.8 1134.1 696.8 1126.4H698.8Q699.2 1132.7 700.9 1138.3Q702.6 1143.8 706 1147.2Q709.5 1150.6 715.3 1150.6Q718.6 1150.6 721 1149.5Q723.4 1148.5 724.8 1146.5Q726.1 1144.5 726.1 1141.7Q726.1 1137.9 724.4 1135.1Q722.7 1132.2 719.8 1129.7Q716.8 1127.2 712.9 1124.7Q708.7 1121.8 705 1118.9Q701.3 1116 699.1 1112.4Q696.9 1108.8 696.9 1103.8Q696.9 1097.9 700 1094.1Q703.2 1090.4 708.3 1088.5Q713.5 1086.7 719.3 1086.7ZM791.1 1088V1089.8Q788.3 1089.9 786.9 1090.5Q785.5 1091.1 785.1 1092.7Q784.6 1094.2 784.6 1097.6V1142.4Q784.6 1145.7 785.1 1147.3Q785.6 1148.9 787 1149.5Q788.3 1150 791.1 1150.2V1152Q788.4 1151.8 784.3 1151.8Q780.2 1151.7 776 1151.7Q771.1 1151.7 766.8 1151.8Q762.5 1151.8 759.9 1152V1150.2Q762.7 1150 764 1149.5Q765.4 1148.9 765.8 1147.3Q766.3 1145.7 766.3 1142.4V1097.6Q766.3 1094.2 765.8 1092.7Q765.4 1091.1 764 1090.5Q762.6 1089.9 759.9 1089.8V1088Q762.5 1088.1 766.8 1088.2Q771.1 1088.3 776 1088.3Q780.2 1088.3 784.3 1088.2Q788.4 1088.1 791.1 1088ZM841.9 1086.7Q848.2 1086.7 852.2 1088.5Q856.3 1090.2 859.4 1092.6Q860.4 1093.4 861.2 1093.4Q862.9 1093.4 863.5 1088H865.5Q865.4 1091.6 865.3 1096.8Q865.2 1102 865.2 1110.6H863.1Q862.5 1104.1 860.9 1099.7Q859.3 1095.3 854.8 1092.2Q852.9 1091 850.4 1090.3Q847.8 1089.5 845.5 1089.5Q840.2 1089.5 836.8 1092.4Q833.4 1095.2 831.3 1099.8Q829.3 1104.4 828.4 1109.7Q827.6 1115.1 827.6 1120.2Q827.6 1136.5 831.5 1144Q835.5 1151.5 842.1 1151.5Q843.6 1151.5 844.7 1151.2Q845.7 1150.9 846.6 1150.4Q847.5 1149.6 848 1148.6Q848.5 1147.5 848.5 1145.9V1136.8Q848.5 1132.4 847.8 1130.2Q847.1 1128 845.1 1127.2Q843.1 1126.4 839.3 1126.3V1124.5Q841.4 1124.6 844.4 1124.7Q847.4 1124.7 850.6 1124.7Q853.9 1124.8 856.6 1124.8Q860.9 1124.8 864.6 1124.7Q868.2 1124.6 870.5 1124.5V1126.3Q869 1126.4 868.2 1127Q867.3 1127.5 867.1 1129.1Q866.8 1130.8 866.8 1134.1V1152H865Q864.9 1150.5 864.3 1148.7Q863.6 1146.8 862.2 1146.8Q861.5 1146.8 860.2 1147.2Q858.8 1147.6 856 1148.9Q852.5 1150.6 848.6 1152Q844.7 1153.3 840.8 1153.3Q829.5 1153.3 821.9 1149.4Q814.3 1145.5 810.5 1138.2Q806.8 1130.8 806.8 1120.5Q806.8 1110.4 811.3 1102.8Q815.7 1095.2 823.6 1091Q831.5 1086.7 841.9 1086.7ZM945.8 1088V1089.8Q943.1 1090.4 941.7 1091.7Q940.3 1093.1 939.8 1095.9Q939.4 1098.8 939.4 1103.9V1152Q938 1151.8 936.5 1151.8Q934.9 1151.8 933.1 1152L893 1108.2V1134.3Q893 1140.3 893.5 1143.5Q894 1146.8 896 1148.2Q897.9 1149.6 902.1 1150.2V1152Q900.3 1151.8 897.4 1151.8Q894.6 1151.7 892 1151.7Q890 1151.7 888 1151.8Q885.9 1151.8 884.5 1152V1150.2Q887.3 1149.6 888.7 1148.2Q890 1146.9 890.5 1144Q890.9 1141.2 890.9 1136.1V1097.6Q890.9 1094.2 890.5 1092.7Q890 1091.1 888.6 1090.5Q887.2 1089.9 884.5 1089.8V1088Q885.9 1088.1 888 1088.2Q890 1088.3 892 1088.3Q894.3 1088.3 896.5 1088.2Q898.6 1088.1 900.3 1088L937.3 1127.1V1105.7Q937.3 1099.7 936.8 1096.5Q936.3 1093.2 934.4 1091.8Q932.5 1090.4 928.2 1089.8V1088Q930 1088.1 932.9 1088.2Q935.8 1088.3 938.3 1088.3Q940.4 1088.3 942.4 1088.2Q944.5 1088.1 945.8 1088ZM985.2 1086.7Q991.1 1086.7 994.4 1087.9Q997.6 1089.1 999.9 1090.4Q1000.9 1091 1001.6 1091.3Q1002.3 1091.6 1002.9 1091.6Q1003.8 1091.6 1004.2 1090.6Q1004.7 1089.6 1004.9 1087.6H1007Q1006.9 1089.5 1006.8 1092.1Q1006.6 1094.6 1006.6 1098.8Q1006.6 1102.9 1006.6 1109.7H1004.5Q1004.1 1104.7 1002.2 1100Q1000.2 1095.3 996.8 1092.2Q993.4 1089.2 988.7 1089.2Q984.8 1089.2 982.1 1091.3Q979.5 1093.5 979.5 1097.6Q979.5 1100.9 981.2 1103.3Q982.8 1105.7 986.3 1108.3Q989.7 1111 995.4 1114.9Q999.5 1117.7 1002.8 1120.5Q1006.1 1123.3 1008.1 1126.9Q1010.1 1130.4 1010.1 1135.4Q1010.1 1141.4 1006.7 1145.4Q1003.3 1149.4 997.7 1151.3Q992.1 1153.3 985.5 1153.3Q979.3 1153.3 975.7 1152.2Q972 1151.1 969.5 1149.9Q967.5 1148.7 966.4 1148.7Q965.5 1148.7 965.1 1149.6Q964.7 1150.6 964.4 1152.6H962.4Q962.5 1150.3 962.6 1147.2Q962.6 1144 962.7 1139.1Q962.7 1134.1 962.7 1126.4H964.8Q965.2 1132.7 966.8 1138.3Q968.5 1143.8 972 1147.2Q975.5 1150.6 981.2 1150.6Q984.6 1150.6 987 1149.5Q989.4 1148.5 990.7 1146.5Q992.1 1144.5 992.1 1141.7Q992.1 1137.9 990.4 1135.1Q988.7 1132.2 985.7 1129.7Q982.8 1127.2 978.9 1124.7Q974.6 1121.8 970.9 1118.9Q967.2 1116 965 1112.4Q962.8 1108.8 962.8 1103.8Q962.8 1097.9 966 1094.1Q969.1 1090.4 974.3 1088.5Q979.4 1086.7 985.2 1086.7Z"), Y0=1060, HH=120, W=0, H=0, S=1, quieto=matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var seed=29; function r(){ seed=(seed*16807)%2147483647; return (seed-1)/2147483646; }
+    var rayos=[], golpe=0, eco=-1, prox=0, visto=true, t0=0, par=0;
+    function rayo(x0,y0,x1,y1,dev,n){ var pts=[[x0,y0],[x1,y1]], k, i, q, a, b, dx, dy, l, o;
+      for(k=0;k<n;k++){ q=[pts[0]]; for(i=1;i<pts.length;i++){ a=pts[i-1]; b=pts[i]; dx=b[0]-a[0]; dy=b[1]-a[1]; l=Math.sqrt(dx*dx+dy*dy)||1; o=(r()-.5)*dev; q.push([(a[0]+b[0])/2-dy/l*o,(a[1]+b[1])/2+dx/l*o],b); } pts=q; dev*=.56; }
+      return pts; }
+    function sembrar(){ var i, x; rayos=[];
+      for(i=0;i<2;i++) rayos.push({p:rayo(170,1094+r()*52,1030,1094+r()*52,74,6),w:1,f:r()*6});
+      for(i=0;i<10;i++){ x=185+r()*830; rayos.push({p:rayo(x,1076,x+(r()-.5)*96,1164,36,4),w:.72,f:r()*6}); } }
+    function medir(){ var b=c.getBoundingClientRect(), d=Math.min(2,window.devicePixelRatio||1), w=Math.max(2,Math.round(b.width*d)), h=Math.max(2,Math.round(b.width*d*HH/1000)); if(c.width!==w||c.height!==h){ c.width=w; c.height=h; } W=w; H=h; S=W/1000; }
+    function pinta(t){
+      g.setTransform(1,0,0,1,0,0); g.clearRect(0,0,W,H); g.setTransform(S,0,0,S,-100*S,-Y0*S);
+      g.save(); g.clip(P);
+      var off=Math.sin(t*.00045)*130, gr=g.createLinearGradient(150+off,1088,1050+off,1152);
+      gr.addColorStop(0,'#e3bb62'); gr.addColorStop(.22,'#b27c27'); gr.addColorStop(.5,'#f1d488'); gr.addColorStop(.78,'#a87120'); gr.addColorStop(1,'#e6c06c');
+      g.fillStyle=gr; g.fillRect(100,Y0,1000,HH);
+      g.lineJoin='round'; g.lineCap='round';
+      for(var i=0;i<rayos.length;i++){ var R=rayos[i], p=R.p, a=Math.min(1,(.74+.2*Math.sin(t*.006+R.f))+golpe*.5), k;
+        g.beginPath(); g.moveTo(p[0][0],p[0][1]); for(k=1;k<p.length;k++) g.lineTo(p[k][0],p[k][1]);
+        g.strokeStyle='rgba(255,226,150,'+(.42*a).toFixed(3)+')'; g.lineWidth=7*R.w; g.stroke();
+        g.strokeStyle='rgba(255,254,246,'+a.toFixed(3)+')'; g.lineWidth=(2.5+golpe*1.6)*R.w; g.stroke(); }
+      if(golpe>.01){ g.fillStyle='rgba(255,250,236,'+(golpe*.5).toFixed(3)+')'; g.fillRect(100,Y0,1000,HH); }
+      g.restore();
+    }
+    function cuadro(t){
+      requestAnimationFrame(cuadro); if(!visto||document.hidden) return;
+      var dt=Math.min(.1,(t-t0)/1000||0); t0=t;
+      if(t>prox){ sembrar(); golpe=1; prox=t+2200+r()*2600; eco=r()<.45?t+130:-1; }
+      if(eco>0&&t>eco){ golpe=.8; eco=-1; }
+      golpe*=Math.exp(-dt*6.5);
+      if(golpe<.02&&(par^=1)) return;
+      pinta(t);
+    }
+    medir(); sembrar(); pinta(0);
+    addEventListener('resize',function(){ medir(); pinta(t0); });
+    if(document.fonts&&document.fonts.ready) document.fonts.ready.then(function(){ medir(); pinta(t0); });
+    if(quieto) return;
+    if(window.IntersectionObserver) new IntersectionObserver(function(e){ visto=e[0].isIntersecting; }).observe(c);
+    prox=performance.now()+2000; requestAnimationFrame(cuadro);
+  })();
+
+  /* paneles: cada rama abre solo lo suyo */
+  var panel=document.getElementById('panel'), vistas=[].slice.call(panel.querySelectorAll('.view')), actual=null, atrasT=document.getElementById('atras-t');
+  /* trabajos de clientes: un espacio sin imagen no se muestra, y un grupo sin piezas tampoco (con ?marcos=1 se ven los espacios vacíos) */
+  (function(){ if(/[?&]marcos=1/.test(location.search)) return; var vt=panel.querySelector('[data-view="trabajos"]'), hay=false;
+    [].forEach.call(vt.querySelectorAll('.grupo'),function(g){ var ps=g.querySelector('.piezas'); if(!ps) return; var n=0;
+      [].forEach.call(ps.querySelectorAll('.pieza'),function(f){ if(f.querySelector('img,video')) n++; else f.hidden=true; });
+      if(n) hay=true; else g.hidden=true; });
+    vt.classList.toggle('solo-conceptos',!hay); })();
+  var NOMBRE={es:{jardin:'Volver',servicios:'Qué hago'},en:{jardin:'Back',servicios:'What I do'}};
+  function titulo(){ if(!actual) return; var p=actual.getAttribute('data-parent'); atrasT.textContent=NOMBRE[lang][p||'jardin']; }
+  function videos(on){ [].forEach.call(panel.querySelectorAll('video'),function(v){ var vis=on&&!v.closest('.view').hidden; if(vis){ var p=v.play(); if(p&&p.catch) p.catch(function(){}); } else v.pause(); }); }
+  function ver(nombre){
+    vistas.forEach(function(v){ v.hidden=v.getAttribute('data-view')!==nombre; if(!v.hidden) actual=v; });
+    titulo(); panel.scrollTop=0; videos(true);
+  }
+  function abrir(nombre){
+    ver(nombre);
+    if(!panel.open){ if(panel.showModal) panel.showModal(); else panel.setAttribute('open',''); panel.scrollTop=0; document.dispatchEvent(new CustomEvent('jardin:pausa',{detail:true})); }
+  }
+  function cerrar(){ if(panel.close) panel.close(); else panel.removeAttribute('open'); }
+  panel.addEventListener('close',function(){ videos(false); document.dispatchEvent(new CustomEvent('jardin:pausa',{detail:false})); });
+  document.addEventListener('click',function(e){
+    var q=e.target.closest('[data-quiero]'); if(q){ var fila=q.closest('li,details'), nom=fila?fila.querySelector('h3').textContent.replace(/\s+/g,' ').trim():''; q.href='https://wa.me/19709143216?text='+encodeURIComponent((lang==='en'?"Hi John, I'm interested in ":'Hola John, me interesa ')+nom+'.'); return; }
+    var o=e.target.closest('[data-open]'); if(o){ abrir(o.getAttribute('data-open')); return; }
+    var g=e.target.closest('[data-go]'); if(g){ ver(g.getAttribute('data-go')); return; }
+  });
+  document.getElementById('atras').addEventListener('click',function(){ var p=actual&&actual.getAttribute('data-parent'); if(p) ver(p); else cerrar(); });
+
+  var saved='es'; try{ saved=localStorage.getItem(KEY)||'es'; }catch(e){}
+  if(saved==='en') setLang('en');
+})();
+</script>
+</body>
+</html>
